@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -118,7 +119,12 @@ public class CategoryDetailFragment extends ListFragment {
 	            
 	            TextView textView = (TextView) convertView.findViewById(R.id.filename);
 	            textView.setPadding(10, 0, 0, 0);
-	            textView.setText(itemList[position]);
+	            textView.setText("Price");
+	            //textView.setText(itemList[position]);
+	            
+	            TextView priceView = (TextView) convertView.findViewById(R.id.price);
+	            priceView.setPadding(10, 0, 0, 0);
+	            priceView.setText("Initial Cost");
 	            
 	            return convertView; 
 	        }
