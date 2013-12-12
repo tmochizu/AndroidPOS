@@ -46,6 +46,18 @@ public class CategoryListActivity extends FragmentActivity implements
 			((CategoryListFragment) getSupportFragmentManager()
 					.findFragmentById(R.id.category_list))
 					.setActivateOnItemClick(true);
+			
+			Bundle arguments = new Bundle();
+			arguments.putString(CategoryDetailFragment.ARG_ITEM_ID, getString(R.string.category_title_default));
+			CategoryDetailFragment fragment = new CategoryDetailFragment();
+			fragment.setArguments(arguments);
+			getSupportFragmentManager().beginTransaction()
+					.replace(R.id.category_detail_container, fragment).commit();
+			
+			// add TotalPaymentFragment
+			TotalPaymentFragment paymentFragment = new TotalPaymentFragment();
+			getSupportFragmentManager().beginTransaction()
+					.replace(R.id.total_payment_container, paymentFragment).commit();
 		}
 
 		// TODO: If exposing deep links into your app, handle intents here.
@@ -67,6 +79,8 @@ public class CategoryListActivity extends FragmentActivity implements
 			fragment.setArguments(arguments);
 			getSupportFragmentManager().beginTransaction()
 					.replace(R.id.category_detail_container, fragment).commit();
+
+
 
 		} else {
 			// In single-pane mode, simply start the detail activity

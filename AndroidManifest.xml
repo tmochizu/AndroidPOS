@@ -35,6 +35,10 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".CategoryListActivity" />
         </activity>
+        <activity
+            android:name="com.ricoh.pos.TotalPaymentActivity"
+            android:label="@string/title_total_payment" >
+        </activity>
     </application>
 
 </manifest>

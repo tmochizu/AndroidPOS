@@ -86,8 +86,17 @@ public class CategoryListFragment extends ListFragment {
 			setActivatedPosition(savedInstanceState
 					.getInt(STATE_ACTIVATED_POSITION));
 		}
+		
 	}
 
+	@Override
+	public void onStart(){
+		super.onStart();
+
+		// Select top of category
+		getListView().setItemChecked(0, true);
+	}
+	
 	@Override
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
@@ -99,6 +108,7 @@ public class CategoryListFragment extends ListFragment {
 		}
 
 		mCallbacks = (Callbacks) activity;
+		
 	}
 
 	@Override

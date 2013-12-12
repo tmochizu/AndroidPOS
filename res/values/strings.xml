@@ -6,5 +6,7 @@
     <string name="hello_world">Hello world!</string>
     <string name="title_category_list">Products</string>
     <string name="title_category_detail">Category Detail</string>
+    <string name="title_total_payment">Payment</string>
+    <string name="category_title_default">ALL</string>
 
 </resources>
