@@ -6,8 +6,9 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.Toast;
 
-public class MainMenuActivity extends Activity{
+public class MainMenuActivity extends Activity implements DataSyncTaskCallback{
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -21,7 +22,14 @@ public class MainMenuActivity extends Activity{
 				startActivity(intent);
 			}
 		});
-		
+
+		findViewById(R.id.SyncButton).setOnClickListener(new OnClickListener(){
+			@Override
+			public void onClick(View v) {
+				DataSyncTask syncTask = new DataSyncTask(MainMenuActivity.this, MainMenuActivity.this);
+				syncTask.execute();
+			}
+		});
 	}
 
 	@Override
@@ -31,4 +39,13 @@ public class MainMenuActivity extends Activity{
 		return true;
 	}
 
+	@Override
+	public void onSuccessSyncData() {
+		//Do nothing
+	}
+
+	@Override
+	public void onFailedSyncData(int resId) {
+		Toast.makeText(this, resId, Toast.LENGTH_LONG).show();
+	}
 }

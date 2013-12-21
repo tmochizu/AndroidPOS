@@ -3,10 +3,11 @@
 
     <string name="app_name">RicohPOS</string>
     <string name="action_settings">Settings</string>
-    <string name="hello_world">Hello world!</string>
     <string name="title_category_list">Products</string>
     <string name="title_category_detail">Category Detail</string>
     <string name="title_total_payment">Payment</string>
     <string name="category_title_default">ALL</string>
+    <string name="sd_import_error">Failed to import from SD!</string>
+    <string name="sd_export_error">Failed to export to SD!</string>
 
 </resources>
