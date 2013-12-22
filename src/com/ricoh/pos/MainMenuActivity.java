@@ -22,6 +22,14 @@ public class MainMenuActivity extends Activity{
 			}
 		});
 		
+		findViewById(R.id.SalesButton).setOnClickListener(new OnClickListener(){
+			@Override
+			public void onClick(View v) {
+				Intent intent = new Intent().setClass(MainMenuActivity.this, SalesCalenderActivity.class);
+				startActivity(intent);
+			}
+		});
+		
 	}
 
 	@Override
