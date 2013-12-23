@@ -18,7 +18,7 @@
         android:text="Register" />
 
     <Button
-        android:id="@+id/button2"
+        android:id="@+id/SalesButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignBaseline="@+id/RegisterButton"
@@ -27,13 +27,13 @@
         android:text="Sales" />
 
     <Button
-        android:id="@+id/button3"
+        android:id="@+id/SyncButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/button2"
-        android:layout_alignBottom="@+id/button2"
+        android:layout_alignBaseline="@+id/SalesButton"
+        android:layout_alignBottom="@+id/SalesButton"
         android:layout_marginLeft="203dp"
-        android:layout_toRightOf="@+id/button2"
+        android:layout_toRightOf="@+id/SalesButton"
         android:text="Sync" />
 
 </RelativeLayout>
