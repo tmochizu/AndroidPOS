@@ -5,13 +5,59 @@ import com.ricoh.pos.data.Product;
 
 public class ProductsManager {
 	
+	// TODO: Change these lists to imported products data.
+    private final String[] itemList
+    = { "sample021"
+      , "sample022"
+      , "sample023"
+      , "sample024"
+      , "sample025"
+      , "sample026"
+      , "sample027"
+      , "sample028"
+      , "sample029"
+      , "sample030"
+      , "sample031"
+      , "sample032"
+      , "sample033"
+      , "sample034"
+      , "sample035"
+      , "sample036"
+      , "sample037"};
+    
+    private final String[] itemPhotoList
+    = { "sample021"
+      , "sample022"
+      , "sample023"
+      , "sample024"
+      , "sample025"
+      , "sample026"
+      , "sample027"
+      , "sample028"
+      , "sample029"
+      , "sample030"
+      , "sample031"
+      , "sample032"
+      , "sample033"
+      , "sample034"
+      , "sample035"
+      , "sample036"
+      , "sample037"};
+	
 	private ArrayList<Product> productList;
 	private static ProductsManager instance;
 	
 	private ProductsManager(){
 		this.productList = new ArrayList<Product>();
+		
+		for (int i=0 ; i < itemList.length ; i++) { 
+			Product product = new Product("Test", itemList[i]);
+			product.setProductImagePath(itemPhotoList[i]);
+			addNewProduct(product);
+		}
+		
 	}
-	
+
 	public static ProductsManager getInstance() {
 		
 		if (instance == null){
@@ -54,15 +100,17 @@ public class ProductsManager {
 		return null;
 	}
 	
-	public ArrayList<Product> getAllProducts(){
-		// Return deep copy of productList
-		ArrayList<Product> productListClone = new ArrayList<Product>();
+	public Product getProductFromId(int productId){
 		
-		for (Product product : productList) {
-			productListClone.add( product.clone());
+		if (productId < 0 || productId >= productList.size()) {
+			throw new IllegalArgumentException("productId is out of range!");
 		}
 		
-		return productListClone;
+		return productList.get(productId);
+	}
+	
+	public ArrayList<Product> getAllProducts(){
+		return productList;
 	}
 	
 	public ArrayList<Product> getProductsInCategory(String category) {
@@ -75,7 +123,7 @@ public class ProductsManager {
 		
 		for (Product product : productList) {
 			if (product.getCategory().equals(category)){
-				productsInCategory.add(product.clone());
+				productsInCategory.add(product);
 			}
 		}
 		
@@ -84,6 +132,10 @@ public class ProductsManager {
 		}
 		
 		return productsInCategory;
+	}
+	
+	public int getNumberOfProductsInCategory(String category){
+		return getProductsInCategory(category).size();
 	}
 
 }

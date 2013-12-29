@@ -7,6 +7,7 @@ public class Product {
 	private int originalCost;
 	private int price;
 	private int stock;
+	private String imagePath;
 	
 	public Product(String category,String name){
 		this.category = category;
@@ -26,6 +27,10 @@ public class Product {
 	
 	public void setStock(int stock){
 		this.stock = stock;
+	}
+	
+	public void setProductImagePath(String imagePath){
+		this.imagePath = imagePath;
 	}
 	
 
@@ -51,6 +56,10 @@ public class Product {
 	
 	public int getStock(){
 		return this.stock;
+	}
+	
+	public String getProductImagePath(){
+		return imagePath;
 	}
 	
 	
