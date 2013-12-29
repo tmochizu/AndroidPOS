@@ -31,46 +31,6 @@ import android.widget.TextView;
  */
 public class CategoryDetailFragment extends ListFragment {
 	
-	/*
-    private final String[] itemList
-    = { "sample021"
-      , "sample022"
-      , "sample023"
-      , "sample024"
-      , "sample025"
-      , "sample026"
-      , "sample027"
-      , "sample028"
-      , "sample029"
-      , "sample030"
-      , "sample031"
-      , "sample032"
-      , "sample033"
-      , "sample034"
-      , "sample035"
-      , "sample036"
-      , "sample037"};
-    
-    private final String[] itemPhotoList
-    = { "sample021"
-      , "sample022"
-      , "sample023"
-      , "sample024"
-      , "sample025"
-      , "sample026"
-      , "sample027"
-      , "sample028"
-      , "sample029"
-      , "sample030"
-      , "sample031"
-      , "sample032"
-      , "sample033"
-      , "sample034"
-      , "sample035"
-      , "sample036"
-      , "sample037"};
-      */
-	
 	/**
 	 * The fragment argument representing the item ID that this fragment
 	 * represents.
@@ -79,6 +39,7 @@ public class CategoryDetailFragment extends ListFragment {
 	
 	private RegisterManager registerManager;
 	
+	private String category;
 	private ArrayList<Product> productList;
 
 	/**
@@ -93,10 +54,11 @@ public class CategoryDetailFragment extends ListFragment {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
-		productList = ProductsManager.getInstance().getAllProducts();
+		Bundle bundle = getArguments();
+		this.category = bundle.getString(CategoryDetailFragment.ARG_ITEM_ID);
 		
+		productList = ProductsManager.getInstance().getProductsInCategory(category);
 		setListAdapter(new ListAdapter(getActivity()));
-
 	}
 
 	
@@ -113,7 +75,6 @@ public class CategoryDetailFragment extends ListFragment {
 	        @Override
 	        public int getCount() {
 	        	return productList.size();
-	            //return itemPhotoList.length;
 	        }
 
 	        @Override
@@ -143,14 +104,13 @@ public class CategoryDetailFragment extends ListFragment {
 	            TextView textView = (TextView) convertView.findViewById(R.id.filename);
 	            textView.setPadding(10, 0, 0, 0);
 	            textView.setText("Price");
-	            //textView.setText(itemList[position]);
 	            
 	            TextView priceView = (TextView) convertView.findViewById(R.id.price);
 	            priceView.setPadding(10, 0, 0, 0);
 	            priceView.setText("Initial Cost");
 	            
 	            ProductEditText numberOfSalesText = (ProductEditText) convertView.findViewById(R.id.numberOfSales);
-	            numberOfSalesText.setProductId(position);
+	            numberOfSalesText.setProduct(product);
 	            numberOfSalesText.setInputType(InputType.TYPE_CLASS_NUMBER);
 	            numberOfSalesText.addTextChangedListener(new NumberOfSalesWatcher(numberOfSalesText));
 
@@ -166,10 +126,10 @@ public class CategoryDetailFragment extends ListFragment {
 
 	 public class NumberOfSalesWatcher implements TextWatcher{
 		 
-		 private View textView;
+		 private ProductEditText productEditView;
 		 
-		 public NumberOfSalesWatcher(View view){
-			 this.textView = view;
+		 public NumberOfSalesWatcher(ProductEditText view){
+			 this.productEditView = view;
 		 }
 
 		@Override
@@ -187,13 +147,8 @@ public class CategoryDetailFragment extends ListFragment {
 		@Override
 		public void onTextChanged(CharSequence s, int start, int before,
 				int count) {
-			// TODO Auto-generated method stub
-
-			/*
-			int productId = textView.getId();
-			Product product = ProductsManager.getInstance().getProductFromId(productId);
+			Product product = productEditView.getProduct();
 			registerManager.updateOrder(product, Integer.parseInt(s.toString()));
-			*/
 		}
 		 
 	 }
