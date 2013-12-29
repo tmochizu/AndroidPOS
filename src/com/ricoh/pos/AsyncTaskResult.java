@@ -2,13 +2,13 @@ package com.ricoh.pos;
 
 public class AsyncTaskResult<T> {
 	private T content;
-	private int resId;
+	private int resourceId;
 	private boolean isError;
 
-	private AsyncTaskResult(T content, boolean isError, int resId) {
+	private AsyncTaskResult(T content, boolean isError, int resourceId) {
 		this.content = content;
 		this.isError = isError;
-		this.resId = resId;
+		this.resourceId = resourceId;
 	}
 
 	public T getContent() {
@@ -20,14 +20,14 @@ public class AsyncTaskResult<T> {
 	}
 
 	public int getResourceId() {
-		return resId;
+		return resourceId;
 	}
 
 	public static <T> AsyncTaskResult<T> createNormalResult(T content) {
 		return new AsyncTaskResult<T>(content, false, 0);
 	}
 
-	public static <T> AsyncTaskResult<T> createErrorResult(int resId) {
-		return new AsyncTaskResult<T>(null, true, resId);
+	public static <T> AsyncTaskResult<T> createErrorResult(int resourceId) {
+		return new AsyncTaskResult<T>(null, true, resourceId);
 	}
 }

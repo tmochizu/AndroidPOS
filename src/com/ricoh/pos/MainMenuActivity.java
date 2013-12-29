@@ -41,7 +41,7 @@ public class MainMenuActivity extends Activity implements DataSyncTaskCallback{
 
 	@Override
 	public void onSuccessSyncData() {
-		//Do nothing
+		//TODO: Do nothing
 	}
 
 	@Override
