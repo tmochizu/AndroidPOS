@@ -1,17 +1,42 @@
 package com.ricoh.pos.model;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+
 import com.ricoh.pos.data.Product;
 
 public class ProductsManager {
 	
-	private ArrayList<Product> productList;
+	private HashMap<String,ArrayList<Product>> productsMap;
+	
 	private static ProductsManager instance;
 	
 	private ProductsManager(){
-		this.productList = new ArrayList<Product>();
+		this.productsMap = new HashMap<String,ArrayList<Product>>();
+		
+		// TODO: import product data from DataBase
+		createDummyProducts();
 	}
 	
+	private void createDummyProducts(){
+		
+		// Food
+		String foodCategory = "Food";
+		for (int i=0; i<10; i++) {
+			Product product = new Product(foodCategory, "product" + i);
+			product.setProductImagePath("sample0" + (21 + i));
+			addNewProductInCategory(foodCategory, product);
+		}
+
+		// Health
+		String healthCategory = "Health";
+		for (int i=0; i<7 ; i++) {
+			Product product = new Product(healthCategory, "product" + i);
+			product.setProductImagePath("sample0" + (31 + i));
+			addNewProductInCategory(healthCategory, product);
+		}
+	}
+
 	public static ProductsManager getInstance() {
 		
 		if (instance == null){
@@ -21,28 +46,46 @@ public class ProductsManager {
 		return instance;
 	}
 	
-	public void addNewProduct(Product product) {
+	public void addNewProductInCategory(String category, Product product){
 		
-		if (product == null) {
-			throw new IllegalArgumentException("Passing product is null");
-		} 
-		
-		for (Product registeredProduct : productList) {
-			if(registeredProduct.getName().equals(product.getName())){
-				throw new IllegalArgumentException("The passing product has already been registered");
-			}
+		if (category == null || category.length() == 0) {
+			throw new IllegalArgumentException("Invalid category");
 		}
 		
-		productList.add(product);
+		if (product == null) {
+			throw new IllegalArgumentException("Passing product object is null");
+		}
 		
+		if (this.productsMap.containsKey(category)){
+			ArrayList<Product> produtcsInCategory = productsMap.get(category);
+			for (Product registeredProduct : produtcsInCategory) {
+				if(registeredProduct.getName().equals(product.getName())){
+					throw new IllegalArgumentException("The passing product has already been registered");
+				}
+			}
+			produtcsInCategory.add(product);
+		} else {
+			ArrayList<Product> productsInCategory = new ArrayList<Product>();
+			productsInCategory.add(product);
+			productsMap.put(category, productsInCategory);
+		}
 	}
 	
-	public Product getProductByName(String productName){
+	public Product getProductByName(String category, String productName){
 		
 		if (productName == null || productName.length() == 0) {
 			throw new IllegalArgumentException("Invalid product name");
 		}
 		
+		if(category == null || category.length() == 0){
+			throw new IllegalArgumentException("Invalid category name");
+		}
+		
+		if (!productsMap.containsKey(category)) {
+			throw new IllegalArgumentException("Passing category does not exist: " + category);
+		}
+		
+		ArrayList<Product> productList = productsMap.get(category);
 		for (Product product : productList){
 			if (product.getName().equals(productName)) {
 				// Successfully found
@@ -54,15 +97,17 @@ public class ProductsManager {
 		return null;
 	}
 	
-	public ArrayList<Product> getAllProducts(){
-		// Return deep copy of productList
-		ArrayList<Product> productListClone = new ArrayList<Product>();
+	public Product getProductFromId(String category, int productId){
 		
-		for (Product product : productList) {
-			productListClone.add( product.clone());
+		if(category == null || category.length() == 0){
+			throw new IllegalArgumentException("Invalid category name");
 		}
 		
-		return productListClone;
+		if (!productsMap.containsKey(category)) {
+			throw new IllegalArgumentException("Passing category does not exist: " + category);
+		} else {
+			return productsMap.get(category).get(productId);
+		}
 	}
 	
 	public ArrayList<Product> getProductsInCategory(String category) {
@@ -71,19 +116,32 @@ public class ProductsManager {
 			throw new IllegalArgumentException("Invalid category name");
 		}
 		
-		ArrayList<Product> productsInCategory = new ArrayList<Product>();
-		
-		for (Product product : productList) {
-			if (product.getCategory().equals(category)){
-				productsInCategory.add(product.clone());
+		if (category.equals("ALL")) {
+			ArrayList<Product> allProducts = new ArrayList<Product>();
+			for (String key : productsMap.keySet()) {
+				allProducts.addAll(productsMap.get(key));
 			}
+			return allProducts;
 		}
 		
-		if (productsInCategory.size() == 0) {
-			throw new IllegalArgumentException("No such category");
+		if (!productsMap.containsKey(category)) {
+			throw new IllegalArgumentException("Passing category does not exist: " + category);
+		} else {
+			return productsMap.get(category);
+		}
+	}
+	
+	public int getNumberOfProductsInCategory(String category){
+		
+		if(category == null || category.length() == 0){
+			throw new IllegalArgumentException("Invalid category name");
 		}
 		
-		return productsInCategory;
+		if (!productsMap.containsKey(category)) {
+			throw new IllegalArgumentException("Passing category does not exist: " + category);
+		} else {
+			return productsMap.get(category).size();
+		}
 	}
 
 }
