@@ -71,7 +71,7 @@ public class MainMenuActivity extends Activity {
 				Log.d("debug", wsIOManager.searchByID(database, 20));
 				Log.d("debug", wsIOManager.searchAlldata(database));
 				
-				productsManager.createProducts();
+				//productsManager.createProducts();
 				
 			}
 		});
