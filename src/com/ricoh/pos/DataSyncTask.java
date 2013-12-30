@@ -1,19 +1,30 @@
 package com.ricoh.pos;
 
+import java.io.BufferedReader;
+
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.res.AssetManager;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.database.sqlite.SQLiteDatabase;
 
 public class DataSyncTask extends AsyncTask<String, Void, AsyncTaskResult<String>> {
 	final String TAG = "DataSyncTask";
 	DataSyncTaskCallback callback;
 	Context context;
 	ProgressDialog progressDialog;
+	IOManager wsIOManager;
+	SQLiteDatabase database;
 
-	public DataSyncTask(Context context, DataSyncTaskCallback callback) {
+	public DataSyncTask(Context context,
+			DataSyncTaskCallback callback,
+			IOManager wsIOManager,
+			SQLiteDatabase database) {
 		this.callback = callback;
 		this.context = context;
+		this.wsIOManager = wsIOManager;
+		this.database = database;
 	}
 	
 	@Override
@@ -33,10 +44,19 @@ public class DataSyncTask extends AsyncTask<String, Void, AsyncTaskResult<String
 	protected AsyncTaskResult<String> doInBackground(String... params) {
 		Log.d(TAG, "doInBackground");
 		try {
-			//TODO: Should import & export data
-			Thread.sleep(3000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
+			Log.d("debug", "SyncButton click");
+
+			AssetManager assetManager = context.getResources().getAssets();
+			BufferedReader bufferReader = wsIOManager
+					.importCSVfromAssets(assetManager);
+			if (bufferReader == null) {
+				Log.d("debug", "File not found");
+				return AsyncTaskResult.createErrorResult(R.string.sd_import_error);
+			}
+			wsIOManager.insertRecords(database, bufferReader);
+
+			// TODO: Read test
+			Log.d("debug", wsIOManager.searchByID(database, 20));
 		} catch (Exception e) {
 			//TODO: Should separate exception(Import, Export, at least)
 			return AsyncTaskResult.createErrorResult(R.string.sd_import_error);
@@ -53,6 +73,8 @@ public class DataSyncTask extends AsyncTask<String, Void, AsyncTaskResult<String
 
 			if (result.isError()) {
 				callback.onFailedSyncData(result.getResourceId());
+			} else {
+				callback.onSuccessSyncData();
 			}
 		}            
 	}

@@ -32,7 +32,7 @@
         android:layout_height="wrap_content"
         android:layout_alignBaseline="@+id/SalesButton"
         android:layout_alignBottom="@+id/SalesButton"
-        android:layout_marginLeft="170dp"
+        android:layout_marginLeft="203dp"
         android:layout_toRightOf="@+id/SalesButton"
         android:text="Sync" />
 

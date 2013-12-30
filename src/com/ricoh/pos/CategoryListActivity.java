@@ -69,6 +69,7 @@ public class CategoryListActivity extends FragmentActivity implements
 	 */
 	@Override
 	public void onItemSelected(String id) {
+		
 		if (mTwoPane) {
 			// In two-pane mode, show the detail view in this activity by
 			// adding or replacing the detail fragment using a
