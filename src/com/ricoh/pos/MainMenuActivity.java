@@ -2,6 +2,8 @@ package com.ricoh.pos;
 
 import java.io.BufferedReader;
 
+import com.ricoh.pos.model.ProductsManager;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.content.res.AssetManager;
@@ -14,6 +16,7 @@ import android.view.View.OnClickListener;
 
 public class MainMenuActivity extends Activity {
 
+	private ProductsManager productsManager;
 	private DatabaseHelper databaseHelper;
 	private IOManager wsIOManager;
 	public static SQLiteDatabase database;
@@ -23,6 +26,7 @@ public class MainMenuActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main_menu);
 
+		productsManager = ProductsManager.getInstance();
 		databaseHelper = new DatabaseHelper(this);
 		database = databaseHelper.getWritableDatabase();
 		wsIOManager = new WSIOManager();
@@ -65,6 +69,10 @@ public class MainMenuActivity extends Activity {
 
 				// TODO: Read test
 				Log.d("debug", wsIOManager.searchByID(database, 20));
+				Log.d("debug", wsIOManager.searchAlldata(database));
+				
+				productsManager.createProducts();
+				
 			}
 		});
 	}

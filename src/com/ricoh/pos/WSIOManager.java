@@ -72,6 +72,28 @@ public class WSIOManager implements IOManager {
 		}
 	}
 
+	@Override
+	public String searchAlldata(SQLiteDatabase database) {
+		Cursor cursor = null;
+		String results = "";
+		try {
+			cursor = database.query(DATABASE_NAME, new String[] { S_NO,
+					PRODUCT_ID, CATEGORY, OFFICE_NAME, PRODUCT_NAME,
+					PRICE_PIECE, NO_OF_PIECES, PRICE_BOX, TAX_TYPE,
+					TAX_PERCENTAGE }, null, null, null, null, null);
+			String result = "";
+			do {
+				result = readCursor(cursor);
+				results += result;
+			} while (!result.isEmpty());
+			return results;
+		} finally {
+			if (cursor != null) {
+				cursor.close();
+			}
+		}
+	}
+
 	// TODO: Temporary function
 	@Override
 	public String searchByID(SQLiteDatabase database, int id) {
@@ -89,7 +111,7 @@ public class WSIOManager implements IOManager {
 			}
 		}
 	}
-	
+
 	private void readFieldName(BufferedReader bufferReader) throws IOException {
 		String record = bufferReader.readLine();
 
@@ -99,18 +121,37 @@ public class WSIOManager implements IOManager {
 			Log.d("debug", fieldName);
 		}
 	}
-
-	// TODO: Temporary function
+	
 	private String readCursor(Cursor cursor) {
 		String result = "";
 
-		int indexId = cursor.getColumnIndex(PRODUCT_ID);
+		int indexSNo = cursor.getColumnIndex(S_NO);
+		int indexProductId = cursor.getColumnIndex(PRODUCT_ID);
+		int indexCategory = cursor.getColumnIndex(CATEGORY);
+		int indexOfficeName = cursor.getColumnIndex(OFFICE_NAME);
 		int indexProductName = cursor.getColumnIndex(PRODUCT_NAME);
+		int indexPricePiece = cursor.getColumnIndex(PRICE_PIECE);
+		int indexNoOfPieces = cursor.getColumnIndex(NO_OF_PIECES);
+		int indexPriceBox = cursor.getColumnIndex(PRICE_BOX);
+		int indexTaxType = cursor.getColumnIndex(TAX_TYPE);
+		int indexTaxPercentage = cursor.getColumnIndex(TAX_PERCENTAGE);
 
-		while (cursor.moveToNext()) {
-			int id = cursor.getInt(indexId);
+		if (cursor.moveToNext()) {
+			int sNo = cursor.getInt(indexSNo);
+			int productId = cursor.getInt(indexProductId);
+			String category = cursor.getString(indexCategory);
+			String officeName = cursor.getString(indexOfficeName);
 			String productName = cursor.getString(indexProductName);
-			result += id + ":" + productName + "\n";
+			double pricePiece = cursor.getDouble(indexPricePiece);
+			int noOfPieces = cursor.getInt(indexNoOfPieces);
+			double priceBox = cursor.getDouble(indexPriceBox);
+			String taxType = cursor.getString(indexTaxType);
+			int taxPercentage = cursor.getInt(indexTaxPercentage);
+
+			result += sNo + ":" + productId + ":" + category + ":" + officeName
+					+ ":" + productName + ":" + pricePiece + ":" + noOfPieces
+					+ ":" + priceBox + ":" + taxType + ":" + taxPercentage
+					+ "\n";
 		}
 		return result;
 	}

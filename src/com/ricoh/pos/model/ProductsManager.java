@@ -21,6 +21,10 @@ public class ProductsManager {
 		return instance;
 	}
 	
+	public void createProducts() {
+		
+	}
+	
 	public void addNewProduct(Product product) {
 		
 		if (product == null) {
