@@ -3,6 +3,7 @@ package com.ricoh.pos;
 import java.io.BufferedReader;
 
 import com.ricoh.pos.model.IOManager;
+import com.ricoh.pos.model.ProductsManager;
 
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -18,6 +19,7 @@ public class DataSyncTask extends AsyncTask<String, Void, AsyncTaskResult<String
 	ProgressDialog progressDialog;
 	IOManager wsIOManager;
 	SQLiteDatabase database;
+	ProductsManager productsManager;
 
 	public DataSyncTask(Context context,
 			DataSyncTaskCallback callback,
@@ -27,6 +29,7 @@ public class DataSyncTask extends AsyncTask<String, Void, AsyncTaskResult<String
 		this.context = context;
 		this.wsIOManager = wsIOManager;
 		this.database = database;
+		this.productsManager = ProductsManager.getInstance();
 	}
 	
 	@Override
@@ -59,6 +62,12 @@ public class DataSyncTask extends AsyncTask<String, Void, AsyncTaskResult<String
 
 			// TODO: Read test
 			Log.d("debug", wsIOManager.searchByID(database, 20));
+			
+			String[] results = wsIOManager.searchAlldata(database);
+			for (String result : results) {
+				Log.d("debug", result);
+			}
+			productsManager.createProducts(results);
 		} catch (Exception e) {
 			//TODO: Should separate exception(Import, Export, at least)
 			return AsyncTaskResult.createErrorResult(R.string.sd_import_error);

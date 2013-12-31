@@ -6,6 +6,7 @@ import java.util.HashMap;
 import android.util.Log;
 
 import com.ricoh.pos.data.Product;
+import com.ricoh.pos.data.WSDataDef;
 
 public class ProductsManager {
 
@@ -27,10 +28,14 @@ public class ProductsManager {
 		for (String result : results) {
 			String delims = "[:]+";
 			String[] fieldData = result.split(delims);
-			Product product = new Product(fieldData[2], fieldData[4]);
-			Log.d("debug", fieldData[2] + ":" + fieldData[4]);
-			product.setProductImagePath(fieldData[4]);
-			addNewProductInCategory(fieldData[2], product);
+			Product product = new Product(fieldData[WSDataDef.CATEGORY.ordinal()],
+					fieldData[WSDataDef.PRODUCT_NAME.ordinal()]);
+
+			Log.d("debug", fieldData[WSDataDef.CATEGORY.ordinal()] + ":"
+					+ fieldData[WSDataDef.PRODUCT_NAME.ordinal()]);
+
+			product.setProductImagePath(fieldData[WSDataDef.PRODUCT_NAME.ordinal()]);
+			addNewProductInCategory(fieldData[WSDataDef.CATEGORY.ordinal()], product);
 		}
 	}
 
@@ -71,8 +76,7 @@ public class ProductsManager {
 		}
 
 		if (!productsMap.containsKey(category)) {
-			throw new IllegalArgumentException(
-					"Passing category does not exist: " + category);
+			throw new IllegalArgumentException("Passing category does not exist: " + category);
 		}
 
 		ArrayList<Product> productList = productsMap.get(category);
@@ -94,8 +98,7 @@ public class ProductsManager {
 		}
 
 		if (!productsMap.containsKey(category)) {
-			throw new IllegalArgumentException(
-					"Passing category does not exist: " + category);
+			throw new IllegalArgumentException("Passing category does not exist: " + category);
 		} else {
 			return productsMap.get(category).get(productId);
 		}
@@ -116,8 +119,7 @@ public class ProductsManager {
 		}
 
 		if (!productsMap.containsKey(category)) {
-			throw new IllegalArgumentException(
-					"Passing category does not exist: " + category);
+			throw new IllegalArgumentException("Passing category does not exist: " + category);
 		} else {
 			return productsMap.get(category);
 		}
@@ -130,8 +132,7 @@ public class ProductsManager {
 		}
 
 		if (!productsMap.containsKey(category)) {
-			throw new IllegalArgumentException(
-					"Passing category does not exist: " + category);
+			throw new IllegalArgumentException("Passing category does not exist: " + category);
 		} else {
 			return productsMap.get(category).size();
 		}

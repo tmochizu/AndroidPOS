@@ -10,19 +10,11 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
+import com.ricoh.pos.data.WSDataDef;
+
 public class WSIOManager implements IOManager {
 
 	private static String DATABASE_NAME = "products";
-	private static String S_NO = "SNo";
-	private static String PRODUCT_ID = "ProductID";
-	private static String CATEGORY = "Category";
-	private static String OFFICE_NAME = "OfficeName";
-	private static String PRODUCT_NAME = "ProductName";
-	private static String PRICE_PIECE = "PricePiece";
-	private static String NO_OF_PIECES = "NoOfPieces";
-	private static String PRICE_BOX = "PriceBox";
-	private static String TAX_TYPE = "TaxType";
-	private static String TAX_PERCENTAGE = "TaxPercentage";
 
 	public WSIOManager() {
 		// Nothing to do
@@ -33,8 +25,8 @@ public class WSIOManager implements IOManager {
 		BufferedReader bufferReader = null;
 		try {
 			// TODO: Should import & export data
-			bufferReader = new BufferedReader(new InputStreamReader(
-					assetManager.open(DATABASE_NAME + ".csv")));
+			bufferReader = new BufferedReader(new InputStreamReader(assetManager.open(DATABASE_NAME
+					+ ".csv")));
 		} catch (IOException e) {
 			Log.d("debug", "" + e + "");
 		}
@@ -42,8 +34,7 @@ public class WSIOManager implements IOManager {
 	}
 
 	@Override
-	public void insertRecords(SQLiteDatabase database,
-			BufferedReader bufferReader) {
+	public void insertRecords(SQLiteDatabase database, BufferedReader bufferReader) {
 
 		ContentValues contentValue = new ContentValues();
 		try {
@@ -54,16 +45,16 @@ public class WSIOManager implements IOManager {
 				String[] fields = record.split(",");
 				Log.d("debug", "S No." + fields[0]);
 
-				contentValue.put(S_NO, fields[0]);
-				contentValue.put(PRODUCT_ID, fields[1]);
-				contentValue.put(CATEGORY, fields[2]);
-				contentValue.put(OFFICE_NAME, fields[3]);
-				contentValue.put(PRODUCT_NAME, fields[4]);
-				contentValue.put(PRICE_PIECE, fields[5]);
-				contentValue.put(NO_OF_PIECES, fields[6]);
-				contentValue.put(PRICE_BOX, fields[7]);
-				contentValue.put(TAX_TYPE, fields[8]);
-				contentValue.put(TAX_PERCENTAGE, fields[9]);
+				contentValue.put(WSDataDef.S_NO.name(), fields[0]);
+				contentValue.put(WSDataDef.PRODUCT_ID.name(), fields[1]);
+				contentValue.put(WSDataDef.CATEGORY.name(), fields[2]);
+				contentValue.put(WSDataDef.OFFICE_NAME.name(), fields[3]);
+				contentValue.put(WSDataDef.PRODUCT_NAME.name(), fields[4]);
+				contentValue.put(WSDataDef.PRICE_PIECE.name(), fields[5]);
+				contentValue.put(WSDataDef.NO_OF_PIECES.name(), fields[6]);
+				contentValue.put(WSDataDef.PRICE_BOX.name(), fields[7]);
+				contentValue.put(WSDataDef.TAX_TYPE.name(), fields[8]);
+				contentValue.put(WSDataDef.TAX_PERCENTAGE.name(), fields[9]);
 
 				database.insert(DATABASE_NAME, null, contentValue);
 			}
@@ -77,10 +68,13 @@ public class WSIOManager implements IOManager {
 		Cursor cursor = null;
 
 		try {
-			cursor = database.query(DATABASE_NAME, new String[] { S_NO,
-					PRODUCT_ID, CATEGORY, OFFICE_NAME, PRODUCT_NAME,
-					PRICE_PIECE, NO_OF_PIECES, PRICE_BOX, TAX_TYPE,
-					TAX_PERCENTAGE }, null, null, null, null, null);
+			cursor = database.query(DATABASE_NAME,
+					new String[] { WSDataDef.S_NO.name(), WSDataDef.PRODUCT_ID.name(),
+							WSDataDef.CATEGORY.name(), WSDataDef.OFFICE_NAME.name(),
+							WSDataDef.PRODUCT_NAME.name(), WSDataDef.PRICE_PIECE.name(),
+							WSDataDef.NO_OF_PIECES.name(), WSDataDef.PRICE_BOX.name(),
+							WSDataDef.TAX_TYPE.name(), WSDataDef.TAX_PERCENTAGE.name() }, null,
+					null, null, null, null);
 			String[] results = new String[cursor.getCount()];
 			for (int i = 0; i < cursor.getCount(); i++) {
 				results[i] = readCursor(cursor);
@@ -98,11 +92,14 @@ public class WSIOManager implements IOManager {
 	public String searchByID(SQLiteDatabase database, int id) {
 		Cursor cursor = null;
 		try {
-			cursor = database.query(DATABASE_NAME, new String[] { S_NO,
-					PRODUCT_ID, CATEGORY, OFFICE_NAME, PRODUCT_NAME,
-					PRICE_PIECE, NO_OF_PIECES, PRICE_BOX, TAX_TYPE,
-					TAX_PERCENTAGE }, "ProductID = ?",
-					new String[] { "" + id }, null, null, null);
+			cursor = database.query(DATABASE_NAME,
+					new String[] { WSDataDef.S_NO.name(), WSDataDef.PRODUCT_ID.name(),
+							WSDataDef.CATEGORY.name(), WSDataDef.OFFICE_NAME.name(),
+							WSDataDef.PRODUCT_NAME.name(), WSDataDef.PRICE_PIECE.name(),
+							WSDataDef.NO_OF_PIECES.name(), WSDataDef.PRICE_BOX.name(),
+							WSDataDef.TAX_TYPE.name(), WSDataDef.TAX_PERCENTAGE.name() },
+					WSDataDef.PRODUCT_ID.name() + " = ?", new String[] { "" + id }, null, null,
+					null);
 			return readCursor(cursor);
 		} finally {
 			if (cursor != null) {
@@ -124,16 +121,16 @@ public class WSIOManager implements IOManager {
 	private String readCursor(Cursor cursor) {
 		String result = "";
 
-		int indexSNo = cursor.getColumnIndex(S_NO);
-		int indexProductId = cursor.getColumnIndex(PRODUCT_ID);
-		int indexCategory = cursor.getColumnIndex(CATEGORY);
-		int indexOfficeName = cursor.getColumnIndex(OFFICE_NAME);
-		int indexProductName = cursor.getColumnIndex(PRODUCT_NAME);
-		int indexPricePiece = cursor.getColumnIndex(PRICE_PIECE);
-		int indexNoOfPieces = cursor.getColumnIndex(NO_OF_PIECES);
-		int indexPriceBox = cursor.getColumnIndex(PRICE_BOX);
-		int indexTaxType = cursor.getColumnIndex(TAX_TYPE);
-		int indexTaxPercentage = cursor.getColumnIndex(TAX_PERCENTAGE);
+		int indexSNo = cursor.getColumnIndex(WSDataDef.S_NO.name());
+		int indexProductId = cursor.getColumnIndex(WSDataDef.PRODUCT_ID.name());
+		int indexCategory = cursor.getColumnIndex(WSDataDef.CATEGORY.name());
+		int indexOfficeName = cursor.getColumnIndex(WSDataDef.OFFICE_NAME.name());
+		int indexProductName = cursor.getColumnIndex(WSDataDef.PRODUCT_NAME.name());
+		int indexPricePiece = cursor.getColumnIndex(WSDataDef.PRICE_PIECE.name());
+		int indexNoOfPieces = cursor.getColumnIndex(WSDataDef.NO_OF_PIECES.name());
+		int indexPriceBox = cursor.getColumnIndex(WSDataDef.PRICE_BOX.name());
+		int indexTaxType = cursor.getColumnIndex(WSDataDef.TAX_TYPE.name());
+		int indexTaxPercentage = cursor.getColumnIndex(WSDataDef.TAX_PERCENTAGE.name());
 
 		if (cursor.moveToNext()) {
 			int sNo = cursor.getInt(indexSNo);
@@ -147,10 +144,9 @@ public class WSIOManager implements IOManager {
 			String taxType = cursor.getString(indexTaxType);
 			int taxPercentage = cursor.getInt(indexTaxPercentage);
 
-			result += sNo + ":" + productId + ":" + category + ":" + officeName
-					+ ":" + productName + ":" + pricePiece + ":" + noOfPieces
-					+ ":" + priceBox + ":" + taxType + ":" + taxPercentage
-					+ "\n";
+			result += sNo + ":" + productId + ":" + category + ":" + officeName + ":" + productName
+					+ ":" + pricePiece + ":" + noOfPieces + ":" + priceBox + ":" + taxType + ":"
+					+ taxPercentage + "\n";
 		}
 		return result;
 	}
