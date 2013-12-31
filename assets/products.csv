@@ -1,6 +1,0 @@
-S No.,Product Id,Category,Office Name,Product Name,Unit Selling Price(Piece),No. of Pieces in Box,Unit Selling Price(Box),Tax Type,Tax/Vat Percentage
-1,20,Cookie,A Office,Sample1,11.35,33,11.18,Sale Tax  ,14
-2,57,Soap,B Office,Sample2,21.45,66,21.29,Sale Tax  ,0
-3,72,Cookie,A Office,Sample3,2.09,102,2.02,Sale Tax  ,14
-4,73,Cookie,A Office,Sample4,5.8,102,5.73,Sale Tax  ,14
-5,83,Cookie,C Office,Sample5,0.32,356,0.31,Sale Tax  ,14
