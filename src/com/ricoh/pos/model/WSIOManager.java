@@ -1,4 +1,4 @@
-package com.ricoh.pos;
+package com.ricoh.pos.model;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -73,19 +73,18 @@ public class WSIOManager implements IOManager {
 	}
 
 	@Override
-	public String searchAlldata(SQLiteDatabase database) {
+	public String[] searchAlldata(SQLiteDatabase database) {
 		Cursor cursor = null;
-		String results = "";
+
 		try {
 			cursor = database.query(DATABASE_NAME, new String[] { S_NO,
 					PRODUCT_ID, CATEGORY, OFFICE_NAME, PRODUCT_NAME,
 					PRICE_PIECE, NO_OF_PIECES, PRICE_BOX, TAX_TYPE,
 					TAX_PERCENTAGE }, null, null, null, null, null);
-			String result = "";
-			do {
-				result = readCursor(cursor);
-				results += result;
-			} while (!result.isEmpty());
+			String[] results = new String[cursor.getCount()];
+			for (int i = 0; i < cursor.getCount(); i++) {
+				results[i] = readCursor(cursor);
+			}
 			return results;
 		} finally {
 			if (cursor != null) {
@@ -121,7 +120,7 @@ public class WSIOManager implements IOManager {
 			Log.d("debug", fieldName);
 		}
 	}
-	
+
 	private String readCursor(Cursor cursor) {
 		String result = "";
 

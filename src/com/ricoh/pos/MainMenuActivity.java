@@ -2,8 +2,6 @@ package com.ricoh.pos;
 
 import java.io.BufferedReader;
 
-import com.ricoh.pos.model.ProductsManager;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.content.res.AssetManager;
@@ -13,6 +11,10 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
+
+import com.ricoh.pos.model.IOManager;
+import com.ricoh.pos.model.ProductsManager;
+import com.ricoh.pos.model.WSIOManager;
 
 public class MainMenuActivity extends Activity {
 
@@ -69,10 +71,13 @@ public class MainMenuActivity extends Activity {
 
 				// TODO: Read test
 				Log.d("debug", wsIOManager.searchByID(database, 20));
-				Log.d("debug", wsIOManager.searchAlldata(database));
-				
-				//productsManager.createProducts();
-				
+
+				String results[] = wsIOManager.searchAlldata(database);
+				for (String result : results) {
+					Log.d("debug", result);
+				}
+				productsManager.createProducts(results);
+
 			}
 		});
 	}
