@@ -1,26 +1,18 @@
 package com.ricoh.pos;
 
-import java.io.BufferedReader;
-
 import android.app.Activity;
 import android.content.Intent;
-import android.content.res.AssetManager;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.Toast;
 
-import com.ricoh.pos.model.IOManager;
-import com.ricoh.pos.model.ProductsManager;
-import com.ricoh.pos.model.WSIOManager;
+public class MainMenuActivity extends Activity implements DataSyncTaskCallback{
 
-public class MainMenuActivity extends Activity {
-
-	private ProductsManager productsManager;
 	private DatabaseHelper databaseHelper;
-	private IOManager wsIOManager;
 	public static SQLiteDatabase database;
 
 	@Override
@@ -28,10 +20,8 @@ public class MainMenuActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main_menu);
 
-		productsManager = ProductsManager.getInstance();
 		databaseHelper = new DatabaseHelper(this);
 		database = databaseHelper.getWritableDatabase();
-		wsIOManager = new WSIOManager();
 
 		findViewById(R.id.RegisterButton).setOnClickListener(
 				new OnClickListener() {
@@ -58,26 +48,11 @@ public class MainMenuActivity extends Activity {
 		findViewById(R.id.SyncButton).setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Log.d("debug", "SyncButton click");
-
-				AssetManager assetManager = getResources().getAssets();
-				BufferedReader bufferReader = wsIOManager
-						.importCSVfromAssets(assetManager);
-				if (bufferReader == null) {
-					Log.d("debug", "File not found");
-					return;
-				}
-				wsIOManager.insertRecords(database, bufferReader);
-
-				// TODO: Read test
-				Log.d("debug", wsIOManager.searchByID(database, 20));
-
-				String results[] = wsIOManager.searchAlldata(database);
-				for (String result : results) {
-					Log.d("debug", result);
-				}
-				productsManager.createProducts(results);
-
+				DataSyncTask syncTask = new DataSyncTask(MainMenuActivity.this,
+						MainMenuActivity.this,
+						new WSIOManager(),
+						database);
+				syncTask.execute();
 			}
 		});
 	}
@@ -97,4 +72,13 @@ public class MainMenuActivity extends Activity {
 		return true;
 	}
 
+	@Override
+	public void onSuccessSyncData() {
+		Toast.makeText(this, R.string.sync_success, Toast.LENGTH_LONG).show();
+	}
+
+	@Override
+	public void onFailedSyncData(int resId) {
+		Toast.makeText(this, resId, Toast.LENGTH_LONG).show();
+	}
 }
