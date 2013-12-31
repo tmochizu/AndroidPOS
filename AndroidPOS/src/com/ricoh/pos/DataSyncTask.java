@@ -2,6 +2,8 @@ package com.ricoh.pos;
 
 import java.io.BufferedReader;
 
+import com.ricoh.pos.model.IOManager;
+
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.res.AssetManager;

@@ -1,5 +1,7 @@
 package com.ricoh.pos;
 
+import com.ricoh.pos.model.WSIOManager;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
