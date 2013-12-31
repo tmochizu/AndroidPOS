@@ -53,8 +53,7 @@ public class CategoryDetailFragment extends ListFragment {
 		Bundle bundle = getArguments();
 		this.category = bundle.getString(CategoryDetailFragment.ARG_ITEM_ID);
 
-		productList = ProductsManager.getInstance().getProductsInCategory(
-				category);
+		productList = ProductsManager.getInstance().getProductsInCategory(category);
 		setListAdapter(new ListAdapter(getActivity()));
 	}
 
@@ -64,8 +63,7 @@ public class CategoryDetailFragment extends ListFragment {
 
 		public ListAdapter(Context context) {
 			// contextInAdapter = context;
-			inflater = (LayoutInflater) context
-					.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+			inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		}
 
 		@Override
@@ -92,20 +90,16 @@ public class CategoryDetailFragment extends ListFragment {
 
 			Product product = productList.get(position);
 
-			ImageView imageView = (ImageView) convertView
-					.findViewById(R.id.photo);
+			ImageView imageView = (ImageView) convertView.findViewById(R.id.photo);
 			imageView.setLayoutParams(new LinearLayout.LayoutParams(120, 120));
 			imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
-			imageView.setImageResource(getResourceID(product
-					.getProductImagePath()));
+			imageView.setImageResource(getResourceID(product.getProductImagePath()));
 
-			TextView textView = (TextView) convertView
-					.findViewById(R.id.filename);
+			TextView textView = (TextView) convertView.findViewById(R.id.filename);
 			textView.setPadding(10, 0, 0, 0);
 			textView.setText("Price");
 
-			TextView priceView = (TextView) convertView
-					.findViewById(R.id.price);
+			TextView priceView = (TextView) convertView.findViewById(R.id.price);
 			priceView.setPadding(10, 0, 0, 0);
 			priceView.setText("Initial Cost");
 
@@ -113,15 +107,13 @@ public class CategoryDetailFragment extends ListFragment {
 					.findViewById(R.id.numberOfSales);
 			numberOfSalesText.setProduct(product);
 			numberOfSalesText.setInputType(InputType.TYPE_CLASS_NUMBER);
-			numberOfSalesText.addTextChangedListener(new NumberOfSalesWatcher(
-					numberOfSalesText));
+			numberOfSalesText.addTextChangedListener(new NumberOfSalesWatcher(numberOfSalesText));
 
 			return convertView;
 		}
 
 		private int getResourceID(String fileName) {
-			int resID = getResources().getIdentifier(fileName, "drawable",
-					"com.ricoh.pos");
+			int resID = getResources().getIdentifier(fileName, "drawable", "com.ricoh.pos");
 			return resID;
 		}
 	}
@@ -140,18 +132,15 @@ public class CategoryDetailFragment extends ListFragment {
 		}
 
 		@Override
-		public void beforeTextChanged(CharSequence s, int start, int count,
-				int after) {
+		public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 			// TODO Auto-generated method stub
 
 		}
 
 		@Override
-		public void onTextChanged(CharSequence s, int start, int before,
-				int count) {
+		public void onTextChanged(CharSequence s, int start, int before, int count) {
 			Product product = productEditView.getProduct();
-			registerManager
-					.updateOrder(product, Integer.parseInt(s.toString()));
+			registerManager.updateOrder(product, Integer.parseInt(s.toString()));
 		}
 
 	}
