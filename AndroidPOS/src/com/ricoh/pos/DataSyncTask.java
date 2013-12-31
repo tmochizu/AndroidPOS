@@ -2,6 +2,9 @@ package com.ricoh.pos;
 
 import java.io.BufferedReader;
 
+import com.ricoh.pos.model.IOManager;
+import com.ricoh.pos.model.ProductsManager;
+
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.res.AssetManager;
@@ -14,17 +17,19 @@ public class DataSyncTask extends AsyncTask<String, Void, AsyncTaskResult<String
 	DataSyncTaskCallback callback;
 	Context context;
 	ProgressDialog progressDialog;
-	IOManager wsIOManager;
+	IOManager womanShopIOManager;
 	SQLiteDatabase database;
+	ProductsManager productsManager;
 
 	public DataSyncTask(Context context,
 			DataSyncTaskCallback callback,
-			IOManager wsIOManager,
+			IOManager womanShopIOManager,
 			SQLiteDatabase database) {
 		this.callback = callback;
 		this.context = context;
-		this.wsIOManager = wsIOManager;
+		this.womanShopIOManager = womanShopIOManager;
 		this.database = database;
+		this.productsManager = ProductsManager.getInstance();
 	}
 	
 	@Override
@@ -47,16 +52,22 @@ public class DataSyncTask extends AsyncTask<String, Void, AsyncTaskResult<String
 			Log.d("debug", "SyncButton click");
 
 			AssetManager assetManager = context.getResources().getAssets();
-			BufferedReader bufferReader = wsIOManager
+			BufferedReader bufferReader = womanShopIOManager
 					.importCSVfromAssets(assetManager);
 			if (bufferReader == null) {
 				Log.d("debug", "File not found");
 				return AsyncTaskResult.createErrorResult(R.string.sd_import_error);
 			}
-			wsIOManager.insertRecords(database, bufferReader);
+			womanShopIOManager.insertRecords(database, bufferReader);
 
 			// TODO: Read test
-			Log.d("debug", wsIOManager.searchByID(database, 20));
+			Log.d("debug", womanShopIOManager.searchByID(database, 20));
+			
+			String[] results = womanShopIOManager.searchAlldata(database);
+			for (String result : results) {
+				Log.d("debug", result);
+			}
+			productsManager.updateProducts(results);
 		} catch (Exception e) {
 			//TODO: Should separate exception(Import, Export, at least)
 			return AsyncTaskResult.createErrorResult(R.string.sd_import_error);
