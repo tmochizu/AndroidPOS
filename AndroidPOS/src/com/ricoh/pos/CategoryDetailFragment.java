@@ -97,11 +97,11 @@ public class CategoryDetailFragment extends ListFragment {
 
 			TextView textView = (TextView) convertView.findViewById(R.id.filename);
 			textView.setPadding(10, 0, 0, 0);
-			textView.setText("Price");
+			textView.setText(R.string.title_price);
 
 			TextView priceView = (TextView) convertView.findViewById(R.id.price);
 			priceView.setPadding(10, 0, 0, 0);
-			priceView.setText("Initial Cost");
+			priceView.setText(R.string.title_initial_cost);
 
 			ProductEditText numberOfSalesText = (ProductEditText) convertView
 					.findViewById(R.id.numberOfSales);

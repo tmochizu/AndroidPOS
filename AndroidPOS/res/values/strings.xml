@@ -11,5 +11,7 @@
     <string name="sd_import_error">Failed to import from SD!</string>
     <string name="sd_export_error">Failed to export to SD!</string>
     <string name="dialog_data_syncro_message">Synchronizing, please wait...</string>
+    <string name="title_price">Price</string>
+    <string name="title_initial_cost">Initial Cost</string>
 
 </resources>

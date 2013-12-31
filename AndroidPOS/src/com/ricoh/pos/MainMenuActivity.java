@@ -1,7 +1,5 @@
 package com.ricoh.pos;
 
-import com.ricoh.pos.model.WSIOManager;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
@@ -12,7 +10,9 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Toast;
 
-public class MainMenuActivity extends Activity implements DataSyncTaskCallback{
+import com.ricoh.pos.model.WomanShopIOManager;
+
+public class MainMenuActivity extends Activity implements DataSyncTaskCallback {
 
 	private DatabaseHelper databaseHelper;
 	public static SQLiteDatabase database;
@@ -25,35 +25,29 @@ public class MainMenuActivity extends Activity implements DataSyncTaskCallback{
 		databaseHelper = new DatabaseHelper(this);
 		database = databaseHelper.getWritableDatabase();
 
-		findViewById(R.id.RegisterButton).setOnClickListener(
-				new OnClickListener() {
-					@Override
-					public void onClick(View v) {
-						Intent intent = new Intent().setClass(
-								MainMenuActivity.this,
-								CategoryListActivity.class);
-						startActivity(intent);
-					}
-				});
+		findViewById(R.id.RegisterButton).setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Intent intent = new Intent().setClass(MainMenuActivity.this,
+						CategoryListActivity.class);
+				startActivity(intent);
+			}
+		});
 
-		findViewById(R.id.SalesButton).setOnClickListener(
-				new OnClickListener() {
-					@Override
-					public void onClick(View v) {
-						Intent intent = new Intent().setClass(
-								MainMenuActivity.this,
-								SalesCalenderActivity.class);
-						startActivity(intent);
-					}
-				});
+		findViewById(R.id.SalesButton).setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Intent intent = new Intent().setClass(MainMenuActivity.this,
+						SalesCalenderActivity.class);
+				startActivity(intent);
+			}
+		});
 
 		findViewById(R.id.SyncButton).setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				DataSyncTask syncTask = new DataSyncTask(MainMenuActivity.this,
-						MainMenuActivity.this,
-						new WSIOManager(),
-						database);
+						MainMenuActivity.this, new WomanShopIOManager(), database);
 				syncTask.execute();
 			}
 		});

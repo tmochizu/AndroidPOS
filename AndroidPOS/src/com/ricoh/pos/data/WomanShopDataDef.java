@@ -1,6 +1,6 @@
 package com.ricoh.pos.data;
 
-public enum WSDataDef {
+public enum WomanShopDataDef {
 	S_NO,
 	PRODUCT_ID,
 	CATEGORY,

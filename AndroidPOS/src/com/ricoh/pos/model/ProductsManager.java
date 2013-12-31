@@ -6,7 +6,7 @@ import java.util.HashMap;
 import android.util.Log;
 
 import com.ricoh.pos.data.Product;
-import com.ricoh.pos.data.WSDataDef;
+import com.ricoh.pos.data.WomanShopDataDef;
 
 public class ProductsManager {
 
@@ -24,18 +24,18 @@ public class ProductsManager {
 		return instance;
 	}
 
-	public void createProducts(String[] results) {
+	public void updateProducts(String[] results) {
 		for (String result : results) {
 			String delims = "[:]+";
 			String[] fieldData = result.split(delims);
-			Product product = new Product(fieldData[WSDataDef.CATEGORY.ordinal()],
-					fieldData[WSDataDef.PRODUCT_NAME.ordinal()]);
+			Product product = new Product(fieldData[WomanShopDataDef.CATEGORY.ordinal()],
+					fieldData[WomanShopDataDef.PRODUCT_NAME.ordinal()]);
 
-			Log.d("debug", fieldData[WSDataDef.CATEGORY.ordinal()] + ":"
-					+ fieldData[WSDataDef.PRODUCT_NAME.ordinal()]);
+			Log.d("debug", fieldData[WomanShopDataDef.CATEGORY.ordinal()] + ":"
+					+ fieldData[WomanShopDataDef.PRODUCT_NAME.ordinal()]);
 
-			product.setProductImagePath(fieldData[WSDataDef.PRODUCT_NAME.ordinal()]);
-			addNewProductInCategory(fieldData[WSDataDef.CATEGORY.ordinal()], product);
+			product.setProductImagePath(fieldData[WomanShopDataDef.PRODUCT_NAME.ordinal()]);
+			addNewProductInCategory(fieldData[WomanShopDataDef.CATEGORY.ordinal()], product);
 		}
 	}
 
@@ -53,8 +53,8 @@ public class ProductsManager {
 			ArrayList<Product> produtcsInCategory = productsMap.get(category);
 			for (Product registeredProduct : produtcsInCategory) {
 				if (registeredProduct.getName().equals(product.getName())) {
-					throw new IllegalArgumentException(
-							"The passing product has already been registered");
+					// TODO: Should update data
+					return;
 				}
 			}
 			produtcsInCategory.add(product);
