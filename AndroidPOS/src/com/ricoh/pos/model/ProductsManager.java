@@ -34,7 +34,7 @@ public class ProductsManager {
 			Log.d("debug", fieldData[WomanShopDataDef.CATEGORY.ordinal()] + ":"
 					+ fieldData[WomanShopDataDef.PRODUCT_NAME.ordinal()]);
 
-			product.setProductImagePath(fieldData[WomanShopDataDef.PRODUCT_NAME.ordinal()]);
+			product.setProductImagePath("product" + fieldData[WomanShopDataDef.PRODUCT_ID.ordinal()]);
 			addNewProductInCategory(fieldData[WomanShopDataDef.CATEGORY.ordinal()], product);
 		}
 	}
