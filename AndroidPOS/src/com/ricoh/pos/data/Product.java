@@ -4,8 +4,8 @@ public class Product {
 	
 	private String category;
 	private String name;
-	private int originalCost;
-	private int price;
+	private double originalCost;
+	private double price;
 	private int stock;
 	private String imagePath;
 	
@@ -17,7 +17,7 @@ public class Product {
 	///////////////////////////
 	// Setter
 	///////////////////////////
-	public void setOriginalCost(int cost){
+	public void setOriginalCost(double cost){
 		
 		if (cost <= 0) {
 			throw new IllegalArgumentException("Original cost should be over zero");
@@ -66,11 +66,11 @@ public class Product {
 		return this.name;
 	}
 	
-	public int getOriginalCost(){
+	public double getOriginalCost(){
 		return this.originalCost;
 	}
 	
-	public int getPrice(){
+	public double getPrice(){
 		return this.price;
 	}
 	
