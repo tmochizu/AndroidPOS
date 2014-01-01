@@ -56,7 +56,8 @@ public class WomanShopIOManager implements IOManager {
 				contentValue.put(WomanShopDataDef.TAX_TYPE.name(), fields[8]);
 				contentValue.put(WomanShopDataDef.TAX_PERCENTAGE.name(), fields[9]);
 
-				database.insert(DATABASE_NAME, null, contentValue);
+				database.insertWithOnConflict(DATABASE_NAME, null, contentValue,
+						SQLiteDatabase.CONFLICT_REPLACE);
 			}
 		} catch (IOException e) {
 			Log.d("debug", "" + e + "");

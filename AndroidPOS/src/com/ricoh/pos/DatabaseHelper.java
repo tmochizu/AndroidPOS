@@ -16,7 +16,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	@Override
 	public void onCreate(SQLiteDatabase db) {
 		db.execSQL("Create Table Products (" + "_id Integer Primary Key, " + WomanShopDataDef.S_NO.name()
-				+ " Integer, " + WomanShopDataDef.PRODUCT_ID.name() + " Integer, "
+				+ " Integer UNIQUE, " + WomanShopDataDef.PRODUCT_ID.name() + " Integer, "
 				+ WomanShopDataDef.CATEGORY.name() + " Text, " + WomanShopDataDef.OFFICE_NAME.name() + " Text, "
 				+ WomanShopDataDef.PRODUCT_NAME.name() + " Text, " + WomanShopDataDef.PRICE_PIECE.name()
 				+ " Real, " + WomanShopDataDef.NO_OF_PIECES.name() + " Integer, "
