@@ -97,6 +97,10 @@ public class CategoryDetailFragment extends ListFragment {
 
 			TextView textView = (TextView) convertView.findViewById(R.id.filename);
 			textView.setPadding(10, 0, 0, 0);
+			String productName = product.getName();
+			if (productName == null || productName.length() == 0) {
+				throw new NullPointerException("Product name is not valid");
+			}
 			textView.setText(product.getName());
 
 			TextView priceView = (TextView) convertView.findViewById(R.id.price);
