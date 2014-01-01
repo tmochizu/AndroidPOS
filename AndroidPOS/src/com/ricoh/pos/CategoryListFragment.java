@@ -7,7 +7,8 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-import com.ricoh.pos.dummy.DummyContent;
+import com.ricoh.pos.data.WomanShopContent;
+import com.ricoh.pos.model.ProductsManager;
 
 /**
  * A list fragment representing a list of Products. This fragment also supports
@@ -36,6 +37,8 @@ public class CategoryListFragment extends ListFragment {
 	 * The current activated item position. Only used on tablets.
 	 */
 	private int mActivatedPosition = ListView.INVALID_POSITION;
+
+	private WomanShopContent womanShopContent = new WomanShopContent();
 
 	/**
 	 * A callback interface that all activities containing this fragment must
@@ -70,10 +73,11 @@ public class CategoryListFragment extends ListFragment {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
+		womanShopContent.RegisterCategory(ProductsManager.getInstance().getAllCategoryName());
 		// TODO: replace with a real list adapter.
-		setListAdapter(new ArrayAdapter<DummyContent.DummyItem>(getActivity(),
-				android.R.layout.simple_list_item_activated_1,
-				android.R.id.text1, DummyContent.ITEMS));
+		setListAdapter(new ArrayAdapter<WomanShopContent.WomanShopItem>(getActivity(),
+				android.R.layout.simple_list_item_activated_1, android.R.id.text1,
+				womanShopContent.ITEMS));
 	}
 
 	@Override
@@ -81,34 +85,31 @@ public class CategoryListFragment extends ListFragment {
 		super.onViewCreated(view, savedInstanceState);
 
 		// Restore the previously serialized activated item position.
-		if (savedInstanceState != null
-				&& savedInstanceState.containsKey(STATE_ACTIVATED_POSITION)) {
-			setActivatedPosition(savedInstanceState
-					.getInt(STATE_ACTIVATED_POSITION));
+		if (savedInstanceState != null && savedInstanceState.containsKey(STATE_ACTIVATED_POSITION)) {
+			setActivatedPosition(savedInstanceState.getInt(STATE_ACTIVATED_POSITION));
 		}
-		
+
 	}
 
 	@Override
-	public void onStart(){
+	public void onStart() {
 		super.onStart();
 
 		// Select top of category
 		getListView().setItemChecked(0, true);
 	}
-	
+
 	@Override
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
 
 		// Activities containing this fragment must implement its callbacks.
 		if (!(activity instanceof Callbacks)) {
-			throw new IllegalStateException(
-					"Activity must implement fragment's callbacks.");
+			throw new IllegalStateException("Activity must implement fragment's callbacks.");
 		}
 
 		mCallbacks = (Callbacks) activity;
-		
+
 	}
 
 	@Override
@@ -120,13 +121,12 @@ public class CategoryListFragment extends ListFragment {
 	}
 
 	@Override
-	public void onListItemClick(ListView listView, View view, int position,
-			long id) {
+	public void onListItemClick(ListView listView, View view, int position, long id) {
 		super.onListItemClick(listView, view, position, id);
 
 		// Notify the active callbacks interface (the activity, if the
 		// fragment is attached to one) that an item has been selected.
-		mCallbacks.onItemSelected(DummyContent.ITEMS.get(position).id);
+		mCallbacks.onItemSelected(womanShopContent.ITEMS.get(position).id);
 	}
 
 	@Override
@@ -146,8 +146,7 @@ public class CategoryListFragment extends ListFragment {
 		// When setting CHOICE_MODE_SINGLE, ListView will automatically
 		// give items the 'activated' state when touched.
 		getListView().setChoiceMode(
-				activateOnItemClick ? ListView.CHOICE_MODE_SINGLE
-						: ListView.CHOICE_MODE_NONE);
+				activateOnItemClick ? ListView.CHOICE_MODE_SINGLE : ListView.CHOICE_MODE_NONE);
 	}
 
 	private void setActivatedPosition(int position) {

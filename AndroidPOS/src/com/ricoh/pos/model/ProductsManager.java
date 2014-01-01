@@ -34,7 +34,8 @@ public class ProductsManager {
 			Log.d("debug", fieldData[WomanShopDataDef.CATEGORY.ordinal()] + ":"
 					+ fieldData[WomanShopDataDef.PRODUCT_NAME.ordinal()]);
 
-			product.setProductImagePath("product" + fieldData[WomanShopDataDef.PRODUCT_ID.ordinal()]);
+			product.setProductImagePath("product"
+					+ fieldData[WomanShopDataDef.PRODUCT_ID.ordinal()]);
 			addNewProductInCategory(fieldData[WomanShopDataDef.CATEGORY.ordinal()], product);
 		}
 	}
@@ -136,6 +137,19 @@ public class ProductsManager {
 		} else {
 			return productsMap.get(category).size();
 		}
+	}
+
+	public String[] getAllCategoryName() {
+		String[] results = new String[getCategoryCount()];
+		int i = 0;
+		for (HashMap.Entry<String, ArrayList<Product>> keyValue : productsMap.entrySet()) {
+			results[i++] = keyValue.getKey();
+		}
+		return results;
+	}
+
+	private int getCategoryCount() {
+		return productsMap.entrySet().size();
 	}
 
 }
