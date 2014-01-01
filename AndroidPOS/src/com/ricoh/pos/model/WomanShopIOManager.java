@@ -42,19 +42,13 @@ public class WomanShopIOManager implements IOManager {
 
 			String record;
 			while ((record = bufferReader.readLine()) != null) {
-				String[] fields = record.split(",");
-				Log.d("debug", "S No." + fields[0]);
-
-				contentValue.put(WomanShopDataDef.S_NO.name(), fields[0]);
-				contentValue.put(WomanShopDataDef.PRODUCT_ID.name(), fields[1]);
-				contentValue.put(WomanShopDataDef.CATEGORY.name(), fields[2]);
-				contentValue.put(WomanShopDataDef.OFFICE_NAME.name(), fields[3]);
-				contentValue.put(WomanShopDataDef.PRODUCT_NAME.name(), fields[4]);
-				contentValue.put(WomanShopDataDef.PRICE_PIECE.name(), fields[5]);
-				contentValue.put(WomanShopDataDef.NO_OF_PIECES.name(), fields[6]);
-				contentValue.put(WomanShopDataDef.PRICE_BOX.name(), fields[7]);
-				contentValue.put(WomanShopDataDef.TAX_TYPE.name(), fields[8]);
-				contentValue.put(WomanShopDataDef.TAX_PERCENTAGE.name(), fields[9]);
+				String[] fieldValues = record.split(",");
+				Log.d("debug", "S No." + fieldValues[0]);
+				
+				int i = 0;
+				for (WomanShopDataDef field : WomanShopDataDef.values()) {
+					contentValue.put(field.name(), fieldValues[i++]);
+				}
 
 				database.insertWithOnConflict(DATABASE_NAME, null, contentValue,
 						SQLiteDatabase.CONFLICT_REPLACE);
