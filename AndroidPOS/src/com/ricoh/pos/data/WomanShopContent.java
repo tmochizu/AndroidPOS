@@ -36,8 +36,14 @@ public class WomanShopContent {
 	 *            all category name
 	 */
 	public void RegisterCategory(String[] categoryNames) {
+		if (categoryNames == null) {
+			throw new IllegalArgumentException("Passing categoryNames is null.");
+		}
 		addItem(new WomanShopItem("ALL", "ALL"));
 		for (String categoryName : categoryNames) {
+			if (categoryName == null) {
+				throw new IllegalArgumentException("Passing categoryName is null.");
+			}
 			addItem(new WomanShopItem(categoryName, categoryName));
 		}
 

@@ -74,7 +74,6 @@ public class CategoryListFragment extends ListFragment {
 		super.onCreate(savedInstanceState);
 
 		womanShopContent.RegisterCategory(ProductsManager.getInstance().getAllCategoryName());
-		// TODO: replace with a real list adapter.
 		setListAdapter(new ArrayAdapter<WomanShopContent.WomanShopItem>(getActivity(),
 				android.R.layout.simple_list_item_activated_1, android.R.id.text1,
 				womanShopContent.ITEMS));
