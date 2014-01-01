@@ -30,6 +30,10 @@ public class Order {
 	}
 	
 	public void setNumberOfOrder(int num){
+		if (num < 0) {
+			 throw new IllegalArgumentException("Number of order should be positive");
+		}
+		
 		this.num = num;
 	}
 	
@@ -37,6 +41,10 @@ public class Order {
 		return num;
 	}
 
+	public String getProductCategory(){
+		 return product.getCategory();
+	}
+	
 	public String getProductName(){
 		return product.getName();
 	}

@@ -11,11 +11,13 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.ricoh.pos.data.Order;
 import com.ricoh.pos.data.Product;
 import com.ricoh.pos.model.ProductsManager;
 import com.ricoh.pos.model.RegisterManager;
@@ -55,6 +57,8 @@ public class CategoryDetailFragment extends ListFragment {
 
 		productList = ProductsManager.getInstance().getProductsInCategory(category);
 		setListAdapter(new ListAdapter(getActivity()));
+		
+		getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
 	}
 
 	public class ListAdapter extends BaseAdapter {
@@ -108,6 +112,14 @@ public class CategoryDetailFragment extends ListFragment {
 			numberOfSalesText.setProduct(product);
 			numberOfSalesText.setInputType(InputType.TYPE_CLASS_NUMBER);
 			numberOfSalesText.addTextChangedListener(new NumberOfSalesWatcher(numberOfSalesText));
+			
+			Order order = registerManager.findOrderOfTheProduct(product);
+			if (order == null) {
+				numberOfSalesText.getEditableText().clear();
+			 } else {
+				 int numberOfSales = order.getNumberOfOrder();
+				 numberOfSalesText.setText(String.valueOf(numberOfSales));
+			 }
 
 			return convertView;
 		}
@@ -139,8 +151,10 @@ public class CategoryDetailFragment extends ListFragment {
 
 		@Override
 		public void onTextChanged(CharSequence s, int start, int before, int count) {
-			Product product = productEditView.getProduct();
-			registerManager.updateOrder(product, Integer.parseInt(s.toString()));
+			if (s.length() > 0) {
+				Product product = productEditView.getProduct();
+				registerManager.updateOrder(product, Integer.parseInt(s.toString()));
+			}
 		}
 
 	}
