@@ -24,8 +24,8 @@ public class RegisterManager {
 		}
 	}
 	
-	public int getTotalAmount(){
-		int totalAmount = 0;
+	public double getTotalAmount(){
+		double totalAmount = 0;
 		for (Order order: orderList) {
 			totalAmount += order.getTotalAmount();
 		}

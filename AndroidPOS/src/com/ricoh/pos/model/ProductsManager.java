@@ -36,6 +36,8 @@ public class ProductsManager {
 
 			product.setProductImagePath("product"
 					+ fieldData[WomanShopDataDef.PRODUCT_ID.ordinal()]);
+			product.setOriginalCost(Double.parseDouble(fieldData[WomanShopDataDef.PRICE_PIECE
+					.ordinal()]));
 			addNewProductInCategory(fieldData[WomanShopDataDef.CATEGORY.ordinal()], product);
 		}
 	}
@@ -144,7 +146,7 @@ public class ProductsManager {
 		if (categiryCount <= 0) {
 			throw new NegativeArraySizeException("Category does not exist: " + categiryCount);
 		}
-		
+
 		String[] results = new String[getCategoryCount()];
 		int i = 0;
 		for (HashMap.Entry<String, ArrayList<Product>> keyValue : productsMap.entrySet()) {

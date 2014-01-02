@@ -41,7 +41,7 @@ public class Order {
 		return product.getName();
 	}
 	
-	public int getTotalAmount(){
+	public double getTotalAmount(){
 		return product.getPrice() * num;
 	}
 	
