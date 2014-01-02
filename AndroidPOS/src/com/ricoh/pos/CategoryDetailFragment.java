@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.inputmethod.EditorInfo;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -45,7 +46,7 @@ public class CategoryDetailFragment extends ListFragment {
 	 * fragment (e.g. upon screen orientation changes).
 	 */
 	public CategoryDetailFragment() {
-		this.registerManager = new RegisterManager();
+		this.registerManager = RegisterManager.getInstance();
 	}
 
 	@Override
@@ -111,6 +112,7 @@ public class CategoryDetailFragment extends ListFragment {
 					.findViewById(R.id.numberOfSales);
 			numberOfSalesText.setProduct(product);
 			numberOfSalesText.setInputType(InputType.TYPE_CLASS_NUMBER);
+			numberOfSalesText.setImeOptions(EditorInfo.IME_ACTION_DONE);
 			numberOfSalesText.addTextChangedListener(new NumberOfSalesWatcher(numberOfSalesText));
 			
 			Order order = registerManager.findOrderOfTheProduct(product);

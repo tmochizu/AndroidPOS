@@ -7,10 +7,20 @@ import com.ricoh.pos.data.Order;
 
 public class RegisterManager {
 	
+	private static RegisterManager instance;
+	
 	private ArrayList<Order> orderList;
 	
-	public RegisterManager(){
+	private RegisterManager(){
 		orderList = new ArrayList<Order>();
+	}
+	
+	public static RegisterManager getInstance(){
+		if (instance == null) {
+			return new RegisterManager();
+		} else {
+			return instance;
+		}
 	}
 	
 	public void updateOrder(Product product, int num){
