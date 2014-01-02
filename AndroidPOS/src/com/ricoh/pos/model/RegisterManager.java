@@ -11,16 +11,18 @@ public class RegisterManager {
 	
 	private ArrayList<Order> orderList;
 	
+	private UpdateOrderListener listener;
+	
 	private RegisterManager(){
 		orderList = new ArrayList<Order>();
 	}
 	
 	public static RegisterManager getInstance(){
 		if (instance == null) {
-			return new RegisterManager();
-		} else {
-			return instance;
+			instance = new RegisterManager();
 		}
+		
+		return instance;
 	}
 	
 	public void updateOrder(Product product, int num){
@@ -31,6 +33,14 @@ public class RegisterManager {
 			orderList.add(newOrder);
 		} else {
 			orderOfTheProduct.setNumberOfOrder(num);
+		}
+		
+		notifyUpdateOrder();
+	}
+	
+	private void notifyUpdateOrder(){
+		if (this.listener != null) {
+			listener.notifyUpdateOrder(getTotalAmount());
 		}
 	}
 	
@@ -56,6 +66,9 @@ public class RegisterManager {
 		return null;
 	}
 	
+	public void setListener(UpdateOrderListener listener){
+		this.listener = listener;
+	}
 
 
 }

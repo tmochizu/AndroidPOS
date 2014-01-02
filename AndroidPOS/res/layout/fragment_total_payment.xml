@@ -13,6 +13,13 @@
         android:textAlignment="center"
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
+	<TextView
+        android:id="@+id/totalPaymentView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+    
     <Button
         android:id="@+id/button1"
         android:layout_width="match_parent"

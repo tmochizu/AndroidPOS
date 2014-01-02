@@ -110,7 +110,7 @@ public class CategoryDetailFragment extends ListFragment {
 
 			TextView priceView = (TextView) convertView.findViewById(R.id.price);
 			priceView.setPadding(10, 0, 0, 0);
-			priceView.setText(String.valueOf(product.getOriginalCost()));
+			priceView.setText(String.valueOf(product.getPrice()));
 
 			ProductEditText numberOfSalesText = (ProductEditText) convertView
 					.findViewById(R.id.numberOfSales);
@@ -120,7 +120,7 @@ public class CategoryDetailFragment extends ListFragment {
 			numberOfSalesText.addTextChangedListener(new NumberOfSalesWatcher(numberOfSalesText));
 			
 			Order order = registerManager.findOrderOfTheProduct(product);
-			if (order == null) {
+			if (order == null || order.getNumberOfOrder() == 0) {
 				numberOfSalesText.getEditableText().clear();
 			 } else {
 				 int numberOfSales = order.getNumberOfOrder();
@@ -157,8 +157,11 @@ public class CategoryDetailFragment extends ListFragment {
 
 		@Override
 		public void onTextChanged(CharSequence s, int start, int before, int count) {
-			if (s.length() > 0) {
-				Product product = productEditView.getProduct();
+
+			Product product = productEditView.getProduct();
+			if (s.length() == 0) {
+				registerManager.updateOrder(product, 0);
+			} else {
 				registerManager.updateOrder(product, Integer.parseInt(s.toString()));
 			}
 		}

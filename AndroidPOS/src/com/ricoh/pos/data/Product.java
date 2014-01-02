@@ -36,7 +36,7 @@ public class Product {
 		this.originalCost = cost;
 	}
 
-	public void setPrice(int price) {
+	public void setPrice(double price) {
 
 		if (price <= 0) {
 			throw new IllegalArgumentException("Price should be over zero");

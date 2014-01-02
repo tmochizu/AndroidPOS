@@ -36,7 +36,7 @@ public class ProductsManager {
 
 			product.setProductImagePath("product"
 					+ fieldData[WomanShopDataDef.PRODUCT_ID.ordinal()]);
-			product.setOriginalCost(Double.parseDouble(fieldData[WomanShopDataDef.PRICE_PIECE
+			product.setPrice(Double.parseDouble(fieldData[WomanShopDataDef.PRICE_PIECE
 					.ordinal()]));
 			addNewProductInCategory(fieldData[WomanShopDataDef.CATEGORY.ordinal()], product);
 		}
