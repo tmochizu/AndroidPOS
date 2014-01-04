@@ -39,9 +39,12 @@ public class RegisterManager {
 	}
 	
 	private void notifyUpdateOrder(){
-		if (this.listener != null) {
-			listener.notifyUpdateOrder(getTotalAmount());
+		
+		if (this.listener == null) {
+			throw new IllegalStateException("UpdateOrderListener is not resgistered");
 		}
+		
+		listener.notifyUpdateOrder(getTotalAmount());
 	}
 	
 	public double getTotalAmount(){
@@ -66,8 +69,12 @@ public class RegisterManager {
 		return null;
 	}
 	
-	public void setListener(UpdateOrderListener listener){
+	public void setUpdateOrderListener(UpdateOrderListener listener){
 		this.listener = listener;
+	}
+	
+	public void clearUpdateOrderListener(){
+		this.listener = null;
 	}
 
 
