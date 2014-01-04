@@ -90,7 +90,7 @@ public class DiscountListFragment extends ListFragment {
 		public View getView(int position, View convertView, ViewGroup parent) {
 
 			if (convertView == null) {
-				convertView = inflater.inflate(R.layout.row, null);
+				convertView = inflater.inflate(R.layout.discount_product_row, null);
 			}
 
 			Product product = productList.get(position);
@@ -111,21 +111,13 @@ public class DiscountListFragment extends ListFragment {
 			TextView priceView = (TextView) convertView.findViewById(R.id.price);
 			priceView.setPadding(10, 0, 0, 0);
 			priceView.setText(String.valueOf(product.getPrice()));
-
-			ProductEditText numberOfSalesText = (ProductEditText) convertView
-					.findViewById(R.id.numberOfSales);
-			numberOfSalesText.setProduct(product);
-			numberOfSalesText.setInputType(InputType.TYPE_CLASS_NUMBER);
-			numberOfSalesText.setImeOptions(EditorInfo.IME_ACTION_DONE);
-			numberOfSalesText.addTextChangedListener(new NumberOfSalesWatcher(numberOfSalesText));
 			
-			Order order = registerManager.findOrderOfTheProduct(product);
-			if (order == null || order.getNumberOfOrder() == 0) {
-				numberOfSalesText.getEditableText().clear();
-			 } else {
-				 int numberOfSales = order.getNumberOfOrder();
-				 numberOfSalesText.setText(String.valueOf(numberOfSales));
-			 }
+			ProductEditText discountValueText = (ProductEditText) convertView
+					.findViewById(R.id.discountValue);
+			discountValueText.setProduct(product);
+			discountValueText.setInputType(InputType.TYPE_CLASS_NUMBER);
+			discountValueText.setImeOptions(EditorInfo.IME_ACTION_DONE);
+			discountValueText.addTextChangedListener(new DiscountValueWatcher(discountValueText));
 
 			return convertView;
 		}
@@ -136,11 +128,11 @@ public class DiscountListFragment extends ListFragment {
 		}
 	}
 
-	public class NumberOfSalesWatcher implements TextWatcher {
+	public class DiscountValueWatcher implements TextWatcher {
 
 		private ProductEditText productEditView;
 
-		public NumberOfSalesWatcher(ProductEditText view) {
+		public DiscountValueWatcher(ProductEditText view) {
 			this.productEditView = view;
 		}
 
@@ -157,13 +149,7 @@ public class DiscountListFragment extends ListFragment {
 
 		@Override
 		public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-			Product product = productEditView.getProduct();
-			if (s.length() == 0) {
-				registerManager.updateOrder(product, 0);
-			} else {
-				registerManager.updateOrder(product, Integer.parseInt(s.toString()));
-			}
+			// TODO: implement
 		}
 
 	}

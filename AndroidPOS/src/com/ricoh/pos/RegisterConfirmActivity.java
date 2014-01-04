@@ -8,7 +8,7 @@ public class RegisterConfirmActivity extends FragmentActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_confirm);
+		setContentView(R.layout.activity_register_confirm);
 		if (findViewById(R.id.discount_list_container) != null) {
 			// add CategoryDetailFragment
 			Bundle arguments = new Bundle();
