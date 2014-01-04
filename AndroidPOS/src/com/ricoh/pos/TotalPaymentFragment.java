@@ -40,7 +40,7 @@ public class TotalPaymentFragment extends Fragment implements UpdateOrderListene
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View v = inflater.inflate(R.layout.fragment_total_payment, container, false);
 
-		Button ok_button = (Button) v.findViewById(R.id.total_payment_ok_button);
+		Button ok_button = (Button) v.findViewById(R.id.ok_button);
 		ok_button.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {

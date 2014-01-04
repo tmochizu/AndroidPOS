@@ -3,7 +3,8 @@ package com.ricoh.pos;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 
-public class RegisterConfirmActivity extends FragmentActivity {
+public class RegisterConfirmActivity extends FragmentActivity
+	implements TotalPaymentFragment.OnOkButtonClickListener{
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -18,10 +19,15 @@ public class RegisterConfirmActivity extends FragmentActivity {
 			getSupportFragmentManager().beginTransaction()
 			.replace(R.id.discount_list_container, fragment).commit();
 
-			// add RegisterConfirmFragment
-			RegisterConfirmFragment confirmFragment = new RegisterConfirmFragment();
+			// add TotalPaymentFragment
+			TotalPaymentFragment totalPaymentFragment = new TotalPaymentFragment();
 			getSupportFragmentManager().beginTransaction()
-			.replace(R.id.confirm_container, confirmFragment).commit();
+			.replace(R.id.total_payment_container, totalPaymentFragment).commit();
 		}
+	}
+
+	@Override
+	public void onOkClicked() {
+		//TODO: Not implemented
 	}
 }
