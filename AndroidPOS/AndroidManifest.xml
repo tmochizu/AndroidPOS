@@ -42,6 +42,9 @@
             android:name="com.ricoh.pos.TotalPaymentActivity"
             android:label="@string/title_total_payment" >
         </activity>
+        <activity
+            android:name="com.ricoh.pos.RegisterConfirmActivity" >
+        </activity>
     </application>
 
 </manifest>
