@@ -11,16 +11,18 @@ public class RegisterManager {
 	
 	private ArrayList<Order> orderList;
 	
+	private UpdateOrderListener listener;
+	
 	private RegisterManager(){
 		orderList = new ArrayList<Order>();
 	}
 	
 	public static RegisterManager getInstance(){
 		if (instance == null) {
-			return new RegisterManager();
-		} else {
-			return instance;
+			instance = new RegisterManager();
 		}
+		
+		return instance;
 	}
 	
 	public void updateOrder(Product product, int num){
@@ -32,6 +34,17 @@ public class RegisterManager {
 		} else {
 			orderOfTheProduct.setNumberOfOrder(num);
 		}
+		
+		notifyUpdateOrder();
+	}
+	
+	private void notifyUpdateOrder(){
+		
+		if (this.listener == null) {
+			throw new IllegalStateException("UpdateOrderListener is not resgistered");
+		}
+		
+		listener.notifyUpdateOrder(getTotalAmount());
 	}
 	
 	public double getTotalAmount(){
@@ -56,6 +69,13 @@ public class RegisterManager {
 		return null;
 	}
 	
+	public void setUpdateOrderListener(UpdateOrderListener listener){
+		this.listener = listener;
+	}
+	
+	public void clearUpdateOrderListener(){
+		this.listener = null;
+	}
 
 
 }

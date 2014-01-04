@@ -3,7 +3,7 @@ package com.ricoh.pos;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 
-public class TotalPaymentActivity extends FragmentActivity {
+public class TotalPaymentActivity extends FragmentActivity{
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -33,5 +33,5 @@ public class TotalPaymentActivity extends FragmentActivity {
 		
 		// TODO: If exposing deep links into your app, handle intents here.
 	}
-	
+
 }
