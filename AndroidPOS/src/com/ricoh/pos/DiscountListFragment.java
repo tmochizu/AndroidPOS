@@ -79,6 +79,7 @@ public class DiscountListFragment extends ListFragment {
 
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
+			// TODO: Not implement
 
 			if (convertView == null) {
 				convertView = inflater.inflate(R.layout.discount_product_row, null);
@@ -121,22 +122,22 @@ public class DiscountListFragment extends ListFragment {
 
 	public class DiscountValueWatcher implements TextWatcher {
 		public DiscountValueWatcher(ProductEditText view) {
-			// TODO: implement
+			// TODO: Not implement
 		}
 
 		@Override
 		public void afterTextChanged(Editable s) {
-			// TODO: implement
+			// TODO: Not implement
 		}
 
 		@Override
 		public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-			// TODO: implement
+			// TODO: Not implement
 		}
 
 		@Override
 		public void onTextChanged(CharSequence s, int start, int before, int count) {
-			// TODO: implement
+			// TODO: Not implement
 		}
 
 	}
