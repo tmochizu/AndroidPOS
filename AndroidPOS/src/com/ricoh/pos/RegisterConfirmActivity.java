@@ -10,14 +10,11 @@ public class RegisterConfirmActivity extends FragmentActivity
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_register_confirm);
-		if (findViewById(R.id.discount_list_container) != null) {
-			// add DiscountListFragment
-			Bundle arguments = new Bundle();
-			arguments.putString(DiscountListFragment.ARG_ITEM_ID, getString(R.string.category_title_default));
-			DiscountListFragment fragment = new DiscountListFragment();
-			fragment.setArguments(arguments);
+		if (findViewById(R.id.order_list_container) != null) {
+			// add OrderListFragment
+			OrderListFragment fragment = new OrderListFragment();
 			getSupportFragmentManager().beginTransaction()
-			.replace(R.id.discount_list_container, fragment).commit();
+			.replace(R.id.order_list_container, fragment).commit();
 
 			// add RegisterConfirmFragment
 			RegisterConfirmFragment registerConfirmFragment = new RegisterConfirmFragment();

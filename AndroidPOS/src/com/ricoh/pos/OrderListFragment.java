@@ -24,7 +24,7 @@ import com.ricoh.pos.model.RegisterManager;
  * either contained in a {@link CategoryListActivity} in two-pane mode (on
  * tablets) or a {@link CategoryDetailActivity} on handsets.
  */
-public class DiscountListFragment extends ListFragment {
+public class OrderListFragment extends ListFragment {
 
 	/**
 	 * The fragment argument representing the item ID that this fragment
@@ -35,7 +35,7 @@ public class DiscountListFragment extends ListFragment {
 	private RegisterManager registerManager;
 	private ArrayList<Product> orderProductList;
 
-	public DiscountListFragment() {
+	public OrderListFragment() {
 		this.registerManager = RegisterManager.getInstance();
 	}
 
@@ -90,7 +90,7 @@ public class DiscountListFragment extends ListFragment {
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
 			if (convertView == null) {
-				convertView = inflater.inflate(R.layout.discount_product_row, null);
+				convertView = inflater.inflate(R.layout.order_row, null);
 			}
 
 			Product product = orderProductList.get(position);
