@@ -4,7 +4,7 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 
 public class RegisterConfirmActivity extends FragmentActivity
-	implements RegisterConfirmFragment.OnButtonClickListener{
+implements RegisterConfirmFragment.OnButtonClickListener{
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -31,5 +31,16 @@ public class RegisterConfirmActivity extends FragmentActivity
 	@Override
 	public void onCancelClicked() {
 		//TODO: Not implemented
+	}
+
+	@Override
+	public void onPriceDownClicked() {
+		showPriceDownDialog();
+	}
+
+	private void showPriceDownDialog()
+	{
+		PriceDownDialog dialog = new PriceDownDialog();
+		dialog.show(this);
 	}
 }

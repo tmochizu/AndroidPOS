@@ -13,6 +13,8 @@ public class RegisterManager {
 	
 	private UpdateOrderListener listener;
 	
+	private int discountValue;
+	
 	private RegisterManager(){
 		orderList = new ArrayList<Order>();
 	}
@@ -52,6 +54,7 @@ public class RegisterManager {
 		for (Order order: orderList) {
 			totalAmount += order.getTotalAmount();
 		}
+		totalAmount -= discountValue;
 		return totalAmount;
 	}
 	
@@ -75,5 +78,11 @@ public class RegisterManager {
 	
 	public void clearUpdateOrderListener(){
 		this.listener = null;
+	}
+	
+	public void updateDiscountValue(int discountValue)
+	{
+		this.discountValue = discountValue;
+		notifyUpdateOrder();
 	}
 }

@@ -28,6 +28,12 @@ public class RegisterConfirmFragment extends Fragment implements UpdateOrderList
 		}  
 		buttonClickListener = (OnButtonClickListener) activity;  
 	}
+	
+	@Override  
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		RegisterManager.getInstance().setUpdateOrderListener(this);
+	}
 
 	@Override  
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -35,6 +41,16 @@ public class RegisterConfirmFragment extends Fragment implements UpdateOrderList
 		
 		double totalPayment = RegisterManager.getInstance().getTotalAmount();
 		setTotalPayment(v, totalPayment);
+		
+		Button price_down_button = (Button) v.findViewById(R.id.price_down_button);
+		price_down_button.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				if (buttonClickListener != null) {  
+					buttonClickListener.onPriceDownClicked();  
+				}
+			}
+		});
 
 		Button ok_button = (Button) v.findViewById(R.id.ok_button);
 		ok_button.setOnClickListener(new OnClickListener() {
@@ -61,6 +77,7 @@ public class RegisterConfirmFragment extends Fragment implements UpdateOrderList
 	@Override
 	public void onDestroy(){
 		super.onDestroy();
+		//TODO: should not reset listeners. Remove only this.
 		RegisterManager.getInstance().clearUpdateOrderListener();
 	}
 
@@ -78,7 +95,8 @@ public class RegisterConfirmFragment extends Fragment implements UpdateOrderList
 		totalPaymentView.setText(format.format(totalPayment) + " Rp");
 	}
 
-	public interface OnButtonClickListener {  
+	public interface OnButtonClickListener { 
+		public void onPriceDownClicked();
 		public void onOkClicked(); 
 		public void onCancelClicked(); 
 	}
