@@ -13,4 +13,5 @@
     <string name="dialog_data_syncro_message">Synchronizing, please wait...</string>
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
+    <string name="price_down">Price Down</string>
 </resources>
