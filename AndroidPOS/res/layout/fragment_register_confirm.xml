@@ -15,7 +15,6 @@
             android:id="@+id/textView1"
             android:layout_width="match_parent"
             android:layout_height="fill_parent"
-            android:layout_weight="1"
             android:text="@+string/title_total_payment"
             android:textAlignment="center"
             android:textAppearance="?android:attr/textAppearanceLarge" />
@@ -24,7 +23,6 @@
             android:id="@+id/totalPaymentView"
             android:layout_width="match_parent"
             android:layout_height="fill_parent"
-            android:layout_weight="1"
             android:textAlignment="center"
             android:textAppearance="?android:attr/textAppearanceLarge" />
     </LinearLayout>
@@ -40,6 +38,7 @@
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
         android:layout_weight="6"
         android:orientation="horizontal" >
 

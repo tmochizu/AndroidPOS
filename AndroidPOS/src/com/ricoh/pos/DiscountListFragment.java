@@ -5,8 +5,6 @@ import java.util.ArrayList;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -48,7 +46,7 @@ public class DiscountListFragment extends ListFragment {
 		super.onCreate(savedInstanceState);
 
 		Bundle bundle = getArguments();
-		this.category = bundle.getString(CategoryDetailFragment.ARG_ITEM_ID);
+		this.category = bundle.getString(DiscountListFragment.ARG_ITEM_ID);
 
 		productList = ProductsManager.getInstance().getProductsInCategory(category);
 		setListAdapter(new ListAdapter(getActivity()));
@@ -57,11 +55,9 @@ public class DiscountListFragment extends ListFragment {
 	}
 
 	public class ListAdapter extends BaseAdapter {
-		// private Context contextInAdapter;
 		private LayoutInflater inflater;
 
 		public ListAdapter(Context context) {
-			// contextInAdapter = context;
 			inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		}
 
@@ -82,8 +78,6 @@ public class DiscountListFragment extends ListFragment {
 
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
-			// TODO: Not implement
-
 			if (convertView == null) {
 				convertView = inflater.inflate(R.layout.discount_product_row, null);
 			}
@@ -113,7 +107,7 @@ public class DiscountListFragment extends ListFragment {
 			Order order = registerManager.findOrderOfTheProduct(product);
 			if (order == null || order.getNumberOfOrder() == 0) {
 				//TODO
-				numberOfSalseView.setText("");
+				numberOfSalseView.setText("0");
 			} else {
 				int numberOfSales = order.getNumberOfOrder();
 				numberOfSalseView.setText(String.valueOf(numberOfSales));
@@ -127,27 +121,4 @@ public class DiscountListFragment extends ListFragment {
 			return resID;
 		}
 	}
-
-	public class DiscountValueWatcher implements TextWatcher {
-		public DiscountValueWatcher(ProductEditText view) {
-			// TODO: Not implement
-		}
-
-		@Override
-		public void afterTextChanged(Editable s) {
-			// TODO: Not implement
-		}
-
-		@Override
-		public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-			// TODO: Not implement
-		}
-
-		@Override
-		public void onTextChanged(CharSequence s, int start, int before, int count) {
-			// TODO: Not implement
-		}
-
-	}
-
 }
