@@ -21,7 +21,7 @@ import android.support.v4.app.FragmentActivity;
  * selections.
  */
 public class CategoryListActivity extends FragmentActivity implements
-		CategoryListFragment.Callbacks {
+		CategoryListFragment.Callbacks, TotalPaymentFragment.OnOkButtonClickListener{
 
 	/**
 	 * Whether or not the activity is in two-pane mode, i.e. running on a tablet
@@ -80,9 +80,6 @@ public class CategoryListActivity extends FragmentActivity implements
 			fragment.setArguments(arguments);
 			getSupportFragmentManager().beginTransaction()
 					.replace(R.id.category_detail_container, fragment).commit();
-
-
-
 		} else {
 			// In single-pane mode, simply start the detail activity
 			// for the selected item ID.
@@ -90,5 +87,10 @@ public class CategoryListActivity extends FragmentActivity implements
 			detailIntent.putExtra(CategoryDetailFragment.ARG_ITEM_ID, id);
 			startActivity(detailIntent);
 		}
+	}
+
+	@Override
+	public void onOkClicked() {
+		startActivity(new Intent(this, RegisterConfirmActivity.class));
 	}
 }
