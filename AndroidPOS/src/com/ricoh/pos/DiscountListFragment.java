@@ -6,20 +6,20 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.text.Editable;
-import android.text.InputType;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.view.inputmethod.EditorInfo;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.ricoh.pos.data.Order;
 import com.ricoh.pos.data.Product;
 import com.ricoh.pos.model.ProductsManager;
+import com.ricoh.pos.model.RegisterManager;
 
 /**
  * A fragment representing a single Category detail screen. This fragment is
@@ -34,10 +34,13 @@ public class DiscountListFragment extends ListFragment {
 	 */
 	public static final String ARG_ITEM_ID = "item_id";
 
+	private RegisterManager registerManager;
+
 	private String category;
 	private ArrayList<Product> productList;
 
 	public DiscountListFragment() {
+		this.registerManager = RegisterManager.getInstance();
 	}
 
 	@Override
@@ -49,7 +52,7 @@ public class DiscountListFragment extends ListFragment {
 
 		productList = ProductsManager.getInstance().getProductsInCategory(category);
 		setListAdapter(new ListAdapter(getActivity()));
-		
+
 		getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
 	}
 
@@ -103,13 +106,18 @@ public class DiscountListFragment extends ListFragment {
 			TextView priceView = (TextView) convertView.findViewById(R.id.price);
 			priceView.setPadding(10, 0, 0, 0);
 			priceView.setText(String.valueOf(product.getPrice()));
-			
-			ProductEditText discountValueText = (ProductEditText) convertView
-					.findViewById(R.id.discountValue);
-			discountValueText.setProduct(product);
-			discountValueText.setInputType(InputType.TYPE_CLASS_NUMBER);
-			discountValueText.setImeOptions(EditorInfo.IME_ACTION_DONE);
-			discountValueText.addTextChangedListener(new DiscountValueWatcher(discountValueText));
+
+			TextView numberOfSalseView = (TextView) convertView.findViewById(R.id.numberOfSales);
+			numberOfSalseView.setPadding(10, 0, 0, 0);
+
+			Order order = registerManager.findOrderOfTheProduct(product);
+			if (order == null || order.getNumberOfOrder() == 0) {
+				//TODO
+				numberOfSalseView.setText("");
+			} else {
+				int numberOfSales = order.getNumberOfOrder();
+				numberOfSalseView.setText(String.valueOf(numberOfSales));
+			}
 
 			return convertView;
 		}
