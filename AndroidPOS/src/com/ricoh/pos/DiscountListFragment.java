@@ -18,10 +18,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.ricoh.pos.data.Order;
 import com.ricoh.pos.data.Product;
 import com.ricoh.pos.model.ProductsManager;
-import com.ricoh.pos.model.RegisterManager;
 
 /**
  * A fragment representing a single Category detail screen. This fragment is
@@ -36,17 +34,10 @@ public class DiscountListFragment extends ListFragment {
 	 */
 	public static final String ARG_ITEM_ID = "item_id";
 
-	private RegisterManager registerManager;
-
 	private String category;
 	private ArrayList<Product> productList;
 
-	/**
-	 * Mandatory empty constructor for the fragment manager to instantiate the
-	 * fragment (e.g. upon screen orientation changes).
-	 */
 	public DiscountListFragment() {
-		this.registerManager = RegisterManager.getInstance();
 	}
 
 	@Override
@@ -129,22 +120,18 @@ public class DiscountListFragment extends ListFragment {
 	}
 
 	public class DiscountValueWatcher implements TextWatcher {
-
-		private ProductEditText productEditView;
-
 		public DiscountValueWatcher(ProductEditText view) {
-			this.productEditView = view;
+			// TODO: implement
 		}
 
 		@Override
 		public void afterTextChanged(Editable s) {
-
+			// TODO: implement
 		}
 
 		@Override
 		public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-			// TODO Auto-generated method stub
-
+			// TODO: implement
 		}
 
 		@Override
