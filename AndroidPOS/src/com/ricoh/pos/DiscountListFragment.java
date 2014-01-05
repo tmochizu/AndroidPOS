@@ -33,9 +33,7 @@ public class DiscountListFragment extends ListFragment {
 	public static final String ARG_ITEM_ID = "item_id";
 
 	private RegisterManager registerManager;
-
-	private String category;
-	private ArrayList<Product> productList;
+	private ArrayList<Product> orderProductList;
 
 	public DiscountListFragment() {
 		this.registerManager = RegisterManager.getInstance();
@@ -44,14 +42,27 @@ public class DiscountListFragment extends ListFragment {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
-		Bundle bundle = getArguments();
-		this.category = bundle.getString(DiscountListFragment.ARG_ITEM_ID);
-
-		productList = ProductsManager.getInstance().getProductsInCategory(category);
+		setOrderProductList();
 		setListAdapter(new ListAdapter(getActivity()));
-
 		getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
+	}
+	
+	private void setOrderProductList()
+	{
+		ArrayList<Product> allProductList = ProductsManager.getInstance().getProductsInCategory("ALL");
+		if (allProductList == null)
+		{
+			throw new IllegalStateException("No product data");
+		}
+		
+		orderProductList = new ArrayList<Product>();
+		for (Product product : allProductList) {
+			Order order = registerManager.findOrderOfTheProduct(product);
+			if (order != null && order.getNumberOfOrder() > 0)
+			{
+				orderProductList.add(product);
+			}
+		}
 	}
 
 	public class ListAdapter extends BaseAdapter {
@@ -63,7 +74,7 @@ public class DiscountListFragment extends ListFragment {
 
 		@Override
 		public int getCount() {
-			return productList.size();
+			return orderProductList.size();
 		}
 
 		@Override
@@ -82,7 +93,7 @@ public class DiscountListFragment extends ListFragment {
 				convertView = inflater.inflate(R.layout.discount_product_row, null);
 			}
 
-			Product product = productList.get(position);
+			Product product = orderProductList.get(position);
 
 			ImageView imageView = (ImageView) convertView.findViewById(R.id.photo);
 			imageView.setLayoutParams(new LinearLayout.LayoutParams(120, 120));
@@ -106,8 +117,7 @@ public class DiscountListFragment extends ListFragment {
 
 			Order order = registerManager.findOrderOfTheProduct(product);
 			if (order == null || order.getNumberOfOrder() == 0) {
-				//TODO
-				numberOfSalseView.setText("0");
+				throw new AssertionError("Product which isn't ordered is shown");
 			} else {
 				int numberOfSales = order.getNumberOfOrder();
 				numberOfSalseView.setText(String.valueOf(numberOfSales));

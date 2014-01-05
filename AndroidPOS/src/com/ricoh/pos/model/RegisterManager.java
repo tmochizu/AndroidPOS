@@ -76,6 +76,4 @@ public class RegisterManager {
 	public void clearUpdateOrderListener(){
 		this.listener = null;
 	}
-
-
 }
