@@ -33,12 +33,8 @@ public class RegisterConfirmFragment extends Fragment implements UpdateOrderList
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View v = inflater.inflate(R.layout.fragment_register_confirm, container, false);
 		
-		TextView totalPaymentView = (TextView) v.findViewById(R.id.totalPaymentView);
-		RegisterManager registerManager = RegisterManager.getInstance();
-		double totalPayment = registerManager.getTotalAmount();
-		NumberFormat format = NumberFormat.getInstance();
-		format.setMaximumFractionDigits(MAXIMUM_FRACTION_DIGITS);
-		totalPaymentView.setText(format.format(totalPayment) + " Rp");
+		double totalPayment = RegisterManager.getInstance().getTotalAmount();
+		setTotalPayment(v, totalPayment);
 
 		Button ok_button = (Button) v.findViewById(R.id.ok_button);
 		ok_button.setOnClickListener(new OnClickListener() {
@@ -68,17 +64,22 @@ public class RegisterConfirmFragment extends Fragment implements UpdateOrderList
 		RegisterManager.getInstance().clearUpdateOrderListener();
 	}
 
-	public interface OnButtonClickListener {  
-		public void onOkClicked(); 
-		public void onCancelClicked(); 
-	}
-
 	@Override
 	public void notifyUpdateOrder(double totalPayment) {
-		TextView totalPaymentView = (TextView) getView().findViewById(R.id.totalPaymentView);
+		setTotalPayment(getView(), totalPayment);
+	}
+	
+	private void setTotalPayment(View view, double totalPayment)
+	{
+		TextView totalPaymentView = (TextView) view.findViewById(R.id.totalPaymentView);
 
 		NumberFormat format = NumberFormat.getInstance();
 		format.setMaximumFractionDigits(MAXIMUM_FRACTION_DIGITS);
 		totalPaymentView.setText(format.format(totalPayment) + " Rp");
-	}  
+	}
+
+	public interface OnButtonClickListener {  
+		public void onOkClicked(); 
+		public void onCancelClicked(); 
+	}
 }
