@@ -11,12 +11,13 @@ public class RegisterManager {
 	
 	private ArrayList<Order> orderList;
 	
-	private UpdateOrderListener listener;
+	private ArrayList<UpdateOrderListener> listeners;
 	
 	private double discountValue;
 	
 	private RegisterManager(){
 		orderList = new ArrayList<Order>();
+		listeners = new ArrayList<UpdateOrderListener>();
 	}
 	
 	public static RegisterManager getInstance(){
@@ -42,11 +43,16 @@ public class RegisterManager {
 	
 	private void notifyUpdateOrder(){
 		
-		if (this.listener == null) {
+		if (listeners == null || listeners.isEmpty()) {
 			throw new IllegalStateException("UpdateOrderListener is not resgistered");
 		}
 		
-		listener.notifyUpdateOrder(getTotalAmount());
+		for (UpdateOrderListener listener : listeners) {
+			if (listener == null) {
+				throw new IllegalStateException("UpdateOrderListener to register is null");
+			}
+			listener.notifyUpdateOrder(getTotalAmount());
+		}
 	}
 	
 	public double getTotalAmount(){
@@ -74,11 +80,15 @@ public class RegisterManager {
 	}
 	
 	public void setUpdateOrderListener(UpdateOrderListener listener){
-		this.listener = listener;
+		listeners.add(listener);
+	}
+	
+	public void removeUpdateOrderListener(UpdateOrderListener listener){
+		listeners.remove(listener);
 	}
 	
 	public void clearUpdateOrderListener(){
-		this.listener = null;
+		listeners.clear();
 	}
 	
 	public void updateDiscountValue(double discountValue)

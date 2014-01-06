@@ -77,8 +77,7 @@ public class RegisterConfirmFragment extends Fragment implements UpdateOrderList
 	@Override
 	public void onDestroy(){
 		super.onDestroy();
-		//TODO: should not reset listeners. Remove only this.
-		RegisterManager.getInstance().clearUpdateOrderListener();
+		RegisterManager.getInstance().removeUpdateOrderListener(this);
 	}
 
 	@Override
