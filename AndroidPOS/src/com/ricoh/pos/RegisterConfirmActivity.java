@@ -1,5 +1,6 @@
 package com.ricoh.pos;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 
@@ -25,7 +26,10 @@ implements RegisterConfirmFragment.OnButtonClickListener{
 
 	@Override
 	public void onOkClicked() {
-		//TODO: Not implemented
+		Intent intent = new Intent(this, MainMenuActivity.class);
+		intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+		intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+		startActivity(intent);
 	}
 
 	@Override
