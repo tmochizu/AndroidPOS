@@ -1,7 +1,5 @@
 package com.ricoh.pos;
 
-import com.ricoh.pos.model.RegisterManager;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
@@ -10,6 +8,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+
+import com.ricoh.pos.model.RegisterManager;
 
 public class PriceDownDialog {
 	static Float amountDue;
@@ -135,7 +135,7 @@ public class PriceDownDialog {
 		builder.setPositiveButton(activity.getString(R.string.ok), new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dlg, int sumthin) {
 				dlg.dismiss();
-				int discount_value = Integer.parseInt(value);
+				double discount_value = Double.parseDouble(value);
 				RegisterManager.getInstance().updateDiscountValue(discount_value);
 			}
 		});

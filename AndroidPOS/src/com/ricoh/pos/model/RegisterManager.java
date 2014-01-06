@@ -13,7 +13,7 @@ public class RegisterManager {
 	
 	private UpdateOrderListener listener;
 	
-	private int discountValue;
+	private double discountValue;
 	
 	private RegisterManager(){
 		orderList = new ArrayList<Order>();
@@ -80,7 +80,7 @@ public class RegisterManager {
 		this.listener = null;
 	}
 	
-	public void updateDiscountValue(int discountValue)
+	public void updateDiscountValue(double discountValue)
 	{
 		this.discountValue = discountValue;
 		notifyUpdateOrder();
