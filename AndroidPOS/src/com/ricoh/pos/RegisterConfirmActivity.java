@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 
+import com.ricoh.pos.model.RegisterManager;
+
 public class RegisterConfirmActivity extends FragmentActivity
 implements RegisterConfirmFragment.OnButtonClickListener{
 
@@ -34,7 +36,8 @@ implements RegisterConfirmFragment.OnButtonClickListener{
 
 	@Override
 	public void onCancelClicked() {
-		//TODO: Not implemented
+		RegisterManager.getInstance().updateDiscountValue(0);
+		finish();
 	}
 
 	@Override

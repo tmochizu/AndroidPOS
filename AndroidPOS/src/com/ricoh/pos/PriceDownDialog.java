@@ -12,8 +12,6 @@ import android.widget.TextView;
 import com.ricoh.pos.model.RegisterManager;
 
 public class PriceDownDialog {
-	static Float amountDue;
-
 	static TextView prompt;
 	static TextView promptValue;
 

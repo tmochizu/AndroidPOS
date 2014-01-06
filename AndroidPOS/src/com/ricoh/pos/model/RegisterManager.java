@@ -60,6 +60,7 @@ public class RegisterManager {
 	
 	public void clearAllOrders(){
 		orderList = new ArrayList<Order>();
+		discountValue = 0;
 	}
 	
 	public Order findOrderOfTheProduct(Product product){
