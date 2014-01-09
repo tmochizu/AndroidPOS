@@ -91,4 +91,9 @@ public class Product {
 		return imagePath;
 	}
 
+	@Override
+	public boolean equals(Object object){
+		Product targetProduct = (Product) object;
+		return this.getCategory().equals(targetProduct.getCategory()) && this.name.equals(targetProduct.getName());
+	}
 }

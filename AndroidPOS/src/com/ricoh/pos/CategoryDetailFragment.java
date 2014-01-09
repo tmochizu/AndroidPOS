@@ -10,6 +10,7 @@ import android.text.InputType;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
@@ -95,11 +96,21 @@ public class CategoryDetailFragment extends ListFragment {
 
 			Product product = productList.get(position);
 
+			setImageView(convertView,product);
+			setProductInformationView(convertView,product);
+			setNumberOfOrderView(convertView, product);
+			
+			return convertView;
+		}
+		
+		private void setImageView(View convertView, Product product){
 			ImageView imageView = (ImageView) convertView.findViewById(R.id.photo);
 			imageView.setLayoutParams(new LinearLayout.LayoutParams(120, 120));
 			imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
 			imageView.setImageResource(getResourceID(product.getProductImagePath()));
-
+		}
+		
+		private void setProductInformationView(View convertView, Product product){
 			TextView textView = (TextView) convertView.findViewById(R.id.filename);
 			textView.setPadding(10, 0, 0, 0);
 			String productName = product.getName();
@@ -111,7 +122,10 @@ public class CategoryDetailFragment extends ListFragment {
 			TextView priceView = (TextView) convertView.findViewById(R.id.price);
 			priceView.setPadding(10, 0, 0, 0);
 			priceView.setText(String.valueOf(product.getPrice()));
+		}
 
+		private void setNumberOfOrderView(View convertView, Product product){
+			
 			ProductEditText numberOfSalesText = (ProductEditText) convertView
 					.findViewById(R.id.numberOfSales);
 			numberOfSalesText.setProduct(product);
@@ -119,16 +133,49 @@ public class CategoryDetailFragment extends ListFragment {
 			numberOfSalesText.setImeOptions(EditorInfo.IME_ACTION_DONE);
 			numberOfSalesText.addTextChangedListener(new NumberOfSalesWatcher(numberOfSalesText));
 			
+			ProductButton plusBtn = (ProductButton) convertView.findViewById(R.id.plusButton);
+			plusBtn.setProduct(product);
+			plusBtn.setProductEditText(numberOfSalesText);
+			plusBtn.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					ProductButton button = (ProductButton) v;
+					Product product = button.getProduct();
+					registerManager.plusNumberOfOrder(product);
+					int numberOfOrder = registerManager.getNumberOfOrder(product);
+					ProductEditText editText = button.getProductEditText();
+					editText.setText(String.valueOf(numberOfOrder));
+				}
+			});
+			
+			ProductButton minusBtn = (ProductButton) convertView.findViewById(R.id.minusButton);
+			minusBtn.setProduct(product);
+			minusBtn.setProductEditText(numberOfSalesText);
+			minusBtn.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					ProductButton button = (ProductButton) v;
+					Product product = button.getProduct();
+					registerManager.minusNumberOfOrder(product);
+					int numberOfOrder = registerManager.getNumberOfOrder(product);
+					ProductEditText editText = button.getProductEditText();
+					if (numberOfOrder == 0) {
+						editText.getEditableText().clear();
+					} else {
+						editText.setText(String.valueOf(numberOfOrder));
+					}
+				}
+			});
+			
 			Order order = registerManager.findOrderOfTheProduct(product);
 			if (order == null || order.getNumberOfOrder() == 0) {
 				numberOfSalesText.getEditableText().clear();
-			 } else {
+			} else {
 				 int numberOfSales = order.getNumberOfOrder();
 				 numberOfSalesText.setText(String.valueOf(numberOfSales));
-			 }
-
-			return convertView;
+			}
 		}
+		
 
 		private int getResourceID(String fileName) {
 			int resID = getResources().getIdentifier(fileName, "drawable", "com.ricoh.pos");
