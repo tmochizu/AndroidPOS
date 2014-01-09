@@ -38,7 +38,7 @@ public class RegisterManager {
 			orderOfTheProduct.setNumberOfOrder(num);
 		}
 		
-		notifyUpdateOrder(product);
+		notifyUpdateOrder();
 	}
 	
 	public void plusNumberOfOrder(Product product){
@@ -52,7 +52,7 @@ public class RegisterManager {
 			orderOfTheProduct.plusNumberOfOrder();
 		}
 		
-		notifyUpdateOrder(product);
+		notifyUpdateOrder();
 	}
 	
 	public void minusNumberOfOrder(Product product) {
@@ -65,10 +65,10 @@ public class RegisterManager {
 			orderOfTheProduct.minusNumberOfOrder();
 		}
 		
-		notifyUpdateOrder(product);
+		notifyUpdateOrder();
 	}
 	
-	private void notifyUpdateOrder(Product product){
+	private void notifyUpdateOrder(){
 		
 		if (listeners == null || listeners.isEmpty()) {
 			throw new IllegalStateException("UpdateOrderListener is not resgistered");
@@ -126,6 +126,6 @@ public class RegisterManager {
 	public void updateDiscountValue(double discountValue)
 	{
 		this.discountValue = discountValue;
-		notifyUpdateOrder(null);
+		notifyUpdateOrder();
 	}
 }
