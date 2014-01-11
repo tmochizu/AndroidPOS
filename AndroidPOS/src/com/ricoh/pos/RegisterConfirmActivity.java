@@ -28,9 +28,10 @@ implements RegisterConfirmFragment.OnButtonClickListener{
 
 	@Override
 	public void onOkClicked() {
-		Intent intent = new Intent(this, MainMenuActivity.class);
+		Intent intent = new Intent(this, CategoryListActivity.class);
 		intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 		intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+		RegisterManager.getInstance().clearAllOrders();
 		startActivity(intent);
 	}
 
