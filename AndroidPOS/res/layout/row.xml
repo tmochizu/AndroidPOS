@@ -32,7 +32,7 @@
 	    android:adjustViewBounds="true"
 	    android:scaleType="fitCenter" />
 	    
-	<Button
+	<com.ricoh.pos.ProductButton
 	    android:id="@+id/plusButton"
 	    android:layout_width="wrap_content"
 	    android:layout_height="40sp"
@@ -40,7 +40,7 @@
 	    android:scaleType="fitCenter"
 	    android:text="PLUS " />
 	
-	<Button
+	<com.ricoh.pos.ProductButton
 	    android:id="@+id/minusButton"
 	    android:layout_width="wrap_content"
 	    android:layout_height="40sp"

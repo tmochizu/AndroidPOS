@@ -37,6 +37,20 @@ public class Order {
 		this.num = num;
 	}
 	
+	public void plusNumberOfOrder(){
+		num++;
+	}
+	
+	public void minusNumberOfOrder(){
+		if (num == 0) {
+			// Do Nothing		
+		} else if (num > 0) {
+			num--;
+		} else {
+			throw new IllegalStateException("number of order is illegal");
+		}
+	}
+	
 	public int getNumberOfOrder(){
 		return num;
 	}

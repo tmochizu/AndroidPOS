@@ -1,12 +1,13 @@
 package com.ricoh.pos;
 
 import com.ricoh.pos.data.Product;
+import com.ricoh.pos.model.UpdateOrderListener;
 
 import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.EditText;
 
-public class ProductEditText extends EditText {
+public class ProductEditText extends EditText{
 
 	private String category;
 	private int productId;
@@ -55,4 +56,5 @@ public class ProductEditText extends EditText {
 	public Product getProduct(){
 		return this.product;
 	}
+
 }

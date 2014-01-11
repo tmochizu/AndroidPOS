@@ -2,8 +2,8 @@ package com.ricoh.pos.model;
 
 import java.util.ArrayList;
 
-import com.ricoh.pos.data.Product;
 import com.ricoh.pos.data.Order;
+import com.ricoh.pos.data.Product;
 
 public class RegisterManager {
 	
@@ -36,6 +36,33 @@ public class RegisterManager {
 			orderList.add(newOrder);
 		} else {
 			orderOfTheProduct.setNumberOfOrder(num);
+		}
+		
+		notifyUpdateOrder();
+	}
+	
+	public void plusNumberOfOrder(Product product){
+		Order orderOfTheProduct = findOrderOfTheProduct(product);
+		
+		if (orderOfTheProduct == null) {
+			int numberOfFirstOrder = 1;
+			Order newOrder = new Order(product,numberOfFirstOrder);
+			orderList.add(newOrder);
+		} else {
+			orderOfTheProduct.plusNumberOfOrder();
+		}
+		
+		notifyUpdateOrder();
+	}
+	
+	public void minusNumberOfOrder(Product product) {
+		Order orderOfTheProduct = findOrderOfTheProduct(product);
+		
+		if (orderOfTheProduct == null) {
+			Order newOrder = new Order(product,0);
+			orderList.add(newOrder);
+		} else {
+			orderOfTheProduct.minusNumberOfOrder();
 		}
 		
 		notifyUpdateOrder();
@@ -77,6 +104,11 @@ public class RegisterManager {
 		}
 		// Not Found
 		return null;
+	}
+	
+	public int getNumberOfOrder(Product product) {
+		Order order = findOrderOfTheProduct(product);
+		return order.getNumberOfOrder();
 	}
 	
 	public void setUpdateOrderListener(UpdateOrderListener listener){
