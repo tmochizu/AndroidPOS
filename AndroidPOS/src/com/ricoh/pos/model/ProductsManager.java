@@ -142,9 +142,9 @@ public class ProductsManager {
 	}
 
 	public String[] getAllCategoryName() {
-		int categiryCount = getCategoryCount();
-		if (categiryCount <= 0) {
-			throw new NegativeArraySizeException("Category does not exist: " + categiryCount);
+		int categoryCount = getCategoryCount();
+		if (categoryCount <= 0) {
+			throw new NegativeArraySizeException("Category does not exist: " + categoryCount);
 		}
 
 		String[] results = new String[getCategoryCount()];
