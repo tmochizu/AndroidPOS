@@ -12,6 +12,9 @@ import java.util.Map;
  * 
  */
 public class WomanShopContent {
+	
+	public static final String CATEGORY_ALL = "ALL";
+	
 	/**
 	 * An array of woman shop items.
 	 */
@@ -39,7 +42,7 @@ public class WomanShopContent {
 		if (categoryNames == null) {
 			throw new IllegalArgumentException("Passing categoryNames is null.");
 		}
-		addItem(new WomanShopItem("ALL", "ALL"));
+		addItem(new WomanShopItem(CATEGORY_ALL, CATEGORY_ALL));
 		for (String categoryName : categoryNames) {
 			if (categoryName == null) {
 				throw new IllegalArgumentException("Passing categoryName is null.");
