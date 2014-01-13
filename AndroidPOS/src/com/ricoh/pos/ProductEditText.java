@@ -1,11 +1,10 @@
 package com.ricoh.pos;
 
-import com.ricoh.pos.data.Product;
-import com.ricoh.pos.model.UpdateOrderListener;
-
 import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.EditText;
+
+import com.ricoh.pos.data.Product;
 
 public class ProductEditText extends EditText{
 

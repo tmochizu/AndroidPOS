@@ -13,6 +13,7 @@ import android.view.View;
 import com.caldroid.CaldroidFragment;
 import com.caldroid.CaldroidListener;
 import com.ricoh.pos.data.SingleSalesRecord;
+import com.ricoh.pos.model.SalesCalenderManager;
 import com.ricoh.pos.model.SalesRecordManager;
 
 public class SalesCalenderActivity extends FragmentActivity {
@@ -53,9 +54,10 @@ public class SalesCalenderActivity extends FragmentActivity {
 					return;
 				} 
 				
-				Intent intent = new Intent(SalesCalenderActivity.this, CategoryListActivity.class);
-				startActivity(intent);
+				SalesCalenderManager.getInstance().setSelectedDate(date);
 				
+				Intent intent = new Intent(SalesCalenderActivity.this, SalesRecordListActivity.class);
+				startActivity(intent);
 			}
 			
 		};
