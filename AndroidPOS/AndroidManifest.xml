@@ -31,6 +31,12 @@
             android:name="com.ricoh.pos.SalesCalenderActivity" >
         </activity>
         <activity
+            android:name="com.ricoh.pos.SalesRecordListActivity" >
+        </activity>
+        <activity
+            android:name="com.ricoh.pos.SalesRecordDetailActivity" >
+        </activity>
+        <activity
             android:name="com.ricoh.pos.CategoryDetailActivity"
             android:label="@string/title_category_detail"
             android:parentActivityName=".CategoryListActivity" >
