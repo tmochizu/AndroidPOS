@@ -152,6 +152,7 @@ public class CategoryDetailFragment extends ListFragment {
 					editText.setText(String.valueOf(numberOfOrder));
 				}
 			});
+			plusBtn.setPadding(50, 0, 0, 0);
 			
 			ProductButton minusBtn = (ProductButton) convertView.findViewById(R.id.minusButton);
 			minusBtn.setProduct(product);
