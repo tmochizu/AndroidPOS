@@ -127,6 +127,9 @@ public class RegisterManager {
 	
 	public void updateDiscountValue(double discountValue)
 	{
+		if (discountValue >= getTotalAmount()) {
+			throw new IllegalArgumentException("discountValues is larger than totalAmount");
+		}
 		this.discountValue = discountValue;
 		notifyUpdateOrder();
 	}

@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.ricoh.pos.model.RegisterManager;
 
@@ -36,7 +37,7 @@ public class PriceDownDialog {
 		return value;
 	}
 
-	public void show(Activity activity) {
+	public void show(final Activity activity) {
 		Builder builder = new AlertDialog.Builder(activity);
 		builder.setTitle(title);
 		LayoutInflater inflater = activity.getLayoutInflater();
@@ -134,7 +135,12 @@ public class PriceDownDialog {
 			public void onClick(DialogInterface dlg, int sumthin) {
 				dlg.dismiss();
 				double discount_value = Double.parseDouble(value);
-				RegisterManager.getInstance().updateDiscountValue(discount_value);
+				try {
+					RegisterManager.getInstance().updateDiscountValue(discount_value);
+				} catch (IllegalArgumentException e)
+				{
+					Toast.makeText(activity.getBaseContext(), R.string.discount_error, Toast.LENGTH_LONG).show();
+				}
 			}
 		});
 		builder.setNegativeButton(activity.getString(R.string.cancel), new DialogInterface.OnClickListener() {
