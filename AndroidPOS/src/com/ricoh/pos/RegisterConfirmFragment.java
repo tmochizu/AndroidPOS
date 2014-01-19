@@ -91,7 +91,7 @@ public class RegisterConfirmFragment extends Fragment implements UpdateOrderList
 
 		NumberFormat format = NumberFormat.getInstance();
 		format.setMaximumFractionDigits(MAXIMUM_FRACTION_DIGITS);
-		totalPaymentView.setText(format.format(totalPayment) + " Rp");
+		totalPaymentView.setText(format.format(totalPayment) + getString(R.string.currency_india));
 	}
 
 	public interface OnButtonClickListener { 

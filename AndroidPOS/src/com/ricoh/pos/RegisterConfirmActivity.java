@@ -37,10 +37,9 @@ implements RegisterConfirmFragment.OnButtonClickListener{
 		// Clear this record
 		RegisterManager.getInstance().clearAllOrders();
 		
-		// Go to the top activity
-		Intent intent = new Intent(this, MainMenuActivity.class);
+		// Go to the CategoryListActivity
+		Intent intent = new Intent(this, CategoryListActivity.class);
 		intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-		intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
 		startActivity(intent);
 	}
 
