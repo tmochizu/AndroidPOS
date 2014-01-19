@@ -156,7 +156,7 @@ public class ProductsManager {
 		return results;
 	}
 
-	private int getCategoryCount() {
+	public int getCategoryCount() {
 		return productsMap.entrySet().size();
 	}
 

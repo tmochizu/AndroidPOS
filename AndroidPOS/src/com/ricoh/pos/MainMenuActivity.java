@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Toast;
 
+import com.ricoh.pos.model.ProductsManager;
 import com.ricoh.pos.model.WomanShopIOManager;
 
 public class MainMenuActivity extends Activity implements DataSyncTaskCallback {
@@ -33,6 +34,7 @@ public class MainMenuActivity extends Activity implements DataSyncTaskCallback {
 				startActivity(intent);
 			}
 		});
+		setRegisterButtonEnabled();
 
 		findViewById(R.id.SalesButton).setOnClickListener(new OnClickListener() {
 			@Override
@@ -71,10 +73,19 @@ public class MainMenuActivity extends Activity implements DataSyncTaskCallback {
 	@Override
 	public void onSuccessSyncData() {
 		Toast.makeText(this, R.string.sync_success, Toast.LENGTH_LONG).show();
+		setRegisterButtonEnabled();
 	}
 
 	@Override
 	public void onFailedSyncData(int resId) {
 		Toast.makeText(this, resId, Toast.LENGTH_LONG).show();
+	}
+
+	private void setRegisterButtonEnabled() {
+		if (ProductsManager.getInstance().getCategoryCount() > 0) {
+			findViewById(R.id.RegisterButton).setEnabled(true);
+		} else {
+			findViewById(R.id.RegisterButton).setEnabled(false);
+		}
 	}
 }
