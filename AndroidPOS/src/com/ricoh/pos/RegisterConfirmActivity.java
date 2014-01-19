@@ -30,10 +30,6 @@ implements RegisterConfirmFragment.OnButtonClickListener{
 
 	@Override
 	public void onOkClicked() {
-		Intent intent = new Intent(this, CategoryListActivity.class);
-		intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-		intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-		
 		// Save this sales record
 		SingleSalesRecord record = RegisterManager.getInstance().getSingleSalesRecord();
 		SalesRecordManager.getInstance().storeSingleSalesRecord(record);
@@ -41,6 +37,10 @@ implements RegisterConfirmFragment.OnButtonClickListener{
 		// Clear this record
 		RegisterManager.getInstance().clearAllOrders();
 		
+		// Go to the top activity
+		Intent intent = new Intent(this, MainMenuActivity.class);
+		intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+		intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
 		startActivity(intent);
 	}
 
