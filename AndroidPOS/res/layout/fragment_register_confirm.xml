@@ -47,7 +47,8 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@+string/cancel"
-            android:textAlignment="center" />
+            android:textAlignment="center"
+            android:background="?android:attr/selectableItemBackground" />
 
         <Button
             android:id="@+id/ok_button"
@@ -55,7 +56,8 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@+string/ok"
-            android:textAlignment="center" />
+            android:textAlignment="center"
+            android:background="?android:attr/selectableItemBackground" />
     </LinearLayout>
 
 </LinearLayout>
