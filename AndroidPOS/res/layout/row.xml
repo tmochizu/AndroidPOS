@@ -2,7 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:orientation="horizontal" >
+    android:orientation="horizontal"
+    >
 
 	<ImageView android:id="@+id/photo"
         android:scaleType = "fitCenter"
@@ -38,18 +39,22 @@
 	    
 	<com.ricoh.pos.ProductButton
 	    android:id="@+id/plusButton"
-	    android:layout_width="wrap_content"
+	    android:layout_width="40sp"
 	    android:layout_height="40sp"
 	    android:adjustViewBounds="true"
 	    android:scaleType="fitCenter"
-	    android:text="PLUS " />
+	    android:background="@drawable/icn_numplus"
+	    android:layout_marginLeft="30sp"
+	    />
 	
 	<com.ricoh.pos.ProductButton
 	    android:id="@+id/minusButton"
-	    android:layout_width="wrap_content"
+	    android:layout_width="40sp"
 	    android:layout_height="40sp"
 	    android:adjustViewBounds="true"
 	    android:scaleType="fitCenter"
-	    android:text="Minus" />
+	    android:background="@drawable/icn_numminus"
+	    android:layout_marginLeft="20sp"
+	     />
 	    
 </LinearLayout>

@@ -9,31 +9,31 @@
     tools:context=".MainMenuActivity" >
 
     <Button
-        android:id="@+id/RegisterButton"
+        android:id="@+id/SyncButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_centerVertical="true"
-        android:layout_marginLeft="197dp"
-        android:text="Register" />
+        android:layout_alignBaseline="@+id/RegisterButton"
+        android:layout_alignBottom="@+id/RegisterButton"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="121dp"
+        android:background="@drawable/icn_menu_sync" />
 
     <Button
         android:id="@+id/SalesButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/RegisterButton"
-        android:layout_alignBottom="@+id/RegisterButton"
         android:layout_centerHorizontal="true"
-        android:text="Sales" />
+        android:layout_centerVertical="true"
+        android:background="@drawable/icn_menu_sales" />
 
     <Button
-        android:id="@+id/SyncButton"
+        android:id="@+id/RegisterButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignBaseline="@+id/SalesButton"
         android:layout_alignBottom="@+id/SalesButton"
-        android:layout_marginLeft="203dp"
-        android:layout_toRightOf="@+id/SalesButton"
-        android:text="Sync" />
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="108dp"
+        android:background="@drawable/icn_menu_register" />
 
 </RelativeLayout>

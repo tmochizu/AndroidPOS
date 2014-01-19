@@ -3,27 +3,35 @@
     android:id="@+id/total_payment_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical" >
+    android:orientation="vertical"
+    android:gravity="center_vertical"
+    android:background="#FFFFFF" >
 
     <TextView
         android:id="@+id/textView1"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@+string/title_total_payment"
         android:textAlignment="center"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
+        android:layout_gravity="center"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:layout_marginBottom="20sp"
+         />
 
     <TextView
         android:id="@+id/totalPaymentView"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAlignment="center"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
+        android:layout_gravity="center"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:layout_marginBottom="50sp" />
 
     <Button
         android:id="@+id/ok_button"
-        android:layout_width="match_parent"
+        android:layout_gravity="center"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@+string/ok" />
+        android:background="@drawable/icn_ok" />
 
 </LinearLayout>
