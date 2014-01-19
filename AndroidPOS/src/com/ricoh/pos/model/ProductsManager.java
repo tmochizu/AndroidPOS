@@ -6,6 +6,7 @@ import java.util.HashMap;
 import android.util.Log;
 
 import com.ricoh.pos.data.Product;
+import com.ricoh.pos.data.WomanShopContent;
 import com.ricoh.pos.data.WomanShopDataDef;
 
 public class ProductsManager {
@@ -113,7 +114,7 @@ public class ProductsManager {
 			throw new IllegalArgumentException("Invalid category name");
 		}
 
-		if (category.equals("ALL")) {
+		if (category.equals(WomanShopContent.CATEGORY_ALL)) {
 			ArrayList<Product> allProducts = new ArrayList<Product>();
 			for (String key : productsMap.keySet()) {
 				allProducts.addAll(productsMap.get(key));

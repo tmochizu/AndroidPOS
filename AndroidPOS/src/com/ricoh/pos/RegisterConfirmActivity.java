@@ -4,7 +4,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 
+import com.ricoh.pos.data.SingleSalesRecord;
 import com.ricoh.pos.model.RegisterManager;
+import com.ricoh.pos.model.SalesRecordManager;
 
 public class RegisterConfirmActivity extends FragmentActivity
 implements RegisterConfirmFragment.OnButtonClickListener{
@@ -28,9 +30,17 @@ implements RegisterConfirmFragment.OnButtonClickListener{
 
 	@Override
 	public void onOkClicked() {
-		Intent intent = new Intent(this, MainMenuActivity.class);
+		Intent intent = new Intent(this, CategoryListActivity.class);
 		intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 		intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+		
+		// Save this sales record
+		SingleSalesRecord record = RegisterManager.getInstance().getSingleSalesRecord();
+		SalesRecordManager.getInstance().storeSingleSalesRecord(record);
+		
+		// Clear this record
+		RegisterManager.getInstance().clearAllOrders();
+		
 		startActivity(intent);
 	}
 

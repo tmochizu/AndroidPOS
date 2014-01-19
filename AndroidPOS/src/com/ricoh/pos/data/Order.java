@@ -54,6 +54,10 @@ public class Order {
 	public int getNumberOfOrder(){
 		return num;
 	}
+	
+	public Product getProduct(){
+		return product;
+	}
 
 	public String getProductCategory(){
 		 return product.getCategory();

@@ -1,6 +1,7 @@
 package com.ricoh.pos;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -16,54 +17,28 @@ import android.widget.TextView;
 
 import com.ricoh.pos.data.Order;
 import com.ricoh.pos.data.Product;
-import com.ricoh.pos.data.WomanShopContent;
-import com.ricoh.pos.model.ProductsManager;
-import com.ricoh.pos.model.RegisterManager;
+import com.ricoh.pos.data.SingleSalesRecord;
+import com.ricoh.pos.model.SalesCalenderManager;
+import com.ricoh.pos.model.SalesRecordManager;
 
-/**
- * A fragment representing a single Category detail screen. This fragment is
- * either contained in a {@link CategoryListActivity} in two-pane mode (on
- * tablets) or a {@link CategoryDetailActivity} on handsets.
- */
-public class OrderListFragment extends ListFragment {
-
-	/**
-	 * The fragment argument representing the item ID that this fragment
-	 * represents.
-	 */
-	public static final String ARG_ITEM_ID = "item_id";
-
-	private RegisterManager registerManager;
-	private ArrayList<Product> orderProductList;
-
-	public OrderListFragment() {
-		this.registerManager = RegisterManager.getInstance();
-	}
-
+public class SalesRecordDetailFragment extends ListFragment {
+	
+	private ArrayList<Order> orders;
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setOrderProductList();
+
+		Date date = SalesCalenderManager.getInstance().getSelectedDate();
+		
+		//TODO
+		//SingleSalesRecord salesRecord = SalesRecordManager.getInstance().getSingleSalesRecord(date);
+		SingleSalesRecord salesRecord = SalesRecordManager.getInstance().restoreSingleSalesRecordsOfTheDay(date).get(0);
+		
+		orders = salesRecord.getAllOrders();
+		
 		setListAdapter(new ListAdapter(getActivity()));
 		getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
-	}
-	
-	private void setOrderProductList()
-	{
-		ArrayList<Product> allProductList = ProductsManager.getInstance().getProductsInCategory(WomanShopContent.CATEGORY_ALL);
-		if (allProductList == null)
-		{
-			throw new IllegalStateException("No product data");
-		}
-		
-		orderProductList = new ArrayList<Product>();
-		for (Product product : allProductList) {
-			Order order = registerManager.findOrderOfTheProduct(product);
-			if (order != null && order.getNumberOfOrder() > 0)
-			{
-				orderProductList.add(product);
-			}
-		}
 	}
 
 	public class ListAdapter extends BaseAdapter {
@@ -75,7 +50,7 @@ public class OrderListFragment extends ListFragment {
 
 		@Override
 		public int getCount() {
-			return orderProductList.size();
+			return orders.size();
 		}
 
 		@Override
@@ -93,8 +68,9 @@ public class OrderListFragment extends ListFragment {
 			if (convertView == null) {
 				convertView = inflater.inflate(R.layout.order_row, null);
 			}
-
-			Product product = orderProductList.get(position);
+			
+			Order order = orders.get(position);
+			Product product = order.getProduct();
 
 			ImageView imageView = (ImageView) convertView.findViewById(R.id.photo);
 			imageView.setLayoutParams(new LinearLayout.LayoutParams(120, 120));
@@ -116,7 +92,6 @@ public class OrderListFragment extends ListFragment {
 			TextView numberOfSalseView = (TextView) convertView.findViewById(R.id.numberOfSales);
 			numberOfSalseView.setPadding(10, 0, 0, 0);
 
-			Order order = registerManager.findOrderOfTheProduct(product);
 			if (order == null || order.getNumberOfOrder() == 0) {
 				throw new AssertionError("Product which isn't ordered is shown");
 			} else {
@@ -132,4 +107,5 @@ public class OrderListFragment extends ListFragment {
 			return resID;
 		}
 	}
+
 }

@@ -1,9 +1,11 @@
 package com.ricoh.pos.model;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 import com.ricoh.pos.data.Order;
 import com.ricoh.pos.data.Product;
+import com.ricoh.pos.data.SingleSalesRecord;
 
 public class RegisterManager {
 	
@@ -128,4 +130,11 @@ public class RegisterManager {
 		this.discountValue = discountValue;
 		notifyUpdateOrder();
 	}
+	
+	public SingleSalesRecord getSingleSalesRecord(){
+		SingleSalesRecord record = new SingleSalesRecord(new Date());
+		record.setOrders(orderList);
+		return record;
+	}
+	
 }
