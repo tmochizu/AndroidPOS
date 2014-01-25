@@ -46,7 +46,7 @@ public class RegisterConfirmFragment extends Fragment implements UpdateOrderList
 		View v = inflater.inflate(R.layout.fragment_register_confirm, container, false);
 		
 		EditText discountView = (EditText) v.findViewById(R.id.discountValue);
-		discountView.addTextChangedListener(new DiscountWatcher(discountView));
+		discountView.addTextChangedListener(new DiscountWatcher());
 
 		Button ok_button = (Button) v.findViewById(R.id.ok_button);
 		ok_button.setOnClickListener(new OnClickListener() {
@@ -105,13 +105,6 @@ public class RegisterConfirmFragment extends Fragment implements UpdateOrderList
 	}
 	
 	public class DiscountWatcher implements TextWatcher {
-		private EditText discountEditText;
-		private Boolean ignoreNextTextChange = false;
-
-		public DiscountWatcher(EditText editText) {
-			this.discountEditText = editText;
-		}
-		
 		@Override
 		public void afterTextChanged(Editable s) {
 		}
