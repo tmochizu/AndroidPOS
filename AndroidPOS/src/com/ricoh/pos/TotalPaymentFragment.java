@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.ricoh.pos.data.OrderUpdateInfo;
 import com.ricoh.pos.model.RegisterManager;
 import com.ricoh.pos.model.UpdateOrderListener;
 
@@ -53,12 +54,12 @@ public class TotalPaymentFragment extends Fragment implements UpdateOrderListene
 	}
 
 	@Override
-	public void notifyUpdateOrder(double totalPayment) {
+	public void notifyUpdateOrder(OrderUpdateInfo orderInfo) {
 		TextView totalPaymentView = (TextView) getView().findViewById(R.id.totalPaymentView);
 
 		NumberFormat format = NumberFormat.getInstance();
 		format.setMaximumFractionDigits(MAXIMUM_FRACTION_DIGITS);
-		totalPaymentView.setText(format.format(totalPayment) + getString(R.string.currency_india));
+		totalPaymentView.setText(format.format(orderInfo.GetTotalAmountBeforeDiscount()) + getString(R.string.currency_india));
 	}
 
 	@Override

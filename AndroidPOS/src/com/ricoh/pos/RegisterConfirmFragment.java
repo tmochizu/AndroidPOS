@@ -5,20 +5,25 @@ import java.text.NumberFormat;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
+import com.ricoh.pos.data.OrderUpdateInfo;
 import com.ricoh.pos.model.RegisterManager;
 import com.ricoh.pos.model.UpdateOrderListener;
 
 public class RegisterConfirmFragment extends Fragment implements UpdateOrderListener{
 	// This is the maximum fraction digits for total payment to display.
 	private static final int MAXIMUM_FRACTION_DIGITS = 2;
-	private OnButtonClickListener buttonClickListener; 
+	private OnButtonClickListener buttonClickListener;
+	private RegisterManager registerManager = RegisterManager.getInstance();
 
 	@Override  
 	public void onAttach(Activity activity) {  
@@ -32,15 +37,15 @@ public class RegisterConfirmFragment extends Fragment implements UpdateOrderList
 	@Override  
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		RegisterManager.getInstance().setUpdateOrderListener(this);
+		registerManager.setUpdateOrderListener(this);
 	}
 
 	@Override  
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View v = inflater.inflate(R.layout.fragment_register_confirm, container, false);
 		
-		double totalPayment = RegisterManager.getInstance().getTotalAmount();
-		setTotalPayment(v, totalPayment);
+		EditText discountView = (EditText) v.findViewById(R.id.discountValue);
+		discountView.addTextChangedListener(new DiscountWatcher());
 		
 		Button price_down_button = (Button) v.findViewById(R.id.price_down_button);
 		price_down_button.setOnClickListener(new OnClickListener() {
@@ -71,32 +76,60 @@ public class RegisterConfirmFragment extends Fragment implements UpdateOrderList
 				}
 			}
 		});
+		
+		double totalAmount = registerManager.getTotalAmount();
+		updateTotalAmount(v, totalAmount, totalAmount);
+		
 		return v;
 	}
 
 	@Override
 	public void onDestroy(){
 		super.onDestroy();
-		RegisterManager.getInstance().removeUpdateOrderListener(this);
+		registerManager.removeUpdateOrderListener(this);
 	}
 
 	@Override
-	public void notifyUpdateOrder(double totalPayment) {
-		setTotalPayment(getView(), totalPayment);
+	public void notifyUpdateOrder(OrderUpdateInfo orderInfo) {
+		updateTotalAmount(getView(),
+				orderInfo.GetTotalAmountBeforeDiscount(),
+				orderInfo.GetTotalAmountAfterDiscount());
 	}
 	
-	private void setTotalPayment(View view, double totalPayment)
+	private void updateTotalAmount(View view, double totalPayment, double totalPaymentAfterDiscount)
 	{
-		TextView totalPaymentView = (TextView) view.findViewById(R.id.totalPaymentView);
-
+		TextView totalPaymentView = (TextView) view.findViewById(R.id.beforwTotalAmountView);
 		NumberFormat format = NumberFormat.getInstance();
 		format.setMaximumFractionDigits(MAXIMUM_FRACTION_DIGITS);
 		totalPaymentView.setText(format.format(totalPayment) + getString(R.string.currency_india));
+		
+		TextView totalPaymentViewAfterDiscount = (TextView) view.findViewById(R.id.totalPaymentView);
+		totalPaymentViewAfterDiscount.setText(format.format(totalPaymentAfterDiscount) + getString(R.string.currency_india));
 	}
 
 	public interface OnButtonClickListener { 
 		public void onPriceDownClicked();
 		public void onOkClicked(); 
 		public void onCancelClicked(); 
+	}
+	
+	public class DiscountWatcher implements TextWatcher {
+		@Override
+		public void afterTextChanged(Editable s) {
+		}
+
+		@Override
+		public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+		}
+
+		@Override
+		public void onTextChanged(CharSequence s, int start, int before, int count) {
+			if (s.length() == 0) {
+				registerManager.updateDiscountValue(0);
+			} else {
+				registerManager.updateDiscountValue(Integer.parseInt(s.toString()));
+			}
+		}
+
 	}
 }

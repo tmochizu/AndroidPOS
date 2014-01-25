@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import com.ricoh.pos.data.Order;
+import com.ricoh.pos.data.OrderUpdateInfo;
 import com.ricoh.pos.data.Product;
 import com.ricoh.pos.data.SingleSalesRecord;
 
@@ -80,7 +81,9 @@ public class RegisterManager {
 			if (listener == null) {
 				throw new IllegalStateException("UpdateOrderListener to register is null");
 			}
-			listener.notifyUpdateOrder(getTotalAmount());
+			listener.notifyUpdateOrder(new OrderUpdateInfo(getTotalAmount()
+					, discountValue
+					, getTotalAmount() - discountValue));
 		}
 	}
 	
