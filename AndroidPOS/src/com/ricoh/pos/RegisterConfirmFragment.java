@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.ricoh.pos.data.OrderUpdateInfo;
 import com.ricoh.pos.model.RegisterManager;
@@ -45,17 +46,7 @@ public class RegisterConfirmFragment extends Fragment implements UpdateOrderList
 		View v = inflater.inflate(R.layout.fragment_register_confirm, container, false);
 		
 		EditText discountView = (EditText) v.findViewById(R.id.discountValue);
-		discountView.addTextChangedListener(new DiscountWatcher());
-		
-		Button price_down_button = (Button) v.findViewById(R.id.price_down_button);
-		price_down_button.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				if (buttonClickListener != null) {  
-					buttonClickListener.onPriceDownClicked();  
-				}
-			}
-		});
+		discountView.addTextChangedListener(new DiscountWatcher(discountView));
 
 		Button ok_button = (Button) v.findViewById(R.id.ok_button);
 		ok_button.setOnClickListener(new OnClickListener() {
@@ -77,7 +68,7 @@ public class RegisterConfirmFragment extends Fragment implements UpdateOrderList
 			}
 		});
 		
-		double totalAmount = registerManager.getTotalAmount();
+		double totalAmount = registerManager.getOriginalTotalAmount();
 		updateTotalAmount(v, totalAmount, totalAmount);
 		
 		return v;
@@ -92,8 +83,8 @@ public class RegisterConfirmFragment extends Fragment implements UpdateOrderList
 	@Override
 	public void notifyUpdateOrder(OrderUpdateInfo orderInfo) {
 		updateTotalAmount(getView(),
-				orderInfo.GetTotalAmountBeforeDiscount(),
-				orderInfo.GetTotalAmountAfterDiscount());
+				orderInfo.getTotalAmountBeforeDiscount(),
+				orderInfo.getTotalAmountAfterDiscount());
 	}
 	
 	private void updateTotalAmount(View view, double totalPayment, double totalPaymentAfterDiscount)
@@ -114,6 +105,13 @@ public class RegisterConfirmFragment extends Fragment implements UpdateOrderList
 	}
 	
 	public class DiscountWatcher implements TextWatcher {
+		private EditText discountEditText;
+		private Boolean ignoreNextTextChange = false;
+
+		public DiscountWatcher(EditText editText) {
+			this.discountEditText = editText;
+		}
+		
 		@Override
 		public void afterTextChanged(Editable s) {
 		}
@@ -127,9 +125,14 @@ public class RegisterConfirmFragment extends Fragment implements UpdateOrderList
 			if (s.length() == 0) {
 				registerManager.updateDiscountValue(0);
 			} else {
-				registerManager.updateDiscountValue(Integer.parseInt(s.toString()));
+				try {
+					registerManager.updateDiscountValue(Double.parseDouble(s.toString()));
+				} catch (IllegalArgumentException e)
+				{
+					Toast.makeText(getActivity().getBaseContext(), R.string.discount_error, Toast.LENGTH_LONG).show();
+					registerManager.updateDiscountValue(0);
+				}
 			}
 		}
-
 	}
 }

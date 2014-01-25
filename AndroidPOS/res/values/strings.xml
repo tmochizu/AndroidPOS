@@ -19,4 +19,5 @@
     <string name="currency_india">Rp</string>
     <string name="number_tag">X</string>
     <string name="discount_error">Discount value is larger than total amount</string>
+    <string name="discount">Discount</string>
 </resources>

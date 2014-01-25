@@ -11,15 +11,15 @@ public class OrderUpdateInfo {
 		this.totalAmountAfterDiscount = totalAmountAfterDiscount;
 	}
 	
-	public double GetTotalAmountBeforeDiscount() {
+	public double getTotalAmountBeforeDiscount() {
 		return totalAmountBeforeDiscount;
 	}
 	
-	public double GetDiscountAmount() {
+	public double getDiscountAmount() {
 		return discountAmount;
 	}
 	
-	public double GetTotalAmountAfterDiscount() {
+	public double getTotalAmountAfterDiscount() {
 		return totalAmountAfterDiscount;
 	}
 }

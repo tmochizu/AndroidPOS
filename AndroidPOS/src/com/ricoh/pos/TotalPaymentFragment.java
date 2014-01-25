@@ -59,7 +59,7 @@ public class TotalPaymentFragment extends Fragment implements UpdateOrderListene
 
 		NumberFormat format = NumberFormat.getInstance();
 		format.setMaximumFractionDigits(MAXIMUM_FRACTION_DIGITS);
-		totalPaymentView.setText(format.format(orderInfo.GetTotalAmountBeforeDiscount()) + getString(R.string.currency_india));
+		totalPaymentView.setText(format.format(orderInfo.getTotalAmountBeforeDiscount()) + getString(R.string.currency_india));
 	}
 
 	@Override

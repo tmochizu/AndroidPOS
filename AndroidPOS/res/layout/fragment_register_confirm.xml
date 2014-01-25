@@ -20,7 +20,7 @@
                 android:id="@+id/beforwTotalAmountText"
                 android:layout_width="200dp"
                 android:layout_height="wrap_content"
-                android:text="Original Total"
+                android:text="@+string/original_total"
                 android:textAlignment="center"
                 android:textAppearance="?android:attr/textAppearanceLarge" />
 
@@ -42,18 +42,18 @@
                 android:id="@+id/discountValueText"
                 android:layout_width="200dp"
                 android:layout_height="wrap_content"
-                android:text="Discount"
+                android:text="@+string/discount"
                 android:textAlignment="center"
                 android:textAppearance="?android:attr/textAppearanceLarge" />
 
             <EditText
                 android:id="@+id/discountValue"
                 android:layout_width="100dp"
-                android:layout_height="30dp"
+                android:layout_height="wrap_content"
                 android:layout_gravity="left"
+                android:inputType="numberDecimal"
                 android:adjustViewBounds="true"
                 android:scaleType="fitCenter" />
-
         </LinearLayout>
 
         <LinearLayout
@@ -78,14 +78,6 @@
                 android:textAppearance="?android:attr/textAppearanceLarge" />
         </LinearLayout>
     </LinearLayout>
-
-    <Button
-        android:id="@+id/price_down_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:text="@+string/price_down"
-        android:textAlignment="center" />
 
     <LinearLayout
         android:layout_width="fill_parent"
