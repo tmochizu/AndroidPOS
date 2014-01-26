@@ -14,7 +14,7 @@ import com.ricoh.pos.data.WomanShopDataDef;
 
 public class WomanShopIOManager implements IOManager {
 
-	private static String DATABASE_NAME = "products";
+	private static String DATABASE_NAME = "products_dummy";
 
 	public WomanShopIOManager() {
 		// Nothing to do
@@ -43,8 +43,8 @@ public class WomanShopIOManager implements IOManager {
 			String record;
 			while ((record = bufferReader.readLine()) != null) {
 				String[] fieldValues = record.split(",");
-				Log.d("debug", "S No." + fieldValues[0]);
-				
+				Log.d("debug", "Product Code" + fieldValues[0]);
+
 				int i = 0;
 				for (WomanShopDataDef field : WomanShopDataDef.values()) {
 					contentValue.put(field.name(), fieldValues[i++]);
@@ -63,13 +63,20 @@ public class WomanShopIOManager implements IOManager {
 		Cursor cursor = null;
 
 		try {
-			cursor = database.query(DATABASE_NAME, new String[] { WomanShopDataDef.S_NO.name(),
-					WomanShopDataDef.PRODUCT_ID.name(), WomanShopDataDef.CATEGORY.name(),
-					WomanShopDataDef.OFFICE_NAME.name(), WomanShopDataDef.PRODUCT_NAME.name(),
-					WomanShopDataDef.PRICE_PIECE.name(), WomanShopDataDef.NO_OF_PIECES.name(),
-					WomanShopDataDef.PRICE_BOX.name(), WomanShopDataDef.TAX_TYPE.name(),
-					WomanShopDataDef.TAX_PERCENTAGE.name() }, null, null, null, null, null);
+			cursor = database.query(
+					DATABASE_NAME,
+					new String[] { WomanShopDataDef.PRODUCT_CODE.name(),
+							WomanShopDataDef.PRODUCT_CATEGORY.name(),
+							WomanShopDataDef.ITEM_CATEGORY.name(),
+							WomanShopDataDef.QTY.name(),
+							WomanShopDataDef.SALE_PRICE.name(),
+							WomanShopDataDef.TOTAL_SALE_PRICE.name(),
+							WomanShopDataDef.COST_TO_ENTREPRENEUR.name(),
+							WomanShopDataDef.TOTAL_COST_TO_ENTREP.name(),
+							WomanShopDataDef.TOTAL_PROFIT_TO_ENTREP.name() }, 
+							null, null, null, null, null);
 			String[] results = new String[cursor.getCount()];
+			Log.d("debug", "count:" + cursor.getCount());
 			for (int i = 0; i < cursor.getCount(); i++) {
 				results[i] = readCursor(cursor);
 			}
@@ -83,16 +90,22 @@ public class WomanShopIOManager implements IOManager {
 
 	// TODO: Temporary function
 	@Override
-	public String searchByID(SQLiteDatabase database, int id) {
+	public String searchByCode(SQLiteDatabase database, String code) {
 		Cursor cursor = null;
 		try {
-			cursor = database.query(DATABASE_NAME, new String[] { WomanShopDataDef.S_NO.name(),
-					WomanShopDataDef.PRODUCT_ID.name(), WomanShopDataDef.CATEGORY.name(),
-					WomanShopDataDef.OFFICE_NAME.name(), WomanShopDataDef.PRODUCT_NAME.name(),
-					WomanShopDataDef.PRICE_PIECE.name(), WomanShopDataDef.NO_OF_PIECES.name(),
-					WomanShopDataDef.PRICE_BOX.name(), WomanShopDataDef.TAX_TYPE.name(),
-					WomanShopDataDef.TAX_PERCENTAGE.name() }, WomanShopDataDef.PRODUCT_ID.name()
-					+ " = ?", new String[] { "" + id }, null, null, null);
+			cursor = database.query(
+					DATABASE_NAME, 
+					new String[] { WomanShopDataDef.PRODUCT_CODE.name(),
+							WomanShopDataDef.PRODUCT_CATEGORY.name(),
+							WomanShopDataDef.ITEM_CATEGORY.name(),
+							WomanShopDataDef.QTY.name(),
+							WomanShopDataDef.SALE_PRICE.name(),
+							WomanShopDataDef.TOTAL_SALE_PRICE.name(),
+							WomanShopDataDef.COST_TO_ENTREPRENEUR.name(),
+							WomanShopDataDef.TOTAL_COST_TO_ENTREP.name(),
+							WomanShopDataDef.TOTAL_PROFIT_TO_ENTREP.name() }, 
+							WomanShopDataDef.PRODUCT_CODE.name() + " = ?", 
+							new String[] { code }, null, null, null);
 			return readCursor(cursor);
 		} finally {
 			if (cursor != null) {
@@ -114,32 +127,30 @@ public class WomanShopIOManager implements IOManager {
 	private String readCursor(Cursor cursor) {
 		String result = "";
 
-		int indexSNo = cursor.getColumnIndex(WomanShopDataDef.S_NO.name());
-		int indexProductId = cursor.getColumnIndex(WomanShopDataDef.PRODUCT_ID.name());
-		int indexCategory = cursor.getColumnIndex(WomanShopDataDef.CATEGORY.name());
-		int indexOfficeName = cursor.getColumnIndex(WomanShopDataDef.OFFICE_NAME.name());
-		int indexProductName = cursor.getColumnIndex(WomanShopDataDef.PRODUCT_NAME.name());
-		int indexPricePiece = cursor.getColumnIndex(WomanShopDataDef.PRICE_PIECE.name());
-		int indexNoOfPieces = cursor.getColumnIndex(WomanShopDataDef.NO_OF_PIECES.name());
-		int indexPriceBox = cursor.getColumnIndex(WomanShopDataDef.PRICE_BOX.name());
-		int indexTaxType = cursor.getColumnIndex(WomanShopDataDef.TAX_TYPE.name());
-		int indexTaxPercentage = cursor.getColumnIndex(WomanShopDataDef.TAX_PERCENTAGE.name());
+		int indexProductCode = cursor.getColumnIndex(WomanShopDataDef.PRODUCT_CODE.name());
+		int indexProductCategory = cursor.getColumnIndex(WomanShopDataDef.PRODUCT_CATEGORY.name());
+		int indexItemCategory = cursor.getColumnIndex(WomanShopDataDef.ITEM_CATEGORY.name());
+		int indexQTY = cursor.getColumnIndex(WomanShopDataDef.QTY.name());
+		int indexSalePrice = cursor.getColumnIndex(WomanShopDataDef.SALE_PRICE.name());
+		int indexTotalSalePrice = cursor.getColumnIndex(WomanShopDataDef.TOTAL_SALE_PRICE.name());
+		int indexCostToEntrepreneur = cursor.getColumnIndex(WomanShopDataDef.COST_TO_ENTREPRENEUR.name());
+		int indexTotalCostToEntrep = cursor.getColumnIndex(WomanShopDataDef.TOTAL_COST_TO_ENTREP.name());
+		int indexTotalProfitToEntrep = cursor.getColumnIndex(WomanShopDataDef.TOTAL_PROFIT_TO_ENTREP.name());
 
 		if (cursor.moveToNext()) {
-			int sNo = cursor.getInt(indexSNo);
-			int productId = cursor.getInt(indexProductId);
-			String category = cursor.getString(indexCategory);
-			String officeName = cursor.getString(indexOfficeName);
-			String productName = cursor.getString(indexProductName);
-			double pricePiece = cursor.getDouble(indexPricePiece);
-			int noOfPieces = cursor.getInt(indexNoOfPieces);
-			double priceBox = cursor.getDouble(indexPriceBox);
-			String taxType = cursor.getString(indexTaxType);
-			int taxPercentage = cursor.getInt(indexTaxPercentage);
+			String productCode = cursor.getString(indexProductCode);
+			String productCategory = cursor.getString(indexProductCategory);
+			String itemCategory = cursor.getString(indexItemCategory);
+			int qty = cursor.getInt(indexQTY);
+			double salePrice = cursor.getDouble(indexSalePrice);
+			double totalSalePrice = cursor.getDouble(indexTotalSalePrice);
+			double costToEntrepreneur = cursor.getDouble(indexCostToEntrepreneur);
+			double totalCostToEntrep = cursor.getDouble(indexTotalCostToEntrep);
+			double totalProfitToEntrep = cursor.getDouble(indexTotalProfitToEntrep);
 
-			result += sNo + ":" + productId + ":" + category + ":" + officeName + ":" + productName
-					+ ":" + pricePiece + ":" + noOfPieces + ":" + priceBox + ":" + taxType + ":"
-					+ taxPercentage + "\n";
+			result += productCode + ":" + productCategory + ":" + itemCategory + ":" + qty + ":"
+					+ salePrice + ":" + totalSalePrice + ":" + costToEntrepreneur + ":"
+					+ totalCostToEntrep + ":" + totalProfitToEntrep + ":" + "\n";
 		}
 		return result;
 	}

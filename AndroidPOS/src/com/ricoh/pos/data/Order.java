@@ -58,6 +58,10 @@ public class Order {
 	public Product getProduct(){
 		return product;
 	}
+	
+	public String getProductCode(){
+		return product.getCode();
+	}
 
 	public String getProductCategory(){
 		 return product.getCategory();
