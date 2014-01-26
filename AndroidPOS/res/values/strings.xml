@@ -21,4 +21,6 @@
     <string name="discount_error">Discount value is larger than total amount</string>
     <string name="discount">Discount</string>
     <string name="zero_order_error">The number of order is 0</string>
+    <string name="title_oneday_total_sales">Total Sales</string>
+    <string name="title_oneday_total_revenue">Total Revenue</string>
 </resources>

@@ -58,6 +58,24 @@ public class SalesRecordManager {
 		throw new IllegalStateException("Single sales record of the date is not found");
 	}
 	
+	public double getOneDayTotalSales(Date date){
+		ArrayList<SingleSalesRecord> salesRecords = restoreSingleSalesRecordsOfTheDay(date);
+		double totalSales = 0;
+		for (SingleSalesRecord record : salesRecords) {
+			totalSales += record.getTotalSales();
+		}
+		return totalSales;
+	}
+	
+	public double getOneDayTotalRevenue(Date date){
+		ArrayList<SingleSalesRecord> salesRecords = restoreSingleSalesRecordsOfTheDay(date);
+		double totalRevenue = 0;
+		for (SingleSalesRecord record : salesRecords) {
+			totalRevenue += record.getTotalRevenue();
+		}
+		return totalRevenue;
+	}
+	
 	private boolean areSameDay(Date date1, Date date2){
 		Calendar cal1 = Calendar.getInstance();
 		cal1.setTime(date1);

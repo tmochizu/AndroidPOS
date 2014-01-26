@@ -21,6 +21,11 @@ SalesRecordListFragment.Callbacks{
 		SalesRecordDetailFragment fragment = new SalesRecordDetailFragment();
 		getSupportFragmentManager().beginTransaction()
 				.replace(R.id.salesrecord_detail_container, fragment).commit();
+		
+		// add OneDeySalesFragment
+		OneDaySalesFragment oneDaySalesFragment = new OneDaySalesFragment();
+		getSupportFragmentManager().beginTransaction()
+				.replace(R.id.oneday_sales_container, oneDaySalesFragment).commit();
 
 		// TODO: If exposing deep links into your app, handle intents here.
 	}
