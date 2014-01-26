@@ -34,10 +34,10 @@ public interface IOManager {
 	public String[] searchAlldata(SQLiteDatabase database);
 	
 	/**
-	 * Search a record from database by ID
+	 * Search a record from database by product code
 	 * @param database database created in app
-	 * @param id connected with a record
+	 * @param product code connected with a record
 	 * @return search result
 	 */
-	public abstract String searchByID(SQLiteDatabase database, int id);
+	public abstract String searchByCode(SQLiteDatabase database, String code);
 }

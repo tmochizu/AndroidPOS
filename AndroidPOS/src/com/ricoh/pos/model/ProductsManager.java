@@ -29,17 +29,19 @@ public class ProductsManager {
 		for (String result : results) {
 			String delims = "[:]+";
 			String[] fieldData = result.split(delims);
-			Product product = new Product(fieldData[WomanShopDataDef.CATEGORY.ordinal()],
-					fieldData[WomanShopDataDef.PRODUCT_NAME.ordinal()]);
+			Product product = new Product(fieldData[WomanShopDataDef.PRODUCT_CODE.ordinal()],
+					fieldData[WomanShopDataDef.PRODUCT_CATEGORY.ordinal()],
+					fieldData[WomanShopDataDef.ITEM_CATEGORY.ordinal()]);
 
-			Log.d("debug", fieldData[WomanShopDataDef.CATEGORY.ordinal()] + ":"
-					+ fieldData[WomanShopDataDef.PRODUCT_NAME.ordinal()]);
+			Log.d("debug", fieldData[WomanShopDataDef.PRODUCT_CATEGORY.ordinal()] + ":"
+					+ fieldData[WomanShopDataDef.ITEM_CATEGORY.ordinal()]);
 
-			product.setProductImagePath("product"
-					+ fieldData[WomanShopDataDef.PRODUCT_ID.ordinal()]);
-			product.setPrice(Double.parseDouble(fieldData[WomanShopDataDef.PRICE_PIECE
-					.ordinal()]));
-			addNewProductInCategory(fieldData[WomanShopDataDef.CATEGORY.ordinal()], product);
+			product.setOriginalCost(Double
+					.parseDouble(fieldData[WomanShopDataDef.COST_TO_ENTREPRENEUR.ordinal()]));
+			product.setPrice(Double.parseDouble(fieldData[WomanShopDataDef.SALE_PRICE.ordinal()]));
+			product.setStock(Integer.parseInt(fieldData[WomanShopDataDef.QTY.ordinal()]));
+			product.setProductImagePath(fieldData[WomanShopDataDef.PRODUCT_CODE.ordinal()]);
+			addNewProductInCategory(fieldData[WomanShopDataDef.PRODUCT_CATEGORY.ordinal()], product);
 		}
 	}
 
@@ -56,7 +58,7 @@ public class ProductsManager {
 		if (this.productsMap.containsKey(category)) {
 			ArrayList<Product> produtcsInCategory = productsMap.get(category);
 			for (Product registeredProduct : produtcsInCategory) {
-				if (registeredProduct.getName().equals(product.getName())) {
+				if (registeredProduct.equals(product)) {
 					// TODO: Should update data
 					return;
 				}
@@ -70,11 +72,9 @@ public class ProductsManager {
 	}
 
 	public Product getProductByName(String category, String productName) {
-
 		if (productName == null || productName.length() == 0) {
 			throw new IllegalArgumentException("Invalid product name");
 		}
-
 		if (category == null || category.length() == 0) {
 			throw new IllegalArgumentException("Invalid category name");
 		}
@@ -90,22 +90,31 @@ public class ProductsManager {
 				return product;
 			}
 		}
-
 		// Not Found
 		return null;
 	}
 
-	public Product getProductFromId(String category, int productId) {
-
+	public Product getProductFromCode(String category, String productCode) {
 		if (category == null || category.length() == 0) {
 			throw new IllegalArgumentException("Invalid category name");
+		}
+		if (productCode == null || productCode.length() == 0) {
+			throw new IllegalArgumentException("Invalid productCode name");
 		}
 
 		if (!productsMap.containsKey(category)) {
 			throw new IllegalArgumentException("Passing category does not exist: " + category);
-		} else {
-			return productsMap.get(category).get(productId);
 		}
+		
+		ArrayList<Product> productList = productsMap.get(category);
+		for (Product product : productList) {
+			if (product.getCode().equals(productCode)) {
+				// Successfully found
+				return product;
+			}
+		}
+		// Not Found
+		return null;
 	}
 
 	public ArrayList<Product> getProductsInCategory(String category) {
@@ -159,5 +168,4 @@ public class ProductsManager {
 	public int getCategoryCount() {
 		return productsMap.entrySet().size();
 	}
-
 }

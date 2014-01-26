@@ -2,6 +2,7 @@ package com.ricoh.pos.data;
 
 public class Product {
 
+	private String code;
 	private String category;
 	private String name;
 	private double originalCost;
@@ -9,13 +10,17 @@ public class Product {
 	private int stock;
 	private String imagePath;
 
-	public Product(String category, String name) {
+	public Product(String code, String category, String name) {
+		if (code == null || code.length() == 0) {
+			throw new IllegalArgumentException("Passing code is not valid");
+		}
 		if (category == null || category.length() == 0) {
 			throw new IllegalArgumentException("Passing category is not valid");
 		}
 		if (name == null || name.length() == 0) {
 			throw new IllegalArgumentException("Passing name is not valid");
 		}
+		this.code = code;
 		this.category = category;
 		this.name = name;
 		this.originalCost = 0.0;
@@ -67,6 +72,10 @@ public class Product {
 	// Getter
 	// /////////////////////////
 
+	public String getCode() {
+		return this.code;
+	}
+	
 	public String getCategory() {
 		return this.category;
 	}
@@ -94,6 +103,6 @@ public class Product {
 	@Override
 	public boolean equals(Object object){
 		Product targetProduct = (Product) object;
-		return this.getCategory().equals(targetProduct.getCategory()) && this.name.equals(targetProduct.getName());
+		return this.code.equals(targetProduct.getCode());
 	}
 }

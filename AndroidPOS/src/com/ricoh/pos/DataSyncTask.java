@@ -56,9 +56,6 @@ public class DataSyncTask extends AsyncTask<String, Void, AsyncTaskResult<String
 			}
 			womanShopIOManager.insertRecords(database, bufferReader);
 
-			// TODO: Read test
-			Log.d("debug", womanShopIOManager.searchByID(database, 20));
-
 			String[] results = womanShopIOManager.searchAlldata(database);
 			for (String result : results) {
 				Log.d("debug", result);
