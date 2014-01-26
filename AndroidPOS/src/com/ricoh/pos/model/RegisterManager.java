@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import com.ricoh.pos.data.Order;
+import com.ricoh.pos.data.OrderUpdateInfo;
 import com.ricoh.pos.data.Product;
 import com.ricoh.pos.data.SingleSalesRecord;
 
@@ -80,17 +81,30 @@ public class RegisterManager {
 			if (listener == null) {
 				throw new IllegalStateException("UpdateOrderListener to register is null");
 			}
-			listener.notifyUpdateOrder(getTotalAmount());
+			listener.notifyUpdateOrder(new OrderUpdateInfo(getOriginalTotalAmount()
+					, discountValue
+					, getTotalAmountAfterDiscount()));
 		}
 	}
 	
-	public double getTotalAmount(){
+	public double getOriginalTotalAmount(){
 		double totalAmount = 0;
 		for (Order order: orderList) {
 			totalAmount += order.getTotalAmount();
 		}
-		totalAmount -= discountValue;
 		return totalAmount;
+	}
+	
+	public double getTotalAmountAfterDiscount(){
+		return getOriginalTotalAmount() - discountValue;
+	}
+	
+	public int getTotalNumberOfOrder() {
+		int totalNumber = 0;
+		for (Order order: orderList) {
+			totalNumber += order.getNumberOfOrder();
+		}
+		return totalNumber;
 	}
 	
 	public void clearAllOrders(){
@@ -127,7 +141,7 @@ public class RegisterManager {
 	
 	public void updateDiscountValue(double discountValue)
 	{
-		if (discountValue >= getTotalAmount()) {
+		if (discountValue >= getOriginalTotalAmount()) {
 			throw new IllegalArgumentException("discountValues is larger than totalAmount");
 		}
 		this.discountValue = discountValue;
