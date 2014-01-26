@@ -20,4 +20,5 @@
     <string name="number_tag">X</string>
     <string name="discount_error">Discount value is larger than total amount</string>
     <string name="discount">Discount</string>
+    <string name="zero_order_error">The number of order is 0</string>
 </resources>

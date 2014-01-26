@@ -99,6 +99,14 @@ public class RegisterManager {
 		return getOriginalTotalAmount() - discountValue;
 	}
 	
+	public int getTotalNumberOfOrder() {
+		int totalNumber = 0;
+		for (Order order: orderList) {
+			totalNumber += order.getNumberOfOrder();
+		}
+		return totalNumber;
+	}
+	
 	public void clearAllOrders(){
 		orderList = new ArrayList<Order>();
 		discountValue = 0;

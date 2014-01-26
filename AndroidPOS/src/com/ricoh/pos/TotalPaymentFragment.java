@@ -11,6 +11,7 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.ricoh.pos.data.OrderUpdateInfo;
 import com.ricoh.pos.model.RegisterManager;
@@ -45,8 +46,12 @@ public class TotalPaymentFragment extends Fragment implements UpdateOrderListene
 		ok_button.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				if (okButtonClickListener != null) {  
-					okButtonClickListener.onOkClicked();  
+				if (RegisterManager.getInstance().getTotalNumberOfOrder() > 0) {
+					if (okButtonClickListener != null) {  
+						okButtonClickListener.onOkClicked();  
+					}
+				} else {
+					Toast.makeText(getActivity().getBaseContext(), R.string.zero_order_error, Toast.LENGTH_LONG).show();
 				}
 			}
 		});
