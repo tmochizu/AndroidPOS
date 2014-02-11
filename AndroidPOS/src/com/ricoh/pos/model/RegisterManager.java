@@ -151,6 +151,7 @@ public class RegisterManager {
 	public SingleSalesRecord getSingleSalesRecord(){
 		SingleSalesRecord record = new SingleSalesRecord(new Date());
 		record.setOrders(orderList);
+		record.setDiscountValue(discountValue);
 		return record;
 	}
 	

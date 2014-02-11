@@ -71,6 +71,10 @@ public class Order {
 		return product.getName();
 	}
 	
+	public double getProductPrice(){
+		return product.getPrice();
+	}
+	
 	public double getTotalAmount(){
 		return product.getPrice() * num;
 	}

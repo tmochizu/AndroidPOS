@@ -4,6 +4,10 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
+import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
+
+import com.ricoh.pos.data.Order;
 import com.ricoh.pos.data.SingleSalesRecord;
 import com.ricoh.pos.dummy.DummyDataBaseAccessor;
 
@@ -11,12 +15,14 @@ public class SalesRecordManager {
 	
 	private static SalesRecordManager instance;
 	private DummyDataBaseAccessor dummyDataBaseAccessor;
+	private WomanShopSalesIOManager womanShopSalesIOManager;
 	
 	public static final String SALES_DATE_KEY = "SalesDate";
 	
 	private SalesRecordManager(){
 		// TODO: change DummDataBase to actual one.
 		dummyDataBaseAccessor = new DummyDataBaseAccessor();
+		womanShopSalesIOManager = new WomanShopSalesIOManager();
 	}
 	
 	public static SalesRecordManager getInstance(){
@@ -26,12 +32,26 @@ public class SalesRecordManager {
 		return instance;
 	}
 	
-	public void storeSingleSalesRecord(SingleSalesRecord record){
+	public void storeSingleSalesRecord(SQLiteDatabase database, SingleSalesRecord record){
 		if (record == null) {
 			throw new IllegalArgumentException("The passing record is null");
 		}
 		//TODO: save record to DataBase
 		dummyDataBaseAccessor.saveSalesRecord(record);
+		
+		ArrayList<Order> orders = record.getAllOrders();
+		for (Order order : orders) {
+			String salesRecord = order.getProductCode() + "," + order.getProductCategory() + ","
+					+ order.getProductName() + "," + order.getNumberOfOrder() + ","
+					+ order.getProductPrice() + "," + order.getTotalAmount() + ","
+					+ record.getDiscountValue() + "," + record.getSalesDate();
+			womanShopSalesIOManager.insertSingleRecord(database, salesRecord);
+		}
+		
+		String[] results = womanShopSalesIOManager.searchAlldata(database);
+		for (String result : results) {
+			Log.d("debug", "Sales:" + result);
+		}
 	}
 	
 	public ArrayList<SingleSalesRecord> restoreSingleSalesRecordsOfTheDay(Date date){

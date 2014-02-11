@@ -10,13 +10,13 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
-import com.ricoh.pos.data.WomanShopDataDef;
+import com.ricoh.pos.data.WomanShopSalesDef;
 
-public class WomanShopIOManager implements IOManager {
+public class WomanShopSalesIOManager implements IOManager {
 
-	private static String DATABASE_NAME = "products_dummy";
+	private static String DATABASE_NAME = "sales_dummy";
 
-	public WomanShopIOManager() {
+	public WomanShopSalesIOManager() {
 		// Nothing to do
 	}
 
@@ -46,7 +46,7 @@ public class WomanShopIOManager implements IOManager {
 				Log.d("debug", "Product Code" + fieldValues[0]);
 
 				int i = 0;
-				for (WomanShopDataDef field : WomanShopDataDef.values()) {
+				for (WomanShopSalesDef field : WomanShopSalesDef.values()) {
 					contentValue.put(field.name(), fieldValues[i++]);
 				}
 
@@ -60,8 +60,20 @@ public class WomanShopIOManager implements IOManager {
 	
 	@Override
 	public void insertSingleRecord(SQLiteDatabase database, String record) {
-		// TODO Auto-generated method stub
 		
+		ContentValues contentValue = new ContentValues();
+
+		String[] fieldValues = record.split(",");
+		Log.d("debug", "Product Code" + fieldValues[0]);
+
+		int i = 0;
+		for (WomanShopSalesDef field : WomanShopSalesDef.values()) {
+			contentValue.put(field.name(), fieldValues[i++]);
+		}
+
+		database.insertWithOnConflict(DATABASE_NAME, null, contentValue,
+				SQLiteDatabase.CONFLICT_REPLACE);
+
 	}
 
 	@Override
@@ -71,15 +83,14 @@ public class WomanShopIOManager implements IOManager {
 		try {
 			cursor = database.query(
 					DATABASE_NAME,
-					new String[] { WomanShopDataDef.PRODUCT_CODE.name(),
-							WomanShopDataDef.PRODUCT_CATEGORY.name(),
-							WomanShopDataDef.ITEM_CATEGORY.name(),
-							WomanShopDataDef.QTY.name(),
-							WomanShopDataDef.SALE_PRICE.name(),
-							WomanShopDataDef.TOTAL_SALE_PRICE.name(),
-							WomanShopDataDef.COST_TO_ENTREPRENEUR.name(),
-							WomanShopDataDef.TOTAL_COST_TO_ENTREP.name(),
-							WomanShopDataDef.TOTAL_PROFIT_TO_ENTREP.name() }, 
+					new String[] { WomanShopSalesDef.PRODUCT_CODE.name(),
+							WomanShopSalesDef.PRODUCT_CATEGORY.name(),
+							WomanShopSalesDef.ITEM_CATEGORY.name(),
+							WomanShopSalesDef.QTY.name(),
+							WomanShopSalesDef.SALE_PRICE.name(),
+							WomanShopSalesDef.TOTAL_SALE_PRICE.name(),
+							WomanShopSalesDef.DISCOUNT.name(),
+							WomanShopSalesDef.DATE.name() }, 
 							null, null, null, null, null);
 			String[] results = new String[cursor.getCount()];
 			Log.d("debug", "count:" + cursor.getCount());
@@ -101,16 +112,15 @@ public class WomanShopIOManager implements IOManager {
 		try {
 			cursor = database.query(
 					DATABASE_NAME, 
-					new String[] { WomanShopDataDef.PRODUCT_CODE.name(),
-							WomanShopDataDef.PRODUCT_CATEGORY.name(),
-							WomanShopDataDef.ITEM_CATEGORY.name(),
-							WomanShopDataDef.QTY.name(),
-							WomanShopDataDef.SALE_PRICE.name(),
-							WomanShopDataDef.TOTAL_SALE_PRICE.name(),
-							WomanShopDataDef.COST_TO_ENTREPRENEUR.name(),
-							WomanShopDataDef.TOTAL_COST_TO_ENTREP.name(),
-							WomanShopDataDef.TOTAL_PROFIT_TO_ENTREP.name() }, 
-							WomanShopDataDef.PRODUCT_CODE.name() + " = ?", 
+					new String[] { WomanShopSalesDef.PRODUCT_CODE.name(),
+							WomanShopSalesDef.PRODUCT_CATEGORY.name(),
+							WomanShopSalesDef.ITEM_CATEGORY.name(),
+							WomanShopSalesDef.QTY.name(),
+							WomanShopSalesDef.SALE_PRICE.name(),
+							WomanShopSalesDef.TOTAL_SALE_PRICE.name(),
+							WomanShopSalesDef.DISCOUNT.name(),
+							WomanShopSalesDef.DATE.name() }, 
+							WomanShopSalesDef.PRODUCT_CODE.name() + " = ?", 
 							new String[] { code }, null, null, null);
 			return readCursor(cursor);
 		} finally {
@@ -133,15 +143,14 @@ public class WomanShopIOManager implements IOManager {
 	private String readCursor(Cursor cursor) {
 		String result = "";
 
-		int indexProductCode = cursor.getColumnIndex(WomanShopDataDef.PRODUCT_CODE.name());
-		int indexProductCategory = cursor.getColumnIndex(WomanShopDataDef.PRODUCT_CATEGORY.name());
-		int indexItemCategory = cursor.getColumnIndex(WomanShopDataDef.ITEM_CATEGORY.name());
-		int indexQTY = cursor.getColumnIndex(WomanShopDataDef.QTY.name());
-		int indexSalePrice = cursor.getColumnIndex(WomanShopDataDef.SALE_PRICE.name());
-		int indexTotalSalePrice = cursor.getColumnIndex(WomanShopDataDef.TOTAL_SALE_PRICE.name());
-		int indexCostToEntrepreneur = cursor.getColumnIndex(WomanShopDataDef.COST_TO_ENTREPRENEUR.name());
-		int indexTotalCostToEntrep = cursor.getColumnIndex(WomanShopDataDef.TOTAL_COST_TO_ENTREP.name());
-		int indexTotalProfitToEntrep = cursor.getColumnIndex(WomanShopDataDef.TOTAL_PROFIT_TO_ENTREP.name());
+		int indexProductCode = cursor.getColumnIndex(WomanShopSalesDef.PRODUCT_CODE.name());
+		int indexProductCategory = cursor.getColumnIndex(WomanShopSalesDef.PRODUCT_CATEGORY.name());
+		int indexItemCategory = cursor.getColumnIndex(WomanShopSalesDef.ITEM_CATEGORY.name());
+		int indexQTY = cursor.getColumnIndex(WomanShopSalesDef.QTY.name());
+		int indexSalePrice = cursor.getColumnIndex(WomanShopSalesDef.SALE_PRICE.name());
+		int indexTotalSalePrice = cursor.getColumnIndex(WomanShopSalesDef.TOTAL_SALE_PRICE.name());
+		int indexDiscount = cursor.getColumnIndex(WomanShopSalesDef.DISCOUNT.name());
+		int indexDate = cursor.getColumnIndex(WomanShopSalesDef.DATE.name());
 
 		if (cursor.moveToNext()) {
 			String productCode = cursor.getString(indexProductCode);
@@ -150,14 +159,13 @@ public class WomanShopIOManager implements IOManager {
 			int qty = cursor.getInt(indexQTY);
 			double salePrice = cursor.getDouble(indexSalePrice);
 			double totalSalePrice = cursor.getDouble(indexTotalSalePrice);
-			double costToEntrepreneur = cursor.getDouble(indexCostToEntrepreneur);
-			double totalCostToEntrep = cursor.getDouble(indexTotalCostToEntrep);
-			double totalProfitToEntrep = cursor.getDouble(indexTotalProfitToEntrep);
+			double discount = cursor.getDouble(indexDiscount);
+			String date = cursor.getString(indexDate);
 
 			result += productCode + ":" + productCategory + ":" + itemCategory + ":" + qty + ":"
-					+ salePrice + ":" + totalSalePrice + ":" + costToEntrepreneur + ":"
-					+ totalCostToEntrep + ":" + totalProfitToEntrep + ":" + "\n";
+					+ salePrice + ":" + totalSalePrice + ":" + discount + ":" + date + "\n";
 		}
 		return result;
 	}
 }
+

@@ -25,6 +25,13 @@ public interface IOManager {
 	 */
 	public abstract void insertRecords(SQLiteDatabase database,
 			BufferedReader bufferReader);
+	
+	/**
+	 * Insert all record into database.
+	 * @param database database created in app
+	 * @param record single record
+	 */
+	public abstract void insertSingleRecord(SQLiteDatabase database, String record);
 
 	/**
 	 * Search all record from database.
