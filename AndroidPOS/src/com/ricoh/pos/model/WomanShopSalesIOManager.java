@@ -3,6 +3,7 @@ package com.ricoh.pos.model;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 
 import android.content.ContentValues;
 import android.content.res.AssetManager;
@@ -10,14 +11,17 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
+import com.ricoh.pos.data.Order;
+import com.ricoh.pos.data.SingleSalesRecord;
 import com.ricoh.pos.data.WomanShopSalesDef;
 
 public class WomanShopSalesIOManager implements IOManager {
 
 	private static String DATABASE_NAME = "sales_dummy";
+	private ArrayList<SingleSalesRecord> salesRecords;
 
 	public WomanShopSalesIOManager() {
-		// Nothing to do
+		this.salesRecords = new ArrayList<SingleSalesRecord>();
 	}
 
 	@Override
@@ -56,24 +60,6 @@ public class WomanShopSalesIOManager implements IOManager {
 		} catch (IOException e) {
 			Log.d("debug", "" + e + "");
 		}
-	}
-	
-	@Override
-	public void insertSingleRecord(SQLiteDatabase database, String record) {
-		
-		ContentValues contentValue = new ContentValues();
-
-		String[] fieldValues = record.split(",");
-		Log.d("debug", "Product Code" + fieldValues[0]);
-
-		int i = 0;
-		for (WomanShopSalesDef field : WomanShopSalesDef.values()) {
-			contentValue.put(field.name(), fieldValues[i++]);
-		}
-
-		database.insertWithOnConflict(DATABASE_NAME, null, contentValue,
-				SQLiteDatabase.CONFLICT_REPLACE);
-
 	}
 
 	@Override
@@ -129,6 +115,23 @@ public class WomanShopSalesIOManager implements IOManager {
 			}
 		}
 	}
+	
+	public void saveSalesRecord(SQLiteDatabase database, SingleSalesRecord record){
+		salesRecords.add(record);
+		
+		ArrayList<Order> orders = record.getAllOrders();
+		for (Order order : orders) {
+			String salesRecord = order.getProductCode() + "," + order.getProductCategory() + ","
+					+ order.getProductName() + "," + order.getNumberOfOrder() + ","
+					+ order.getProductPrice() + "," + order.getTotalAmount() + ","
+					+ record.getDiscountValue() + "," + record.getSalesDate();
+			insertSingleRecord(database, salesRecord);
+		}
+	}
+	
+	public ArrayList<SingleSalesRecord> getSalesRecords(){
+		return salesRecords;
+	}
 
 	private void readFieldName(BufferedReader bufferReader) throws IOException {
 		String record = bufferReader.readLine();
@@ -167,5 +170,24 @@ public class WomanShopSalesIOManager implements IOManager {
 		}
 		return result;
 	}
+	
+	private void insertSingleRecord(SQLiteDatabase database, String record) {
+		
+		ContentValues contentValue = new ContentValues();
+
+		String[] fieldValues = record.split(",");
+		Log.d("debug", "Product Code" + fieldValues[0]);
+
+		int i = 0;
+		for (WomanShopSalesDef field : WomanShopSalesDef.values()) {
+			contentValue.put(field.name(), fieldValues[i++]);
+		}
+
+		database.insertWithOnConflict(DATABASE_NAME, null, contentValue,
+				SQLiteDatabase.CONFLICT_REPLACE);
+
+	}
+	
+	
 }
 

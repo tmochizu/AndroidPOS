@@ -57,12 +57,6 @@ public class WomanShopIOManager implements IOManager {
 			Log.d("debug", "" + e + "");
 		}
 	}
-	
-	@Override
-	public void insertSingleRecord(SQLiteDatabase database, String record) {
-		// TODO Auto-generated method stub
-		
-	}
 
 	@Override
 	public String[] searchAlldata(SQLiteDatabase database) {

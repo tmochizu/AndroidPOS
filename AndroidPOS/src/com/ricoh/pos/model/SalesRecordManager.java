@@ -14,14 +14,11 @@ import com.ricoh.pos.dummy.DummyDataBaseAccessor;
 public class SalesRecordManager {
 	
 	private static SalesRecordManager instance;
-	private DummyDataBaseAccessor dummyDataBaseAccessor;
 	private WomanShopSalesIOManager womanShopSalesIOManager;
 	
 	public static final String SALES_DATE_KEY = "SalesDate";
 	
 	private SalesRecordManager(){
-		// TODO: change DummDataBase to actual one.
-		dummyDataBaseAccessor = new DummyDataBaseAccessor();
 		womanShopSalesIOManager = new WomanShopSalesIOManager();
 	}
 	
@@ -36,18 +33,10 @@ public class SalesRecordManager {
 		if (record == null) {
 			throw new IllegalArgumentException("The passing record is null");
 		}
-		//TODO: save record to DataBase
-		dummyDataBaseAccessor.saveSalesRecord(record);
 		
-		ArrayList<Order> orders = record.getAllOrders();
-		for (Order order : orders) {
-			String salesRecord = order.getProductCode() + "," + order.getProductCategory() + ","
-					+ order.getProductName() + "," + order.getNumberOfOrder() + ","
-					+ order.getProductPrice() + "," + order.getTotalAmount() + ","
-					+ record.getDiscountValue() + "," + record.getSalesDate();
-			womanShopSalesIOManager.insertSingleRecord(database, salesRecord);
-		}
+		womanShopSalesIOManager.saveSalesRecord(database, record);
 		
+		//TODO: for debug
 		String[] results = womanShopSalesIOManager.searchAlldata(database);
 		for (String result : results) {
 			Log.d("debug", "Sales:" + result);
@@ -55,7 +44,7 @@ public class SalesRecordManager {
 	}
 	
 	public ArrayList<SingleSalesRecord> restoreSingleSalesRecordsOfTheDay(Date date){
-		ArrayList<SingleSalesRecord> allSalesRecords = dummyDataBaseAccessor.getSalesRecords();
+		ArrayList<SingleSalesRecord> allSalesRecords = womanShopSalesIOManager.getSalesRecords();
 		ArrayList<SingleSalesRecord> salesRecordsOfTheDay = new ArrayList<SingleSalesRecord>();
 		
 		for (SingleSalesRecord record : allSalesRecords) {
@@ -67,7 +56,7 @@ public class SalesRecordManager {
 	}
 	
 	public SingleSalesRecord getSingleSalesRecord(Date date){
-		ArrayList<SingleSalesRecord> allSalesRecords = dummyDataBaseAccessor.getSalesRecords();
+		ArrayList<SingleSalesRecord> allSalesRecords = womanShopSalesIOManager.getSalesRecords();
 		
 		for (SingleSalesRecord record : allSalesRecords) {
 			if (areSameMinute(record.getSalesDate(), date)) {
