@@ -77,9 +77,14 @@ public class SalesRecordListFragment extends ListFragment {
 	private ArrayList<String> getSalesRecordListTitles(Date date){
 		ArrayList<SingleSalesRecord> records =  SalesRecordManager.getInstance().restoreSingleSalesRecordsOfTheDay(date);
 		ArrayList<String> titles = new ArrayList<String>();
+		
+		// TODO: Fix Me
+		titles.add("ALL");
+		
 		for (SingleSalesRecord record : records) {
 			titles.add(record.getSalesDate().toString());
 		}
+		
 		return titles;
 	}
 

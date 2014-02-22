@@ -79,6 +79,10 @@ public class Order {
 		return product.getPrice() * num;
 	}
 	
+	public double getTotalCost(){
+		return product.getOriginalCost() * num;
+	}
+	
 	protected boolean equals(String productName){
 		return productName.equals(product.getName());
 	}

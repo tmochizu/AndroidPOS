@@ -34,6 +34,30 @@ public class SingleSalesRecord {
 		return orders;
 	}
 	
+	public double getTotalSales(){
+		double totalSales = 0;
+		for (Order order : orders) {
+			totalSales += order.getTotalAmount();
+		}
+		return totalSales;
+	}
+	
+	public double getTotalCost(){
+		double totalCost = 0;
+		for (Order order : orders) {
+			totalCost += order.getTotalCost();
+		}
+		return totalCost;
+	}
+	
+	public double getTotalRevenue(){
+		double totalRevenue = getTotalSales() - getTotalCost();
+		if (totalRevenue <= 0) {
+			throw new IllegalStateException("Total revenue have to be positive");
+		}
+		return totalRevenue;
+	}
+	
 	public Date getSalesDate(){
 		return salesDate;
 	}
