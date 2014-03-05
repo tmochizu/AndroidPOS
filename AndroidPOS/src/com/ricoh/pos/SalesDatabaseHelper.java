@@ -16,7 +16,7 @@ public class SalesDatabaseHelper extends SQLiteOpenHelper {
 	@Override
 	public void onCreate(SQLiteDatabase db) {
 		db.execSQL("Create Table sales_dummy (" + "_id Integer Primary Key, "
-				+ WomanShopSalesDef.PRODUCT_CODE.name() + " Text UNIQUE, "
+				+ WomanShopSalesDef.PRODUCT_CODE.name() + " Text, "
 				+ WomanShopSalesDef.PRODUCT_CATEGORY.name() + " Text, "
 				+ WomanShopSalesDef.ITEM_CATEGORY.name() + " Text, "
 				+ WomanShopSalesDef.QTY.name() + " Integer, "
