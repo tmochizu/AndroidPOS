@@ -6,7 +6,6 @@ import java.util.Date;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
-import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,8 +24,6 @@ import com.ricoh.pos.model.SalesRecordManager;
 public class SalesRecordDetailFragment extends ListFragment {
 	
 	private ArrayList<Order> orders;
-	
-	public static final String ARG_DATE_ID = "ARG_DATE_ID";
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {

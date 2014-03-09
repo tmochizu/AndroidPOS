@@ -3,16 +3,15 @@ package com.ricoh.pos;
 import java.text.NumberFormat;
 import java.util.Date;
 
-import com.ricoh.pos.data.SingleSalesRecord;
-import com.ricoh.pos.model.SalesCalenderManager;
-import com.ricoh.pos.model.SalesRecordManager;
-
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import com.ricoh.pos.model.SalesCalenderManager;
+import com.ricoh.pos.model.SalesRecordManager;
 
 public class OneDaySalesFragment extends Fragment {
 
