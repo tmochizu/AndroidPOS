@@ -36,15 +36,11 @@ SalesRecordListFragment.Callbacks{
 	 */
 	@Override
 	public void onItemSelected(String id) {
-		/*
-		Bundle arguments = new Bundle();
-		arguments.putString(CategoryDetailFragment.ARG_ITEM_ID, id);
+		
 		SalesRecordDetailFragment fragment = new SalesRecordDetailFragment();
-		fragment.setArguments(arguments);
 		getSupportFragmentManager().beginTransaction()
 				.replace(R.id.salesrecord_detail_container, fragment).commit();
-				*/
-
+				
 	}
 	
 }

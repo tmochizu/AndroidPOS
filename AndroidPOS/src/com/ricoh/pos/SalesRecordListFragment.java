@@ -33,6 +33,10 @@ public class SalesRecordListFragment extends ListFragment {
 	 */
 	private int mActivatedPosition = ListView.INVALID_POSITION;
 	
+	private Date selectedDate;
+	
+	private ArrayList<SingleSalesRecord> oneDaySalesRecords;
+	
 	/**
 	 * A callback interface that all activities containing this fragment must
 	 * implement. This mechanism allows activities to be notified of item
@@ -52,6 +56,7 @@ public class SalesRecordListFragment extends ListFragment {
 	private static Callbacks sDummyCallbacks = new Callbacks() {
 		@Override
 		public void onItemSelected(String id) {
+			
 		}
 	};
 	
@@ -67,21 +72,26 @@ public class SalesRecordListFragment extends ListFragment {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		Date date = SalesCalenderManager.getInstance().getSelectedDate();
+		this.selectedDate = SalesCalenderManager.getInstance().getSelectedDate();
+		this.oneDaySalesRecords =  SalesRecordManager.getInstance().restoreSingleSalesRecordsOfTheDay(selectedDate);
+		
+		Date initialDate = this.oneDaySalesRecords.get(0).getSalesDate();
+		SalesCalenderManager.getInstance().setSelectedSalesDate(initialDate);
+		
 		setListAdapter(new ArrayAdapter<String>(getActivity(),
-				android.R.layout.simple_list_item_activated_1, android.R.id.text1,getSalesRecordListTitles(date)
+				android.R.layout.simple_list_item_activated_1, android.R.id.text1,getSalesRecordListTitles(this.selectedDate)
 				));
 				
 	}
 	
 	private ArrayList<String> getSalesRecordListTitles(Date date){
-		ArrayList<SingleSalesRecord> records =  SalesRecordManager.getInstance().restoreSingleSalesRecordsOfTheDay(date);
+		//ArrayList<SingleSalesRecord> records =  SalesRecordManager.getInstance().restoreSingleSalesRecordsOfTheDay(date);
 		ArrayList<String> titles = new ArrayList<String>();
 		
 		// TODO: Fix Me
-		titles.add("ALL");
+		//titles.add("ALL");
 		
-		for (SingleSalesRecord record : records) {
+		for (SingleSalesRecord record : this.oneDaySalesRecords) {
 			titles.add(record.getSalesDate().toString());
 		}
 		
@@ -135,8 +145,10 @@ public class SalesRecordListFragment extends ListFragment {
 		// Notify the active callbacks interface (the activity, if the
 		// fragment is attached to one) that an item has been selected.
 		
-		//TODO
-		//mCallbacks.onItemSelected(womanShopContent.ITEMS.get(position).id);
+		Date clickedDate = this.oneDaySalesRecords.get(position).getSalesDate();
+		SalesCalenderManager.getInstance().setSelectedSalesDate(clickedDate);
+		
+		mCallbacks.onItemSelected(clickedDate.toString());
 	}
 
 	@Override

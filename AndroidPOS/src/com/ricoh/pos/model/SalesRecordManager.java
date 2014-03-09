@@ -54,7 +54,7 @@ public class SalesRecordManager {
 		ArrayList<SingleSalesRecord> allSalesRecords = WomanShopSalesIOManager.getInstance().getSalesRecords();
 		
 		for (SingleSalesRecord record : allSalesRecords) {
-			if (areSameMinute(record.getSalesDate(), date)) {
+			if (areSameSecond(record.getSalesDate(), date)) {
 				return record;
 			}
 		}
@@ -97,7 +97,7 @@ public class SalesRecordManager {
 		}
 	}
 	
-	private boolean areSameMinute(Date date1, Date date2){
+	private boolean areSameSecond(Date date1, Date date2){
 		Calendar cal1 = Calendar.getInstance();
 		cal1.setTime(date1);
 		
@@ -108,7 +108,8 @@ public class SalesRecordManager {
 			 cal1.get(Calendar.MONTH) == cal2.get(Calendar.MONTH) &&
 			 cal1.get(Calendar.DAY_OF_MONTH) == cal2.get(Calendar.DAY_OF_MONTH) &&
 			 cal1.get(Calendar.HOUR_OF_DAY) == cal2.get(Calendar.HOUR_OF_DAY) &&
-			 cal1.get(Calendar.MINUTE) == cal2.get(Calendar.MINUTE)
+			 cal1.get(Calendar.MINUTE) == cal2.get(Calendar.MINUTE) &&
+			 cal1.get(Calendar.SECOND) == cal2.get(Calendar.SECOND)
 			) {
 			return true;
 		} else {

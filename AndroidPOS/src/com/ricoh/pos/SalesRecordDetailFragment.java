@@ -6,6 +6,7 @@ import java.util.Date;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
+import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,16 +26,21 @@ public class SalesRecordDetailFragment extends ListFragment {
 	
 	private ArrayList<Order> orders;
 	
+	public static final String ARG_DATE_ID = "ARG_DATE_ID";
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		Date date = SalesCalenderManager.getInstance().getSelectedDate();
-		
-		//TODO
-		//SingleSalesRecord salesRecord = SalesRecordManager.getInstance().getSingleSalesRecord(date);
-		SingleSalesRecord salesRecord = SalesRecordManager.getInstance().restoreSingleSalesRecordsOfTheDay(date).get(0);
-		
+		Date date = SalesCalenderManager.getInstance().getSelectedSalesDate();
+		SingleSalesRecord salesRecord;
+		if (date == null) {
+			date = SalesCalenderManager.getInstance().getSelectedDate();
+			salesRecord = SalesRecordManager.getInstance().restoreSingleSalesRecordsOfTheDay(date).get(0);
+		} else {
+			salesRecord = SalesRecordManager.getInstance().getSingleSalesRecord(date);
+		}
+
 		orders = salesRecord.getAllOrders();
 		
 		setListAdapter(new ListAdapter(getActivity()));

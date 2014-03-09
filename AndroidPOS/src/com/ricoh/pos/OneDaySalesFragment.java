@@ -20,7 +20,7 @@ public class OneDaySalesFragment extends Fragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View v = inflater.inflate(R.layout.fragment_oneday_sales, container, false);
 		
-		Date date = SalesCalenderManager.getInstance().getSelectedDate();
+		Date date = SalesCalenderManager.getInstance().getSelectedSalesDate();
 
 		TextView oneDaySalesView = (TextView) v.findViewById(R.id.oneDaySales);
 		double  oneDaySales = SalesRecordManager.getInstance().getOneDayTotalSales(date);
@@ -36,5 +36,6 @@ public class OneDaySalesFragment extends Fragment {
 		
 		return v;
 	}
+
 	
 }
