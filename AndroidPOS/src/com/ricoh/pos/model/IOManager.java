@@ -3,7 +3,6 @@ package com.ricoh.pos.model;
 import java.io.BufferedReader;
 
 import android.content.res.AssetManager;
-import android.database.sqlite.SQLiteDatabase;
 
 /**
  * This class manage I/O related database

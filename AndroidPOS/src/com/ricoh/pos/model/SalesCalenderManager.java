@@ -9,6 +9,8 @@ public class SalesCalenderManager {
 	// That's because I implement SalesCalenderMaager.
 	private Date selectedDate;
 	
+	private Date selectedSalesDate;
+	
 	private static SalesCalenderManager instance;
 	
 	private SalesCalenderManager(){}
@@ -35,6 +37,18 @@ public class SalesCalenderManager {
 		}
 		
 		return selectedDate;
+	}
+	
+	public void setSelectedSalesDate(Date date){
+		if (date == null) {
+			throw new IllegalArgumentException("The passing date is null");
+		}
+		
+		this.selectedSalesDate = date;
+	}
+	
+	public Date getSelectedSalesDate() {
+		return selectedSalesDate;
 	}
 	
 }

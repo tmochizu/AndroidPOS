@@ -29,12 +29,15 @@ public class SalesRecordDetailFragment extends ListFragment {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		Date date = SalesCalenderManager.getInstance().getSelectedDate();
-		
-		//TODO
-		//SingleSalesRecord salesRecord = SalesRecordManager.getInstance().getSingleSalesRecord(date);
-		SingleSalesRecord salesRecord = SalesRecordManager.getInstance().restoreSingleSalesRecordsOfTheDay(date).get(0);
-		
+		Date date = SalesCalenderManager.getInstance().getSelectedSalesDate();
+		SingleSalesRecord salesRecord;
+		if (date == null) {
+			date = SalesCalenderManager.getInstance().getSelectedDate();
+			salesRecord = SalesRecordManager.getInstance().restoreSingleSalesRecordsOfTheDay(date).get(0);
+		} else {
+			salesRecord = SalesRecordManager.getInstance().getSingleSalesRecord(date);
+		}
+
 		orders = salesRecord.getAllOrders();
 		
 		setListAdapter(new ListAdapter(getActivity()));

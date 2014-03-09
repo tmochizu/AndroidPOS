@@ -1,13 +1,10 @@
 package com.ricoh.pos;
 
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.res.AssetManager;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.util.Log;
 
