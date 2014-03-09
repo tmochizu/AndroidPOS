@@ -1,8 +1,12 @@
 package com.ricoh.pos;
 
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
 import android.app.Activity;
 import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -12,19 +16,25 @@ import android.widget.Toast;
 
 import com.ricoh.pos.model.ProductsManager;
 import com.ricoh.pos.model.WomanShopIOManager;
+import com.ricoh.pos.model.WomanShopSalesIOManager;
 
 public class MainMenuActivity extends Activity implements DataSyncTaskCallback {
 
+	private WomanShopIOManager womanShopIOManager;
 	private DatabaseHelper databaseHelper;
-	public static SQLiteDatabase database;
+	private SalesDatabaseHelper salesDatabaseHelper;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main_menu);
 
+		womanShopIOManager = new WomanShopIOManager();
 		databaseHelper = new DatabaseHelper(this);
-		database = databaseHelper.getWritableDatabase();
+		womanShopIOManager.setDatabase(databaseHelper.getWritableDatabase());
+		
+		salesDatabaseHelper = new SalesDatabaseHelper(this);
+		WomanShopSalesIOManager.getInstance().setDatabase(salesDatabaseHelper.getWritableDatabase());
 
 		findViewById(R.id.RegisterButton).setOnClickListener(new OnClickListener() {
 			@Override
@@ -49,7 +59,7 @@ public class MainMenuActivity extends Activity implements DataSyncTaskCallback {
 			@Override
 			public void onClick(View v) {
 				DataSyncTask syncTask = new DataSyncTask(MainMenuActivity.this,
-						MainMenuActivity.this, new WomanShopIOManager(), database);
+						MainMenuActivity.this, womanShopIOManager);
 				syncTask.execute();
 			}
 		});
@@ -58,8 +68,11 @@ public class MainMenuActivity extends Activity implements DataSyncTaskCallback {
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
-		database.close();
+		womanShopIOManager.closeDatabase();
+		WomanShopSalesIOManager.getInstance().closeDatabase();
 		databaseHelper.close();
+		salesDatabaseHelper.close();
+		WomanShopSalesIOManager.resetInstance();
 		Log.d("debug", "Exit onDestroy");
 	}
 
@@ -74,6 +87,14 @@ public class MainMenuActivity extends Activity implements DataSyncTaskCallback {
 	public void onSuccessSyncData() {
 		Toast.makeText(this, R.string.sync_success, Toast.LENGTH_LONG).show();
 		setRegisterButtonEnabled();
+		
+		// TODO: For debug
+		try {
+			Log.d("debug", loadText("sales_dummy.csv"));
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 	}
 
 	@Override
@@ -87,5 +108,21 @@ public class MainMenuActivity extends Activity implements DataSyncTaskCallback {
 		} else {
 			findViewById(R.id.RegisterButton).setEnabled(false);
 		}
+	}
+	
+	// TODO For debug
+	private String loadText(String fileName) throws IOException {
+		FileInputStream input = this.openFileInput(fileName);
+		
+		BufferedReader reader = new BufferedReader(new InputStreamReader(input));
+		StringBuffer strBuffer = new StringBuffer();
+		String line;
+		while ((line = reader.readLine()) != null) {
+			strBuffer.append(line);
+			strBuffer.append("\n");
+		}
+		reader.close();
+		
+		return strBuffer.toString();
 	}
 }

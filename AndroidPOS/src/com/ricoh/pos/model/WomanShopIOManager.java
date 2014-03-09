@@ -14,6 +14,7 @@ import com.ricoh.pos.data.WomanShopDataDef;
 
 public class WomanShopIOManager implements IOManager {
 
+	private SQLiteDatabase database;
 	private static String DATABASE_NAME = "products_dummy";
 
 	public WomanShopIOManager() {
@@ -34,7 +35,7 @@ public class WomanShopIOManager implements IOManager {
 	}
 
 	@Override
-	public void insertRecords(SQLiteDatabase database, BufferedReader bufferReader) {
+	public void insertRecords(BufferedReader bufferReader) {
 
 		ContentValues contentValue = new ContentValues();
 		try {
@@ -59,7 +60,7 @@ public class WomanShopIOManager implements IOManager {
 	}
 
 	@Override
-	public String[] searchAlldata(SQLiteDatabase database) {
+	public String[] searchAlldata() {
 		Cursor cursor = null;
 
 		try {
@@ -90,7 +91,7 @@ public class WomanShopIOManager implements IOManager {
 
 	// TODO: Temporary function
 	@Override
-	public String searchByCode(SQLiteDatabase database, String code) {
+	public String searchByCode(String code) {
 		Cursor cursor = null;
 		try {
 			cursor = database.query(
@@ -111,6 +112,22 @@ public class WomanShopIOManager implements IOManager {
 			if (cursor != null) {
 				cursor.close();
 			}
+		}
+	}
+	
+	// TODO: Add this function to interface
+	public void setDatabase(SQLiteDatabase database) {
+		if (this.database == null) {
+			Log.d("debug", "Database set:" + DATABASE_NAME);
+			this.database = database;
+		}
+	}
+	
+	// TODO: Add this function to interface
+	public void closeDatabase() {
+		if (database != null) {
+			Log.d("debug", "Database closed:" + DATABASE_NAME);
+			database.close();
 		}
 	}
 

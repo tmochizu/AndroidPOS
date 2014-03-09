@@ -7,19 +7,14 @@ import java.util.Date;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
-import com.ricoh.pos.data.Order;
 import com.ricoh.pos.data.SingleSalesRecord;
-import com.ricoh.pos.dummy.DummyDataBaseAccessor;
 
 public class SalesRecordManager {
 	
 	private static SalesRecordManager instance;
-	private WomanShopSalesIOManager womanShopSalesIOManager;
-	
 	public static final String SALES_DATE_KEY = "SalesDate";
 	
 	private SalesRecordManager(){
-		womanShopSalesIOManager = new WomanShopSalesIOManager();
 	}
 	
 	public static SalesRecordManager getInstance(){
@@ -34,17 +29,17 @@ public class SalesRecordManager {
 			throw new IllegalArgumentException("The passing record is null");
 		}
 		
-		womanShopSalesIOManager.saveSalesRecord(database, record);
+		WomanShopSalesIOManager.getInstance().saveSalesRecord(record);
 		
 		//TODO: for debug
-		String[] results = womanShopSalesIOManager.searchAlldata(database);
+		String[] results = WomanShopSalesIOManager.getInstance().searchAlldata();
 		for (String result : results) {
 			Log.d("debug", "Sales:" + result);
 		}
 	}
 	
 	public ArrayList<SingleSalesRecord> restoreSingleSalesRecordsOfTheDay(Date date){
-		ArrayList<SingleSalesRecord> allSalesRecords = womanShopSalesIOManager.getSalesRecords();
+		ArrayList<SingleSalesRecord> allSalesRecords = WomanShopSalesIOManager.getInstance().getSalesRecords();
 		ArrayList<SingleSalesRecord> salesRecordsOfTheDay = new ArrayList<SingleSalesRecord>();
 		
 		for (SingleSalesRecord record : allSalesRecords) {
@@ -56,7 +51,7 @@ public class SalesRecordManager {
 	}
 	
 	public SingleSalesRecord getSingleSalesRecord(Date date){
-		ArrayList<SingleSalesRecord> allSalesRecords = womanShopSalesIOManager.getSalesRecords();
+		ArrayList<SingleSalesRecord> allSalesRecords = WomanShopSalesIOManager.getInstance().getSalesRecords();
 		
 		for (SingleSalesRecord record : allSalesRecords) {
 			if (areSameMinute(record.getSalesDate(), date)) {

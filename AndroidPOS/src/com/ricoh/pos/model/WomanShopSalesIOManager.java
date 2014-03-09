@@ -1,11 +1,13 @@
 package com.ricoh.pos.model;
 
 import java.io.BufferedReader;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.res.AssetManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -17,11 +19,25 @@ import com.ricoh.pos.data.WomanShopSalesDef;
 
 public class WomanShopSalesIOManager implements IOManager {
 
+	private static WomanShopSalesIOManager instance = null;
+	private SQLiteDatabase salesDatabase;
 	private static String DATABASE_NAME = "sales_dummy";
 	private ArrayList<SingleSalesRecord> salesRecords;
 
-	public WomanShopSalesIOManager() {
+	private WomanShopSalesIOManager() {
 		this.salesRecords = new ArrayList<SingleSalesRecord>();
+	}
+	
+	public static WomanShopSalesIOManager getInstance(){
+		if (instance == null) {
+			instance = new WomanShopSalesIOManager();
+		}
+		return instance;
+	}
+	
+	public static void resetInstance(){
+		Log.d("debug", "Reset Instance:" + "WomanShopSalesIOManager");
+		instance = null;
 	}
 
 	@Override
@@ -38,7 +54,7 @@ public class WomanShopSalesIOManager implements IOManager {
 	}
 
 	@Override
-	public void insertRecords(SQLiteDatabase database, BufferedReader bufferReader) {
+	public void insertRecords(BufferedReader bufferReader) {
 
 		ContentValues contentValue = new ContentValues();
 		try {
@@ -54,7 +70,7 @@ public class WomanShopSalesIOManager implements IOManager {
 					contentValue.put(field.name(), fieldValues[i++]);
 				}
 
-				database.insertWithOnConflict(DATABASE_NAME, null, contentValue,
+				salesDatabase.insertWithOnConflict(DATABASE_NAME, null, contentValue,
 						SQLiteDatabase.CONFLICT_REPLACE);
 			}
 		} catch (IOException e) {
@@ -63,11 +79,11 @@ public class WomanShopSalesIOManager implements IOManager {
 	}
 
 	@Override
-	public String[] searchAlldata(SQLiteDatabase database) {
+	public String[] searchAlldata() {
 		Cursor cursor = null;
 
 		try {
-			cursor = database.query(
+			cursor = salesDatabase.query(
 					DATABASE_NAME,
 					new String[] { WomanShopSalesDef.PRODUCT_CODE.name(),
 							WomanShopSalesDef.PRODUCT_CATEGORY.name(),
@@ -93,10 +109,10 @@ public class WomanShopSalesIOManager implements IOManager {
 
 	// TODO: Temporary function
 	@Override
-	public String searchByCode(SQLiteDatabase database, String code) {
+	public String searchByCode(String code) {
 		Cursor cursor = null;
 		try {
-			cursor = database.query(
+			cursor = salesDatabase.query(
 					DATABASE_NAME, 
 					new String[] { WomanShopSalesDef.PRODUCT_CODE.name(),
 							WomanShopSalesDef.PRODUCT_CATEGORY.name(),
@@ -116,7 +132,7 @@ public class WomanShopSalesIOManager implements IOManager {
 		}
 	}
 	
-	public void saveSalesRecord(SQLiteDatabase database, SingleSalesRecord record){
+	public void saveSalesRecord(SingleSalesRecord record){
 		salesRecords.add(record);
 		
 		ArrayList<Order> orders = record.getAllOrders();
@@ -125,7 +141,53 @@ public class WomanShopSalesIOManager implements IOManager {
 					+ order.getProductName() + "," + order.getNumberOfOrder() + ","
 					+ order.getProductPrice() + "," + order.getTotalAmount() + ","
 					+ record.getDiscountValue() + "," + record.getSalesDate();
-			insertSingleRecord(database, salesRecord);
+			insertSingleRecord(salesRecord);
+		}
+	}
+	
+	// TODO: Add this function to interface
+	public void setDatabase(SQLiteDatabase database) {
+		if (salesDatabase == null) {
+			Log.d("debug", "Database set:" + DATABASE_NAME);
+			salesDatabase = database;
+		} else if (!salesDatabase.isOpen()) {
+			Log.d("debug", "Database not open:" + DATABASE_NAME);
+		}
+	}
+	
+	// TODO: Add this function to interface
+	public void closeDatabase() {
+		if (salesDatabase != null) {
+			Log.d("debug", "Database closed:" + DATABASE_NAME);
+			salesDatabase.close();
+		}
+	}
+	
+	public void exportCSV(Context context) {
+		Cursor cursor = null;
+
+		try {
+			cursor = salesDatabase.query(
+					DATABASE_NAME,
+					new String[] { WomanShopSalesDef.PRODUCT_CODE.name(),
+							WomanShopSalesDef.PRODUCT_CATEGORY.name(),
+							WomanShopSalesDef.ITEM_CATEGORY.name(),
+							WomanShopSalesDef.QTY.name(),
+							WomanShopSalesDef.SALE_PRICE.name(),
+							WomanShopSalesDef.TOTAL_SALE_PRICE.name(),
+							WomanShopSalesDef.DISCOUNT.name(),
+							WomanShopSalesDef.DATE.name() }, 
+							null, null, null, null, null);
+			String[] results = new String[cursor.getCount()];
+			Log.d("debug", "sales count:" + cursor.getCount());
+			for (int i = 0; i < cursor.getCount(); i++) {
+				results[i] = readCursor(cursor);
+			}
+			writeSalesData(results, context);
+		} finally {
+			if (cursor != null) {
+				cursor.close();
+			}
 		}
 	}
 	
@@ -165,13 +227,13 @@ public class WomanShopSalesIOManager implements IOManager {
 			double discount = cursor.getDouble(indexDiscount);
 			String date = cursor.getString(indexDate);
 
-			result += productCode + ":" + productCategory + ":" + itemCategory + ":" + qty + ":"
-					+ salePrice + ":" + totalSalePrice + ":" + discount + ":" + date + "\n";
+			result += productCode + "," + productCategory + "," + itemCategory + "," + qty + ","
+					+ salePrice + "," + totalSalePrice + "," + discount + "," + date + "\n";
 		}
 		return result;
 	}
 	
-	private void insertSingleRecord(SQLiteDatabase database, String record) {
+	private void insertSingleRecord(String record) {
 		
 		ContentValues contentValue = new ContentValues();
 
@@ -183,11 +245,23 @@ public class WomanShopSalesIOManager implements IOManager {
 			contentValue.put(field.name(), fieldValues[i++]);
 		}
 
-		database.insertWithOnConflict(DATABASE_NAME, null, contentValue,
+		salesDatabase.insertWithOnConflict(DATABASE_NAME, null, contentValue,
 				SQLiteDatabase.CONFLICT_REPLACE);
 
 	}
 	
-	
+	private void writeSalesData(String[] salesData, Context context) {
+		try {
+			FileOutputStream outputStream = context.openFileOutput("sales_dummy.csv", Context.MODE_PRIVATE);
+			for (String singleSalesData : salesData) {
+				Log.d("debug", "write csv:" + singleSalesData);
+				outputStream.write(singleSalesData.getBytes());
+			}
+			outputStream.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 }
 

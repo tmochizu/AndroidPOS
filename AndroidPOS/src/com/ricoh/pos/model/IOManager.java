@@ -20,24 +20,20 @@ public interface IOManager {
 
 	/**
 	 * Insert all record into database.
-	 * @param database database created in app
 	 * @param bufferReader buffered records imported from csv file
 	 */
-	public abstract void insertRecords(SQLiteDatabase database,
-			BufferedReader bufferReader);
+	public abstract void insertRecords(BufferedReader bufferReader);
 
 	/**
 	 * Search all record from database.
-	 * @param database database created in app
 	 * @return search results
 	 */
-	public String[] searchAlldata(SQLiteDatabase database);
+	public String[] searchAlldata();
 	
 	/**
 	 * Search a record from database by product code
-	 * @param database database created in app
 	 * @param product code connected with a record
 	 * @return search result
 	 */
-	public abstract String searchByCode(SQLiteDatabase database, String code);
+	public abstract String searchByCode(String code);
 }
