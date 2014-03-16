@@ -4,12 +4,11 @@ import java.io.BufferedReader;
 
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.res.AssetManager;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.ricoh.pos.model.IOManager;
 import com.ricoh.pos.model.ProductsManager;
+import com.ricoh.pos.model.WomanShopIOManager;
 import com.ricoh.pos.model.WomanShopSalesIOManager;
 
 public class DataSyncTask extends AsyncTask<String, Void, AsyncTaskResult<String>> {
@@ -17,11 +16,11 @@ public class DataSyncTask extends AsyncTask<String, Void, AsyncTaskResult<String
 	DataSyncTaskCallback callback;
 	Context context;
 	ProgressDialog progressDialog;
-	IOManager womanShopIOManager;
+	WomanShopIOManager womanShopIOManager;
 	ProductsManager productsManager;
 
 	public DataSyncTask(Context context, DataSyncTaskCallback callback,
-			IOManager womanShopIOManager) {
+			WomanShopIOManager womanShopIOManager) {
 		this.callback = callback;
 		this.context = context;
 		this.womanShopIOManager = womanShopIOManager;
@@ -46,8 +45,9 @@ public class DataSyncTask extends AsyncTask<String, Void, AsyncTaskResult<String
 		try {
 			Log.d("debug", "SyncButton click");
 
-			AssetManager assetManager = context.getResources().getAssets();
-			BufferedReader bufferReader = womanShopIOManager.importCSVfromAssets(assetManager);
+			//AssetManager assetManager = context.getResources().getAssets();
+			//BufferedReader bufferReader = womanShopIOManager.importCSVfromAssets(assetManager);
+			BufferedReader bufferReader = womanShopIOManager.importCSVfromSD();
 			if (bufferReader == null) {
 				Log.d("debug", "File not found");
 				return AsyncTaskResult.createErrorResult(R.string.sd_import_error);

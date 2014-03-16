@@ -1,6 +1,9 @@
 package com.ricoh.pos.model;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
@@ -8,6 +11,7 @@ import android.content.ContentValues;
 import android.content.res.AssetManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Environment;
 import android.util.Log;
 
 import com.ricoh.pos.data.WomanShopDataDef;
@@ -16,6 +20,7 @@ public class WomanShopIOManager implements IOManager {
 
 	private SQLiteDatabase database;
 	private static String DATABASE_NAME = "products_dummy";
+	private static String csvStorageFolder = "/AndroidPOS";
 
 	public WomanShopIOManager() {
 		// Nothing to do
@@ -115,6 +120,19 @@ public class WomanShopIOManager implements IOManager {
 		}
 	}
 	
+	public BufferedReader importCSVfromSD() {
+		BufferedReader bufferReader = null;
+		
+		try {
+			String csvStoragePath = getCSVStoragePath();
+			File productDataCSV = new File(csvStoragePath + "/products_dummy.csv");
+			bufferReader = new BufferedReader(new FileReader(productDataCSV));
+		} catch (FileNotFoundException e) {
+			System.out.println(e);
+		}
+		return bufferReader;
+	}
+	
 	// TODO: Add this function to interface
 	public void setDatabase(SQLiteDatabase database) {
 		if (this.database == null) {
@@ -170,5 +188,11 @@ public class WomanShopIOManager implements IOManager {
 					+ totalCostToEntrep + ":" + totalProfitToEntrep + ":" + "\n";
 		}
 		return result;
+	}
+	
+	private String getCSVStoragePath() {
+		File exterlStorage = Environment.getExternalStorageDirectory();
+		Log.d("debug", "Environment External:" + exterlStorage.getAbsolutePath());
+		return exterlStorage.getAbsolutePath() + csvStorageFolder;
 	}
 }

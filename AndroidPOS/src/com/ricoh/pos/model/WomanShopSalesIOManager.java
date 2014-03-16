@@ -1,7 +1,8 @@
 package com.ricoh.pos.model;
 
 import java.io.BufferedReader;
-import java.io.FileOutputStream;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
@@ -11,6 +12,7 @@ import android.content.Context;
 import android.content.res.AssetManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Environment;
 import android.util.Log;
 
 import com.ricoh.pos.data.Order;
@@ -23,6 +25,7 @@ public class WomanShopSalesIOManager implements IOManager {
 	private SQLiteDatabase salesDatabase;
 	private static String DATABASE_NAME = "sales_dummy";
 	private ArrayList<SingleSalesRecord> salesRecords;
+	private static String csvStorageFolder = "/AndroidPOS";
 
 	private WomanShopSalesIOManager() {
 		this.salesRecords = new ArrayList<SingleSalesRecord>();
@@ -251,17 +254,36 @@ public class WomanShopSalesIOManager implements IOManager {
 	}
 	
 	private void writeSalesData(String[] salesData, Context context) {
+		String csvStoragePath = getCSVStoragePath();
+		File csvStorage = new File(csvStoragePath);
+		if (!csvStorage.exists()) {
+			Log.d("debug", "make directory:" + csvStoragePath);
+			csvStorage.mkdir();
+		}
+		File salesDataCSV = new File(csvStoragePath + "/sales_dummy.csv");
+		FileWriter filewriter = null;
 		try {
-			FileOutputStream outputStream = context.openFileOutput("sales_dummy.csv", Context.MODE_PRIVATE);
+			filewriter = new FileWriter(salesDataCSV);
 			for (String singleSalesData : salesData) {
 				Log.d("debug", "write csv:" + singleSalesData);
-				outputStream.write(singleSalesData.getBytes());
+				filewriter.write(singleSalesData);
 			}
-			outputStream.close();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			System.out.println(e);
+		} finally {
+			if (filewriter != null) {
+				try {
+					filewriter.close();
+				} catch (IOException e) {
+					System.out.println(e);
+				}
+			}
 		}
 	}
-}
 
+	private String getCSVStoragePath() {
+		File exterlStorage = Environment.getExternalStorageDirectory();
+		Log.d("debug", "Environment External:" + exterlStorage.getAbsolutePath());
+		return exterlStorage.getAbsolutePath() + csvStorageFolder;
+	}
+}
