@@ -1,10 +1,5 @@
 package com.ricoh.pos;
 
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -87,14 +82,6 @@ public class MainMenuActivity extends Activity implements DataSyncTaskCallback {
 	public void onSuccessSyncData() {
 		Toast.makeText(this, R.string.sync_success, Toast.LENGTH_LONG).show();
 		setRegisterButtonEnabled();
-		
-		// TODO: For debug
-		try {
-			Log.d("debug", loadText("sales_dummy.csv"));
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
 	}
 
 	@Override
@@ -108,21 +95,5 @@ public class MainMenuActivity extends Activity implements DataSyncTaskCallback {
 		} else {
 			findViewById(R.id.RegisterButton).setEnabled(false);
 		}
-	}
-	
-	// TODO For debug
-	private String loadText(String fileName) throws IOException {
-		FileInputStream input = this.openFileInput(fileName);
-		
-		BufferedReader reader = new BufferedReader(new InputStreamReader(input));
-		StringBuffer strBuffer = new StringBuffer();
-		String line;
-		while ((line = reader.readLine()) != null) {
-			strBuffer.append(line);
-			strBuffer.append("\n");
-		}
-		reader.close();
-		
-		return strBuffer.toString();
 	}
 }
