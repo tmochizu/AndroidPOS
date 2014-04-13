@@ -11,8 +11,6 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.Toast;
-
 import com.ricoh.pos.data.SingleSalesRecord;
 import com.ricoh.pos.model.SalesCalenderManager;
 import com.ricoh.pos.model.SalesRecordManager;
@@ -102,12 +100,9 @@ public class SalesRecordListFragment extends ListFragment {
 	        @Override
 	        public boolean onItemLongClick(AdapterView<?> adapterView, View view,
 	                int position, long id) {
-	            Toast.makeText(getActivity(), "On long click listener", Toast.LENGTH_LONG).show();
-	            
 	            Date clickedDate = oneDaySalesRecords.get(position).getSalesDate();
 	    		SalesCalenderManager.getInstance().setSelectedSalesDate(clickedDate);
 	    		mCallbacks.onItemLongSelected(clickedDate.toString());
-	    		
 	            return true;
 	        }
 	    });

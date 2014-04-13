@@ -41,9 +41,7 @@ SalesRecordListFragment.Callbacks{
 	 */
 	@Override
 	public void onItemSelected(String id) {
-		SalesRecordDetailFragment fragment = new SalesRecordDetailFragment();
-		getSupportFragmentManager().beginTransaction()
-				.replace(R.id.salesrecord_detail_container, fragment).commit();
+		replaceFragment();
 	}
 
 	/**
@@ -53,17 +51,25 @@ SalesRecordListFragment.Callbacks{
 	@Override
 	public void onItemLongSelected(String id) {
 		showDeleteDialog(id);
+		replaceFragment();
 	}
 	
-	private void showDeleteDialog(String date) {
+	private void replaceFragment() {
+		SalesRecordDetailFragment fragment = new SalesRecordDetailFragment();
+		getSupportFragmentManager().beginTransaction()
+				.replace(R.id.salesrecord_detail_container, fragment).commit();
+	}
+	
+	private void showDeleteDialog(final String date) {
 		AlertDialog.Builder alert = new AlertDialog.Builder(this);  
-        alert.setTitle("Delete");  
-        alert.setMessage("Do you delete the date " + date + " ?");  
-        alert.setPositiveButton("Yes", new DialogInterface.OnClickListener(){  
+        alert.setTitle(R.string.title_delete);  
+        alert.setMessage("Do you delete the following date?\n" + date);  
+        alert.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener(){  
             public void onClick(DialogInterface dialog, int which) {
-                Toast.makeText(SalesRecordListActivity.this, "Deleted!", Toast.LENGTH_LONG).show();  
+            	WomanShopSalesIOManager.getInstance().deleteSingleSalesRecordRelatedTo(date);
+                Toast.makeText(SalesRecordListActivity.this, R.string.success_deleted_message, Toast.LENGTH_LONG).show(); 
             }});  
-        alert.setNegativeButton("No", new DialogInterface.OnClickListener(){  
+        alert.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener(){  
             public void onClick(DialogInterface dialog, int which) {  
             }});  
         alert.show(); 
