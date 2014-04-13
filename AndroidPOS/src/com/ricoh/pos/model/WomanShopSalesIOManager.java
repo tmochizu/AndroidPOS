@@ -5,7 +5,9 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -151,6 +153,14 @@ public class WomanShopSalesIOManager implements IOManager {
 	
 	public void deleteSingleSalesRecordRelatedTo(String date) {
 		salesDatabase.delete(DATABASE_NAME, WomanShopSalesDef.DATE.name() + "='" + date + "'", null);
+		// Delete the record from salesRecords
+		Iterator<SingleSalesRecord> i = salesRecords.iterator();
+        while(i.hasNext()){
+        	SingleSalesRecord record = i.next();
+            if(record.getSalesDate().toString().equals(date)){
+                i.remove();
+            }
+        }
 	}
 	
 	// TODO: Add this function to interface
