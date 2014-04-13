@@ -1,5 +1,7 @@
 package com.ricoh.pos;
 
+import com.ricoh.pos.model.WomanShopSalesIOManager;
+
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -59,7 +61,6 @@ SalesRecordListFragment.Callbacks{
         alert.setMessage("Do you delete the date " + date + " ?");  
         alert.setPositiveButton("Yes", new DialogInterface.OnClickListener(){  
             public void onClick(DialogInterface dialog, int which) {
-            	
                 Toast.makeText(SalesRecordListActivity.this, "Deleted!", Toast.LENGTH_LONG).show();  
             }});  
         alert.setNegativeButton("No", new DialogInterface.OnClickListener(){  
