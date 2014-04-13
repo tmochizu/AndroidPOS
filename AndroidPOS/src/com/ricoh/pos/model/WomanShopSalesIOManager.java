@@ -17,6 +17,7 @@ import android.util.Log;
 
 import com.ricoh.pos.data.Order;
 import com.ricoh.pos.data.SingleSalesRecord;
+import com.ricoh.pos.data.WomanShopFormatter;
 import com.ricoh.pos.data.WomanShopSalesDef;
 
 public class WomanShopSalesIOManager implements IOManager {
@@ -143,9 +144,13 @@ public class WomanShopSalesIOManager implements IOManager {
 			String salesRecord = order.getProductCode() + "," + order.getProductCategory() + ","
 					+ order.getProductName() + "," + order.getNumberOfOrder() + ","
 					+ order.getProductPrice() + "," + order.getTotalAmount() + ","
-					+ record.getDiscountValue() + "," + record.getSalesDate();
+					+ record.getDiscountValue() + "," + WomanShopFormatter.formatDate(record.getSalesDate());
 			insertSingleRecord(salesRecord);
 		}
+	}
+	
+	public void deleteSingleSalesRecordRelatedTo(String date) {
+		salesDatabase.delete(DATABASE_NAME, WomanShopSalesDef.DATE.name() + "='" + date + "'", null);
 	}
 	
 	// TODO: Add this function to interface
