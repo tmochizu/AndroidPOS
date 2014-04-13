@@ -27,27 +27,33 @@
         </activity>
         <activity
             android:name="com.ricoh.pos.CategoryListActivity"
-            android:label="@string/title_category_list" >
+            android:label="@string/title_category_list"
+            android:screenOrientation="landscape" >
         </activity>
         <activity
-            android:name="com.ricoh.pos.SalesCalenderActivity" >
+            android:name="com.ricoh.pos.SalesCalenderActivity"
+            android:screenOrientation="landscape" >
         </activity>
         <activity
-            android:name="com.ricoh.pos.SalesRecordListActivity" >
+            android:name="com.ricoh.pos.SalesRecordListActivity"
+            android:screenOrientation="landscape">
         </activity>
         <activity
-            android:name="com.ricoh.pos.SalesRecordDetailActivity" >
+            android:name="com.ricoh.pos.SalesRecordDetailActivity"
+            android:screenOrientation="landscape">
         </activity>
         <activity
             android:name="com.ricoh.pos.CategoryDetailActivity"
             android:label="@string/title_category_detail"
+            android:screenOrientation="landscape"
             android:parentActivityName=".CategoryListActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".CategoryListActivity" />
         </activity>
         <activity
-            android:name="com.ricoh.pos.RegisterConfirmActivity" >
+            android:name="com.ricoh.pos.RegisterConfirmActivity"
+            android:screenOrientation="landscape">
         </activity>
     </application>
 
