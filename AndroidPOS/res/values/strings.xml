@@ -25,4 +25,5 @@
     <string name="title_oneday_total_revenue">Total Revenue</string>
     <string name="title_delete">Delete</string>
     <string name="success_deleted_message">Success to delete!</string>
+    <string name="error_deleted_message">Failed to delete!</string>
 </resources>

@@ -66,8 +66,15 @@ SalesRecordListFragment.Callbacks{
         alert.setMessage("Do you delete the following date?\n" + date);  
         alert.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener(){  
             public void onClick(DialogInterface dialog, int which) {
-            	WomanShopSalesIOManager.getInstance().deleteSingleSalesRecordRelatedTo(date);
-                Toast.makeText(SalesRecordListActivity.this, R.string.success_deleted_message, Toast.LENGTH_LONG).show(); 
+            	try
+            	{
+            		WomanShopSalesIOManager.getInstance().deleteSingleSalesRecordRelatedTo(date);
+            		Toast.makeText(SalesRecordListActivity.this, R.string.success_deleted_message, Toast.LENGTH_LONG).show(); 
+            	}
+            	catch(Exception ex)
+            	{
+            		Toast.makeText(SalesRecordListActivity.this, R.string.error_deleted_message, Toast.LENGTH_LONG).show(); 
+            	}
             }});  
         alert.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener(){  
             public void onClick(DialogInterface dialog, int which) {  
