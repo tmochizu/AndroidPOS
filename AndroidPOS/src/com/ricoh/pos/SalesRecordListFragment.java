@@ -7,8 +7,11 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.ricoh.pos.data.SingleSalesRecord;
 import com.ricoh.pos.model.SalesCalenderManager;
@@ -47,6 +50,7 @@ public class SalesRecordListFragment extends ListFragment {
 		 * Callback for when an item has been selected.
 		 */
 		public void onItemSelected(String id);
+		public void onItemLongSelected(String id);
 	}
 
 	/**
@@ -56,6 +60,11 @@ public class SalesRecordListFragment extends ListFragment {
 	private static Callbacks sDummyCallbacks = new Callbacks() {
 		@Override
 		public void onItemSelected(String id) {
+			
+		}
+		
+		@Override
+		public void onItemLongSelected(String id) {
 			
 		}
 	};
@@ -78,10 +87,30 @@ public class SalesRecordListFragment extends ListFragment {
 		Date initialDate = this.oneDaySalesRecords.get(0).getSalesDate();
 		SalesCalenderManager.getInstance().setSelectedSalesDate(initialDate);
 		
-		setListAdapter(new ArrayAdapter<String>(getActivity(),
-				android.R.layout.simple_list_item_activated_1, android.R.id.text1,getSalesRecordListTitles(this.selectedDate)
-				));
-				
+		setListAdapter(new ArrayAdapter<String>(
+				getActivity(),
+				android.R.layout.simple_list_item_activated_1,
+				android.R.id.text1,
+				getSalesRecordListTitles(this.selectedDate)));
+	}
+	
+	@Override
+	public void onActivityCreated(Bundle savedState) {
+	    super.onActivityCreated(savedState);
+
+	    getListView().setOnItemLongClickListener(new OnItemLongClickListener() {
+	        @Override
+	        public boolean onItemLongClick(AdapterView<?> adapterView, View view,
+	                int position, long id) {
+	            Toast.makeText(getActivity(), "On long click listener", Toast.LENGTH_LONG).show();
+	            
+	            Date clickedDate = oneDaySalesRecords.get(position).getSalesDate();
+	    		SalesCalenderManager.getInstance().setSelectedSalesDate(clickedDate);
+	    		mCallbacks.onItemLongSelected(clickedDate.toString());
+	    		
+	            return true;
+	        }
+	    });
 	}
 	
 	private ArrayList<String> getSalesRecordListTitles(Date date){
