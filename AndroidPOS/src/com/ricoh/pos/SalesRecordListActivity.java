@@ -39,13 +39,15 @@ SalesRecordListFragment.Callbacks{
 	 */
 	@Override
 	public void onItemSelected(String id) {
-		
 		SalesRecordDetailFragment fragment = new SalesRecordDetailFragment();
 		getSupportFragmentManager().beginTransaction()
 				.replace(R.id.salesrecord_detail_container, fragment).commit();
-				
 	}
 
+	/**
+	 * Callback method from {@link CategoryListFragment.Callbacks} indicating
+	 * that the item with the given ID was long selected.
+	 */
 	@Override
 	public void onItemLongSelected(String id) {
 		showDeleteDialog(id);
@@ -56,7 +58,8 @@ SalesRecordListFragment.Callbacks{
         alert.setTitle("Delete");  
         alert.setMessage("Do you delete the date " + date + " ?");  
         alert.setPositiveButton("Yes", new DialogInterface.OnClickListener(){  
-            public void onClick(DialogInterface dialog, int which) {  
+            public void onClick(DialogInterface dialog, int which) {
+            	
                 Toast.makeText(SalesRecordListActivity.this, "Deleted!", Toast.LENGTH_LONG).show();  
             }});  
         alert.setNegativeButton("No", new DialogInterface.OnClickListener(){  
