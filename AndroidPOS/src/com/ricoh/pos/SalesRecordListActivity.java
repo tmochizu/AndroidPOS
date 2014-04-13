@@ -4,6 +4,7 @@ import com.ricoh.pos.model.WomanShopSalesIOManager;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.widget.Toast;
@@ -51,7 +52,6 @@ SalesRecordListFragment.Callbacks{
 	@Override
 	public void onItemLongSelected(String id) {
 		showDeleteDialog(id);
-		replaceFragment();
 	}
 	
 	private void replaceFragment() {
@@ -69,6 +69,11 @@ SalesRecordListFragment.Callbacks{
             	try
             	{
             		WomanShopSalesIOManager.getInstance().deleteSingleSalesRecordRelatedTo(date);
+            		// When no records exist, go to the calender activiry.
+            		SalesRecordListActivity.this.finish();
+            		if (WomanShopSalesIOManager.getInstance().getSalesRecords().size() != 0){
+            			startActivity((new Intent(SalesRecordListActivity.this, SalesRecordListActivity.class)));
+            		}
             		Toast.makeText(SalesRecordListActivity.this, R.string.success_deleted_message, Toast.LENGTH_LONG).show(); 
             	}
             	catch(Exception ex)
