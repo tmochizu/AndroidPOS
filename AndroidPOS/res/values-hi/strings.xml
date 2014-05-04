@@ -6,7 +6,7 @@
     <string name="title_category_list">商品</string>
     <string name="title_category_detail">カテゴリー</string>
     <string name="title_total_payment">合計</string>
-    <string name="category_title_default">ALL</string>
+    <string name="category_title_default">全て</string>
     <string name="sync_success">同期が成功しました!</string>
     <string name="sd_import_error">SDからのインポートに失敗しました!</string>
     <string name="sd_export_error">SDへのエクスポートに失敗しました!</string>

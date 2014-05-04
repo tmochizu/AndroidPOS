@@ -6,7 +6,6 @@ import java.util.HashMap;
 import android.util.Log;
 
 import com.ricoh.pos.data.Product;
-import com.ricoh.pos.data.WomanShopContent;
 import com.ricoh.pos.data.WomanShopDataDef;
 
 public class ProductsManager {
@@ -123,19 +122,20 @@ public class ProductsManager {
 			throw new IllegalArgumentException("Invalid category name");
 		}
 
-		if (category.equals(WomanShopContent.CATEGORY_ALL)) {
-			ArrayList<Product> allProducts = new ArrayList<Product>();
-			for (String key : productsMap.keySet()) {
-				allProducts.addAll(productsMap.get(key));
-			}
-			return allProducts;
-		}
-
 		if (!productsMap.containsKey(category)) {
 			throw new IllegalArgumentException("Passing category does not exist: " + category);
 		} else {
 			return productsMap.get(category);
 		}
+	}
+
+	public ArrayList<Product> getAllProducts() {
+
+		ArrayList<Product> allProducts = new ArrayList<Product>();
+		for (String key : productsMap.keySet()) {
+			allProducts.addAll(productsMap.get(key));
+		}
+		return allProducts;
 	}
 
 	public int getNumberOfProductsInCategory(String category) {

@@ -17,7 +17,6 @@ import android.widget.TextView;
 
 import com.ricoh.pos.data.Order;
 import com.ricoh.pos.data.Product;
-import com.ricoh.pos.data.WomanShopContent;
 import com.ricoh.pos.model.ProductsManager;
 import com.ricoh.pos.model.RegisterManager;
 
@@ -53,7 +52,7 @@ public class OrderListFragment extends ListFragment {
 	
 	private void setOrderProductList()
 	{
-		ArrayList<Product> allProductList = ProductsManager.getInstance().getProductsInCategory(WomanShopContent.CATEGORY_ALL);
+		ArrayList<Product> allProductList = ProductsManager.getInstance().getAllProducts();
 		if (allProductList == null)
 		{
 			throw new IllegalStateException("No product data");

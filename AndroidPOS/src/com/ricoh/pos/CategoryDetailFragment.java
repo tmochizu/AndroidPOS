@@ -60,7 +60,11 @@ public class CategoryDetailFragment extends ListFragment {
 		Bundle bundle = getArguments();
 		this.category = bundle.getString(CategoryDetailFragment.ARG_ITEM_ID);
 
-		productList = ProductsManager.getInstance().getProductsInCategory(category);
+		if (category.equals(getString(R.string.category_title_default))) {
+			productList = ProductsManager.getInstance().getAllProducts();
+		} else {
+			productList = ProductsManager.getInstance().getProductsInCategory(category);
+		}
 		setListAdapter(new ListAdapter(getActivity()));
 		
 		getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
