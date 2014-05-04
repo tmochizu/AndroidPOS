@@ -1,5 +1,6 @@
 package com.ricoh.pos;
 
+import java.text.NumberFormat;
 import java.util.ArrayList;
 
 import android.content.Context;
@@ -36,6 +37,8 @@ public class CategoryDetailFragment extends ListFragment {
 	 * represents.
 	 */
 	public static final String ARG_ITEM_ID = "item_id";
+	// This is the maximum fraction digits for total payment to display.
+	private static final int MAXIMUM_FRACTION_DIGITS = 2;
 
 	private RegisterManager registerManager;
 
@@ -57,7 +60,11 @@ public class CategoryDetailFragment extends ListFragment {
 		Bundle bundle = getArguments();
 		this.category = bundle.getString(CategoryDetailFragment.ARG_ITEM_ID);
 
-		productList = ProductsManager.getInstance().getProductsInCategory(category);
+		if (category.equals(getString(R.string.category_title_default))) {
+			productList = ProductsManager.getInstance().getAllProducts();
+		} else {
+			productList = ProductsManager.getInstance().getProductsInCategory(category);
+		}
 		setListAdapter(new ListAdapter(getActivity()));
 		
 		getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
@@ -118,14 +125,16 @@ public class CategoryDetailFragment extends ListFragment {
 				throw new NullPointerException("Product name is not valid");
 			}
 			textView.setText(productName);
+			
+			NumberFormat.getInstance().setMaximumFractionDigits(MAXIMUM_FRACTION_DIGITS);
 
 			TextView priceView = (TextView) convertView.findViewById(R.id.price);
 			priceView.setPadding(10, 0, 0, 0);
-			priceView.setText(getString(R.string.price_label) + " " + String.valueOf(product.getPrice()) + getString(R.string.currency_india));
+			priceView.setText(getString(R.string.price_label) + " " + NumberFormat.getInstance().format(product.getPrice()) + getString(R.string.currency_india));
 			
 			TextView originalCostView = (TextView) convertView.findViewById(R.id.original_cost);
 			originalCostView.setPadding(10, 0, 0, 0);
-			originalCostView.setText( getString(R.string.original_cost_label) + " " + String.valueOf(product.getOriginalCost()) + getString(R.string.currency_india));
+			originalCostView.setText( getString(R.string.original_cost_label) + " " + NumberFormat.getInstance().format(product.getOriginalCost()) + getString(R.string.currency_india));
 			
 		}
 
@@ -149,7 +158,8 @@ public class CategoryDetailFragment extends ListFragment {
 					registerManager.plusNumberOfOrder(product);
 					int numberOfOrder = registerManager.getNumberOfOrder(product);
 					ProductEditText editText = button.getProductEditText();
-					editText.setText(String.valueOf(numberOfOrder));
+					NumberFormat.getInstance().setMaximumFractionDigits(MAXIMUM_FRACTION_DIGITS);
+					editText.setText(NumberFormat.getInstance().format(numberOfOrder));
 				}
 			});
 			
@@ -167,7 +177,8 @@ public class CategoryDetailFragment extends ListFragment {
 					if (numberOfOrder == 0) {
 						editText.getEditableText().clear();
 					} else {
-						editText.setText(String.valueOf(numberOfOrder));
+						NumberFormat.getInstance().setMaximumFractionDigits(MAXIMUM_FRACTION_DIGITS);
+						editText.setText(NumberFormat.getInstance().format(numberOfOrder));
 					}
 				}
 			});
@@ -177,7 +188,8 @@ public class CategoryDetailFragment extends ListFragment {
 				numberOfSalesText.getEditableText().clear();
 			} else {
 				 int numberOfSales = order.getNumberOfOrder();
-				 numberOfSalesText.setText(String.valueOf(numberOfSales));
+				 NumberFormat.getInstance().setMaximumFractionDigits(MAXIMUM_FRACTION_DIGITS);
+				 numberOfSalesText.setText(NumberFormat.getInstance().format(numberOfSales));
 			}
 		}
 		

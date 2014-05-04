@@ -1,5 +1,6 @@
 package com.ricoh.pos;
 
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -22,7 +23,8 @@ import com.ricoh.pos.model.SalesCalenderManager;
 import com.ricoh.pos.model.SalesRecordManager;
 
 public class SalesRecordDetailFragment extends ListFragment {
-	
+	// This is the maximum fraction digits for total payment to display.
+	private static final int MAXIMUM_FRACTION_DIGITS = 2;
 	private ArrayList<Order> orders;
 	
 	@Override
@@ -90,7 +92,8 @@ public class SalesRecordDetailFragment extends ListFragment {
 
 			TextView priceView = (TextView) convertView.findViewById(R.id.price);
 			priceView.setPadding(10, 0, 0, 0);
-			priceView.setText(String.valueOf(product.getPrice()));
+			NumberFormat.getInstance().setMaximumFractionDigits(MAXIMUM_FRACTION_DIGITS);
+			priceView.setText(NumberFormat.getInstance().format(product.getPrice()));
 
 			TextView numberOfSalseView = (TextView) convertView.findViewById(R.id.numberOfSales);
 			numberOfSalseView.setPadding(10, 0, 0, 0);
@@ -99,7 +102,7 @@ public class SalesRecordDetailFragment extends ListFragment {
 				throw new AssertionError("Product which isn't ordered is shown");
 			} else {
 				int numberOfSales = order.getNumberOfOrder();
-				numberOfSalseView.setText(String.valueOf(numberOfSales));
+				numberOfSalseView.setText(NumberFormat.getInstance().format(numberOfSales));
 			}
 
 			return convertView;

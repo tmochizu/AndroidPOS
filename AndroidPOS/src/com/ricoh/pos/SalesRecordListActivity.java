@@ -63,7 +63,7 @@ SalesRecordListFragment.Callbacks{
 	private void showDeleteDialog(final String date) {
 		AlertDialog.Builder alert = new AlertDialog.Builder(this);  
         alert.setTitle(R.string.title_delete);  
-        alert.setMessage("Do you delete the following date?\n" + date);  
+        alert.setMessage(getString(R.string.sales_record_delete_confirm_message)+ "\n" + date);  
         alert.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener(){  
             public void onClick(DialogInterface dialog, int which) {
             	try

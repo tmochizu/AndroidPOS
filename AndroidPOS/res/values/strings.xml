@@ -27,4 +27,5 @@
     <string name="undiscounted_price">Undiscounted Price</string>
     <string name="success_deleted_message">Success to delete!</string>
     <string name="error_deleted_message">Failed to delete!</string>
+    <string name="sales_record_delete_confirm_message">Do you delete the following date?</string>
 </resources>
