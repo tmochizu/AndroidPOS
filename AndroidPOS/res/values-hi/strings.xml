@@ -27,4 +27,5 @@
     <string name="undiscounted_price">ディスカウントしていない値段</string>
     <string name="success_deleted_message">削除に成功!</string>
     <string name="error_deleted_message">削除に失敗!</string>
+    <string name="sales_record_delete_confirm_message">下記の日付を削除しますか？</string>
 </resources>
