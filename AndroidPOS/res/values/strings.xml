@@ -10,7 +10,7 @@
     <string name="sync_success">Success to syncronize!</string>
     <string name="sd_import_error">Failed to import from SD!</string>
     <string name="sd_export_error">Failed to export to SD!</string>
-    <string name="dialog_data_syncro_message">Synchronizing, please wait...</string>
+    <string name="dialog_data_syncro_message">Synchronizing, please wait</string>
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
     <string name="price_down">Price Down</string>
@@ -28,4 +28,15 @@
     <string name="success_deleted_message">Success to delete!</string>
     <string name="error_deleted_message">Failed to delete!</string>
     <string name="sales_record_delete_confirm_message">Do you delete the following date?</string>
+    
+  	<string-array name="user_attributes">
+    	<item>10s</item>
+    	<item>20s</item>
+    	<item>30s</item>
+    	<item>40s</item>
+    	<item>50s</item>
+    	<item>60s</item>
+    </string-array>
+  	<string name="user_attribute_label">Attribute</string>
+
 </resources>

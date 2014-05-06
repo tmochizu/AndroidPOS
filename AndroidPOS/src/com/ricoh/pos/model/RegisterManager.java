@@ -3,6 +3,8 @@ package com.ricoh.pos.model;
 import java.util.ArrayList;
 import java.util.Date;
 
+import android.util.Log;
+
 import com.ricoh.pos.data.Order;
 import com.ricoh.pos.data.OrderUpdateInfo;
 import com.ricoh.pos.data.Product;
@@ -17,6 +19,8 @@ public class RegisterManager {
 	private ArrayList<UpdateOrderListener> listeners;
 	
 	private double discountValue;
+	
+	private String userAttribute;
 	
 	private RegisterManager(){
 		orderList = new ArrayList<Order>();
@@ -110,6 +114,7 @@ public class RegisterManager {
 	public void clearAllOrders(){
 		orderList = new ArrayList<Order>();
 		discountValue = 0;
+		userAttribute = null;
 	}
 	
 	public Order findOrderOfTheProduct(Product product){
@@ -148,10 +153,19 @@ public class RegisterManager {
 		notifyUpdateOrder();
 	}
 	
+	public void setUserAttribute(String attribute){
+		if (attribute == null || attribute.length() == 0) {
+			throw new IllegalArgumentException("User attribute is illegal");
+		}
+		this.userAttribute = attribute;
+		Log.d("Attribute:", " " + userAttribute + " ");
+	}
+	
 	public SingleSalesRecord getSingleSalesRecord(){
 		SingleSalesRecord record = new SingleSalesRecord(new Date());
 		record.setOrders(orderList);
 		record.setDiscountValue(discountValue);
+		record.setUserAttribute(userAttribute);
 		return record;
 	}
 	
