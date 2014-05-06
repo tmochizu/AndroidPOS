@@ -7,6 +7,7 @@ public class SingleSalesRecord {
 	
 	private Date salesDate;
 	private double discountValue;
+	private String userAttribute;
 	private ArrayList<Order> orders;
 	
 	public SingleSalesRecord(Date date){
@@ -66,4 +67,14 @@ public class SingleSalesRecord {
 		return discountValue;
 	}
 	
+	public void setUserAttribute(String attribute){
+		if (attribute == null || attribute.length() == 0) {
+			throw new IllegalArgumentException("User attribute is illegal");
+		}
+		this.userAttribute = attribute;
+	}
+	
+	public String getUserAttribute(){
+		return userAttribute;
+	}
 }

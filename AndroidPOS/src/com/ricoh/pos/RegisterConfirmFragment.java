@@ -11,8 +11,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,6 +27,7 @@ public class RegisterConfirmFragment extends Fragment implements UpdateOrderList
 	// This is the maximum fraction digits for total payment to display.
 	private static final int MAXIMUM_FRACTION_DIGITS = 2;
 	private OnButtonClickListener buttonClickListener;
+	private String[] userAttributes;
 	private RegisterManager registerManager = RegisterManager.getInstance();
 
 	@Override  
@@ -39,11 +43,12 @@ public class RegisterConfirmFragment extends Fragment implements UpdateOrderList
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		registerManager.setUpdateOrderListener(this);
+		userAttributes = getResources().getStringArray(R.array.user_attributes);
 	}
 
 	@Override  
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		View v = inflater.inflate(R.layout.fragment_register_confirm, container, false);
+		View v = inflater.inflate(R.layout.fragment_register_confirm_table, container, false);
 		
 		EditText discountView = (EditText) v.findViewById(R.id.discountValue);
 		discountView.addTextChangedListener(new DiscountWatcher());
@@ -70,6 +75,26 @@ public class RegisterConfirmFragment extends Fragment implements UpdateOrderList
 		
 		double totalAmount = registerManager.getOriginalTotalAmount();
 		updateTotalAmount(v, totalAmount, totalAmount);
+		
+		// Add Spinner for User Attributes 
+	    Spinner userAttributesSpinner = (Spinner)v.findViewById(R.id.spinner1);
+	    ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),R.layout.spinner_item,userAttributes);
+	    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+	    userAttributesSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                Spinner spinner = (Spinner) parent;
+                String selectedAttribute = userAttributes[spinner.getSelectedItemPosition()];
+                registerManager.setUserAttribute(selectedAttribute);
+;            }
+
+			@Override
+			public void onNothingSelected(AdapterView<?> arg0) {
+				throw new IllegalStateException("User attributes have to be selected");
+			}
+        });
+	    userAttributesSpinner.setAdapter(adapter);
+	    
 		
 		return v;
 	}
