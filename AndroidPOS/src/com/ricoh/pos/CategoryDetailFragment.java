@@ -131,11 +131,6 @@ public class CategoryDetailFragment extends ListFragment {
 			TextView priceView = (TextView) convertView.findViewById(R.id.price);
 			priceView.setPadding(10, 0, 0, 0);
 			priceView.setText(getString(R.string.price_label) + " " + NumberFormat.getInstance().format(product.getPrice()) + getString(R.string.currency_india));
-			
-			TextView originalCostView = (TextView) convertView.findViewById(R.id.original_cost);
-			originalCostView.setPadding(10, 0, 0, 0);
-			originalCostView.setText( getString(R.string.original_cost_label) + " " + NumberFormat.getInstance().format(product.getOriginalCost()) + getString(R.string.currency_india));
-			
 		}
 
 		private void setNumberOfOrderView(View convertView, Product product){
