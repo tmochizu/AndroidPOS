@@ -4,7 +4,6 @@
     <string name="app_name">RicohPOS</string>
     <string name="action_settings">設定</string>
     <string name="title_category_list">商品</string>
-    <string name="title_category_detail">カテゴリー</string>
     <string name="title_total_payment">合計</string>
     <string name="category_title_default">全て</string>
     <string name="sync_success">同期が成功しました!</string>
@@ -15,7 +14,6 @@
     <string name="cancel">キャンセル</string>
     <string name="price_down">値下げ</string>
     <string name="price_label">値段</string>
-    <string name="original_cost_label">コスト</string>
     <string name="currency_india">Rp</string>
     <string name="number_tag">X</string>
     <string name="discount_error">ディスカウント額は合計金額より大きい</string>

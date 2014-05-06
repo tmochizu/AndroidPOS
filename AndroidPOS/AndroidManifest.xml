@@ -44,7 +44,6 @@
         </activity>
         <activity
             android:name="com.ricoh.pos.CategoryDetailActivity"
-            android:label="@string/title_category_detail"
             android:screenOrientation="landscape"
             android:parentActivityName=".CategoryListActivity" >
             <meta-data
