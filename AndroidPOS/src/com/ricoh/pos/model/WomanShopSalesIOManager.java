@@ -97,7 +97,8 @@ public class WomanShopSalesIOManager implements IOManager {
 							WomanShopSalesDef.SALE_PRICE.name(),
 							WomanShopSalesDef.TOTAL_SALE_PRICE.name(),
 							WomanShopSalesDef.DISCOUNT.name(),
-							WomanShopSalesDef.DATE.name() }, 
+							WomanShopSalesDef.DATE.name(),
+							WomanShopSalesDef.USER_ATTRIBUTE.name() }, 
 							null, null, null, null, null);
 			String[] results = new String[cursor.getCount()];
 			Log.d("debug", "count:" + cursor.getCount());
@@ -126,7 +127,8 @@ public class WomanShopSalesIOManager implements IOManager {
 							WomanShopSalesDef.SALE_PRICE.name(),
 							WomanShopSalesDef.TOTAL_SALE_PRICE.name(),
 							WomanShopSalesDef.DISCOUNT.name(),
-							WomanShopSalesDef.DATE.name() }, 
+							WomanShopSalesDef.DATE.name(),
+							WomanShopSalesDef.USER_ATTRIBUTE.name()}, 
 							WomanShopSalesDef.PRODUCT_CODE.name() + " = ?", 
 							new String[] { code }, null, null, null);
 			return readCursor(cursor);
@@ -145,7 +147,9 @@ public class WomanShopSalesIOManager implements IOManager {
 			String salesRecord = order.getProductCode() + "," + order.getProductCategory() + ","
 					+ order.getProductName() + "," + order.getNumberOfOrder() + ","
 					+ order.getProductPrice() + "," + order.getTotalAmount() + ","
-					+ record.getDiscountValue() + "," + WomanShopFormatter.formatDate(record.getSalesDate());
+					+ record.getDiscountValue() + ","
+					+ WomanShopFormatter.formatDate(record.getSalesDate()) + ","
+					+ record.getUserAttribute();
 			insertSingleRecord(salesRecord);
 		}
 	}
@@ -193,7 +197,8 @@ public class WomanShopSalesIOManager implements IOManager {
 							WomanShopSalesDef.SALE_PRICE.name(),
 							WomanShopSalesDef.TOTAL_SALE_PRICE.name(),
 							WomanShopSalesDef.DISCOUNT.name(),
-							WomanShopSalesDef.DATE.name() }, 
+							WomanShopSalesDef.DATE.name(),
+							WomanShopSalesDef.USER_ATTRIBUTE.name() }, 
 							null, null, null, null, null);
 			String[] results = new String[cursor.getCount()];
 			Log.d("debug", "sales count:" + cursor.getCount());
@@ -233,6 +238,7 @@ public class WomanShopSalesIOManager implements IOManager {
 		int indexTotalSalePrice = cursor.getColumnIndex(WomanShopSalesDef.TOTAL_SALE_PRICE.name());
 		int indexDiscount = cursor.getColumnIndex(WomanShopSalesDef.DISCOUNT.name());
 		int indexDate = cursor.getColumnIndex(WomanShopSalesDef.DATE.name());
+		int indexUserAttribute = cursor.getColumnIndex(WomanShopSalesDef.USER_ATTRIBUTE.name());
 
 		if (cursor.moveToNext()) {
 			String productCode = cursor.getString(indexProductCode);
@@ -243,9 +249,11 @@ public class WomanShopSalesIOManager implements IOManager {
 			double totalSalePrice = cursor.getDouble(indexTotalSalePrice);
 			double discount = cursor.getDouble(indexDiscount);
 			String date = cursor.getString(indexDate);
+			String userAttribute = cursor.getString(indexUserAttribute);
 
 			result += productCode + "," + productCategory + "," + itemCategory + "," + qty + ","
-					+ salePrice + "," + totalSalePrice + "," + discount + "," + date + "\n";
+					+ salePrice + "," + totalSalePrice + "," + discount + "," + date + ","
+					+ userAttribute + "\n";
 		}
 		return result;
 	}

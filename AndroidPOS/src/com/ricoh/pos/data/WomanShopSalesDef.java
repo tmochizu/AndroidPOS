@@ -9,4 +9,5 @@ public enum WomanShopSalesDef {
 	TOTAL_SALE_PRICE,
 	DISCOUNT,
 	DATE,
+	USER_ATTRIBUTE,
 }
