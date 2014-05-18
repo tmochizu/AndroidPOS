@@ -23,7 +23,8 @@ public class SalesDatabaseHelper extends SQLiteOpenHelper {
 				+ WomanShopSalesDef.SALE_PRICE.name() + " Real, "
 				+ WomanShopSalesDef.TOTAL_SALE_PRICE.name() + " Real, "
 				+ WomanShopSalesDef.DISCOUNT.name() + " Real, "
-				+ WomanShopSalesDef.DATE.name() + " Text)");
+				+ WomanShopSalesDef.DATE.name() + " Text, "
+				+ WomanShopSalesDef.USER_ATTRIBUTE.name() + " Text)");
 		Log.d("debug", "Sales database onCreate");
 	}
 
