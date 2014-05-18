@@ -1,9 +1,15 @@
 package com.ricoh.pos;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.view.LayoutInflater;
@@ -101,7 +107,7 @@ public class OrderListFragment extends ListFragment {
 			ImageView imageView = (ImageView) convertView.findViewById(R.id.photo);
 			imageView.setLayoutParams(new LinearLayout.LayoutParams(120, 120));
 			imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
-			imageView.setImageResource(getResourceID(product.getProductImagePath()));
+			setImageView(product, imageView);
 
 			TextView textView = (TextView) convertView.findViewById(R.id.filename);
 			textView.setPadding(10, 0, 0, 0);
@@ -129,10 +135,17 @@ public class OrderListFragment extends ListFragment {
 
 			return convertView;
 		}
+		
+		private void setImageView(Product product, ImageView imageView) {
+			File imageFile = new File(product.getProductImagePath());
+			try {
+				InputStream inputStream = new FileInputStream(imageFile);
+				Bitmap tmpImage = BitmapFactory.decodeStream(inputStream);
+				imageView.setImageBitmap(tmpImage);
 
-		private int getResourceID(String fileName) {
-			int resID = getResources().getIdentifier(fileName, "drawable", "com.ricoh.pos");
-			return resID;
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 }
