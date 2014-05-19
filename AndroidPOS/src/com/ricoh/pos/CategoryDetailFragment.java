@@ -1,9 +1,15 @@
 package com.ricoh.pos;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+import java.io.FileInputStream;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.text.Editable;
@@ -114,7 +120,19 @@ public class CategoryDetailFragment extends ListFragment {
 			ImageView imageView = (ImageView) convertView.findViewById(R.id.photo);
 			imageView.setLayoutParams(new LinearLayout.LayoutParams(120, 120));
 			imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
-			imageView.setImageResource(getResourceID(product.getProductImagePath()));
+			setImageView(product, imageView);
+		}
+
+		private void setImageView(Product product, ImageView imageView) {
+			File imageFile = new File(product.getProductImagePath());
+			try {
+				InputStream inputStream = new FileInputStream(imageFile);
+				Bitmap tmpImage = BitmapFactory.decodeStream(inputStream);
+				imageView.setImageBitmap(tmpImage);
+
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			}
 		}
 		
 		private void setProductInformationView(View convertView, Product product){
@@ -186,12 +204,6 @@ public class CategoryDetailFragment extends ListFragment {
 				 NumberFormat.getInstance().setMaximumFractionDigits(MAXIMUM_FRACTION_DIGITS);
 				 numberOfSalesText.setText(NumberFormat.getInstance().format(numberOfSales));
 			}
-		}
-		
-
-		private int getResourceID(String fileName) {
-			int resID = getResources().getIdentifier(fileName, "drawable", "com.ricoh.pos");
-			return resID;
 		}
 	}
 

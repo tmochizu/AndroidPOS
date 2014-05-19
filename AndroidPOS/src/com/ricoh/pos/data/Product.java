@@ -1,5 +1,10 @@
 package com.ricoh.pos.data;
 
+import java.io.File;
+
+import android.os.Environment;
+import android.util.Log;
+
 public class Product {
 
 	private String code;
@@ -9,6 +14,7 @@ public class Product {
 	private double price;
 	private int stock;
 	private String imagePath;
+	private static String imageStorageFolder = "/AndroidPOS";
 
 	public Product(String code, String category, String name) {
 		if (code == null || code.length() == 0) {
@@ -64,8 +70,9 @@ public class Product {
 		if (imagePath == null || imagePath.length() == 0) {
 			throw new IllegalArgumentException("Passing imagePath is not valid");
 		}
-
-		this.imagePath = imagePath;
+		
+		String imageStoragePath = getImageStoragePath();
+		this.imagePath = imageStoragePath + "/" + imagePath + ".jpg";
 	}
 
 	// /////////////////////////
@@ -104,5 +111,11 @@ public class Product {
 	public boolean equals(Object object){
 		Product targetProduct = (Product) object;
 		return this.code.equals(targetProduct.getCode());
+	}
+	
+	private String getImageStoragePath() {
+		File exterlStorage = Environment.getExternalStorageDirectory();
+		Log.d("debug", "Environment External:" + exterlStorage.getAbsolutePath());
+		return exterlStorage.getAbsolutePath() + imageStorageFolder;
 	}
 }
