@@ -38,4 +38,22 @@
     </string-array>
   	<string name="user_attribute_label">Attribute</string>
   	
+    <string name="category_name_1">Beauty Cosmetics</string>
+    <string name="category_name_2">Garments</string>
+    <string name="category_name_3">Hair and Accessories</string>
+    <string name="category_name_4">Jewellery and accessories</string>
+    <string name="category_name_5">Kits and Pouches</string>
+    <string name="category_name_6">Personal Care</string>
+    <string name="category_name_7">Accessorise</string>
+    <string name="category_name_8">Seasonal and Festival</string>
+    <string name="category_name_9">Books</string>
+    <string name="category_name_10">Footwear</string>
+    <string name="category_name_11">Stitching Supplies</string>
+    <string name="category_name_12">Watches</string>
+    <string name="category_name_13">Drap Kurti</string>
+    <string name="category_name_14">Sleeper</string>
+    <string name="category_name_15">Chou-Chou</string>
+    <string name="category_name_16">Kitchen Item (Utensils)</string>
+    <string name="category_name_17">Fabric</string>
+  	
 </resources>
