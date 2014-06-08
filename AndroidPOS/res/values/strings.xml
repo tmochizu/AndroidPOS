@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
-    <string name="app_name">RICOH POS</string>
+    
+    <string name="app_name">RICOH POS 0.1.1</string>
     <string name="action_settings">Settings</string>
     <string name="title_category_list">Products</string>
     <string name="title_total_payment">Total</string>
@@ -37,5 +37,5 @@
         <item>Other</item>
     </string-array>
   	<string name="user_attribute_label">Attribute</string>
-
+  	
 </resources>
