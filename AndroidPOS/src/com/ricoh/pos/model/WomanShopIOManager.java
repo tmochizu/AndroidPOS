@@ -20,7 +20,7 @@ public class WomanShopIOManager implements IOManager {
 
 	private SQLiteDatabase database;
 	private static String DATABASE_NAME = "products_dummy";
-	private static String csvStorageFolder = "/AndroidPOS";
+	private static String csvStorageFolder = "/Ricoh";
 
 	public WomanShopIOManager() {
 		// Nothing to do
@@ -125,7 +125,7 @@ public class WomanShopIOManager implements IOManager {
 		
 		try {
 			String csvStoragePath = getCSVStoragePath();
-			File productDataCSV = new File(csvStoragePath + "/products_dummy.csv");
+			File productDataCSV = new File(csvStoragePath + "/Product.csv");
 			bufferReader = new BufferedReader(new FileReader(productDataCSV));
 		} catch (FileNotFoundException e) {
 			System.out.println(e);
