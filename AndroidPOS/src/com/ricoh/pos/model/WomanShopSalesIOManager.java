@@ -27,7 +27,7 @@ public class WomanShopSalesIOManager implements IOManager {
 	private SQLiteDatabase salesDatabase;
 	private static String DATABASE_NAME = "sales_dummy";
 	private ArrayList<SingleSalesRecord> salesRecords;
-	private static String csvStorageFolder = "/AndroidPOS";
+	private static String csvStorageFolder = "/Ricoh";
 
 	private WomanShopSalesIOManager() {
 		this.salesRecords = new ArrayList<SingleSalesRecord>();
@@ -282,7 +282,7 @@ public class WomanShopSalesIOManager implements IOManager {
 			Log.d("debug", "make directory:" + csvStoragePath);
 			csvStorage.mkdir();
 		}
-		File salesDataCSV = new File(csvStoragePath + "/sales_dummy.csv");
+		File salesDataCSV = new File(csvStoragePath + "/sales.csv");
 		FileWriter filewriter = null;
 		try {
 			filewriter = new FileWriter(salesDataCSV);
@@ -303,7 +303,7 @@ public class WomanShopSalesIOManager implements IOManager {
 		}
 	}
 
-	private String getCSVStoragePath() {
+	public String getCSVStoragePath() {
 		File exterlStorage = Environment.getExternalStorageDirectory();
 		Log.d("debug", "Environment External:" + exterlStorage.getAbsolutePath());
 		return exterlStorage.getAbsolutePath() + csvStorageFolder;
