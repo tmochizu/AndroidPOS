@@ -190,7 +190,7 @@ public class WomanShopIOManager implements IOManager {
 		return result;
 	}
 	
-	private String getCSVStoragePath() {
+	public String getCSVStoragePath() {
 		File exterlStorage = Environment.getExternalStorageDirectory();
 		Log.d("debug", "Environment External:" + exterlStorage.getAbsolutePath());
 		return exterlStorage.getAbsolutePath() + csvStorageFolder;

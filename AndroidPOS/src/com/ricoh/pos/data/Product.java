@@ -14,7 +14,7 @@ public class Product {
 	private double price;
 	private int stock;
 	private String imagePath;
-	private static String imageStorageFolder = "/AndroidPOS";
+	private static String imageStorageFolder = "/Ricoh";
 
 	public Product(String code, String category, String name) {
 		if (code == null || code.length() == 0) {

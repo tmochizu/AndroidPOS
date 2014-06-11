@@ -63,7 +63,7 @@ public class DataSyncTask extends AsyncTask<String, Void, AsyncTaskResult<String
 		} catch (Exception e) {
 			// TODO: Should separate exception(Import, Export, at least)
 			e.printStackTrace();
-			return AsyncTaskResult.createErrorResult(R.string.sd_import_error);
+			return AsyncTaskResult.createErrorResult(R.string.sd_export_error);
 		}
 		// The argument is null because nothing to notify on success
 		return AsyncTaskResult.createNormalResult(null);
