@@ -38,7 +38,13 @@ public class RegisterManager {
 	public void updateOrder(Product product, int num){
 		Order orderOfTheProduct = findOrderOfTheProduct(product);
 		
-		if (orderOfTheProduct == null) {
+		if (num == 0) {
+			if (orderOfTheProduct == null) {
+				return;
+			} else {
+				orderList.remove(orderOfTheProduct);
+			}
+		} else if (orderOfTheProduct == null) {
 			Order newOrder = new Order(product,num);
 			orderList.add(newOrder);
 		} else {
@@ -68,8 +74,13 @@ public class RegisterManager {
 		if (orderOfTheProduct == null) {
 			Order newOrder = new Order(product,0);
 			orderList.add(newOrder);
-		} else {
+		}else{
 			orderOfTheProduct.minusNumberOfOrder();
+			
+			// 注文が0になったら削除
+			if (orderOfTheProduct.getNumberOfOrder() == 0) {
+				orderList.remove(orderOfTheProduct);
+			}
 		}
 		
 		notifyUpdateOrder();
@@ -129,7 +140,11 @@ public class RegisterManager {
 	
 	public int getNumberOfOrder(Product product) {
 		Order order = findOrderOfTheProduct(product);
-		return order.getNumberOfOrder();
+		if (order == null) {
+			return 0;
+		} else {
+			return order.getNumberOfOrder();	
+		}
 	}
 	
 	public void setUpdateOrderListener(UpdateOrderListener listener){
