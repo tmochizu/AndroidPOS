@@ -284,7 +284,7 @@ public class WomanShopSalesIOManager implements IOManager {
 			Log.d("debug", "make directory:" + csvStoragePath);
 			csvStorage.mkdir();
 		}
-		File salesDataCSV = new File(csvStoragePath + "/testsales.csv");
+		File salesDataCSV = new File(csvStoragePath + "/sales.csv");
 		FileWriter filewriter = null;
 		try {
 			filewriter = new FileWriter(salesDataCSV);
