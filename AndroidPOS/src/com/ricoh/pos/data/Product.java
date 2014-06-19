@@ -40,7 +40,7 @@ public class Product {
 	// /////////////////////////
 	public void setOriginalCost(double cost) {
 
-		if (cost <= 0) {
+		if (cost < 0) {
 			throw new IllegalArgumentException("Original cost should be over zero");
 		}
 
@@ -49,7 +49,7 @@ public class Product {
 
 	public void setPrice(double price) {
 
-		if (price <= 0) {
+		if (price < 0) {
 			throw new IllegalArgumentException("Price should be over zero");
 		}
 

@@ -2,8 +2,10 @@ package com.ricoh.pos;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.FileInputStream;
+import java.net.URL;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 
@@ -45,6 +47,8 @@ public class CategoryDetailFragment extends ListFragment {
 	public static final String ARG_ITEM_ID = "item_id";
 	// This is the maximum fraction digits for total payment to display.
 	private static final int MAXIMUM_FRACTION_DIGITS = 2;
+	
+	private final int IMAGE_VIEW_SIZE = 120;
 
 	private RegisterManager registerManager;
 
@@ -118,20 +122,40 @@ public class CategoryDetailFragment extends ListFragment {
 		
 		private void setImageView(View convertView, Product product){
 			ImageView imageView = (ImageView) convertView.findViewById(R.id.photo);
-			imageView.setLayoutParams(new LinearLayout.LayoutParams(120, 120));
+			imageView.setLayoutParams(new LinearLayout.LayoutParams(IMAGE_VIEW_SIZE, IMAGE_VIEW_SIZE));
 			imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
 			setImageView(product, imageView);
 		}
 
 		private void setImageView(Product product, ImageView imageView) {
-			File imageFile = new File(product.getProductImagePath());
+			String imagePath = product.getProductImagePath();
+			File imageFile = new File(imagePath);
+
 			try {
 				InputStream inputStream = new FileInputStream(imageFile);
-				Bitmap tmpImage = BitmapFactory.decodeStream(inputStream);
-				imageView.setImageBitmap(tmpImage);
-
+				//　画像サイズ取得
+				BitmapFactory.Options options = new BitmapFactory.Options();
+				options.inJustDecodeBounds = true;
+				BitmapFactory.decodeStream(inputStream, null, options);
+				int width = options.outWidth;
+				int height = options.outHeight;
+				
+				// 縮小してデコード
+				int scaleW = width / IMAGE_VIEW_SIZE; //imageViewの幅。getWidthだとなぜか0になるので決めうち
+				int scaleH = height / IMAGE_VIEW_SIZE;
+				options.inSampleSize = (int) Math.max(scaleW, scaleH);
+				options.inJustDecodeBounds = false;
+				Bitmap resizedImage = BitmapFactory.decodeFile(imagePath,options);
+				imageView.setImageBitmap(resizedImage);
+				imageView.setVisibility(View.VISIBLE);
+				
 			} catch (FileNotFoundException e) {
-				e.printStackTrace();
+				// プロダクトIDに対応する写真がない。ないことは許容されるので問題はない
+				// ただしViewが再利用されるため、関係ない写真がViewに表示される可能性がある。
+				// そのため写真がない場合はinvisibleにしている。
+				// TODO: 裏ではメモリを余計に消費している可能性があるのでそれをクリアした方が本当は良いはず）
+				imageView.setVisibility(View.INVISIBLE);
+				//imageView.setImageBitmap(null);
 			}
 		}
 		
