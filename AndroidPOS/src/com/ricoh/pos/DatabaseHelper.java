@@ -15,6 +15,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 	@Override
 	public void onCreate(SQLiteDatabase db) {
+		/*
 		db.execSQL("Create Table products_dummy (" + "_id Integer Primary Key, "
 				+ WomanShopDataDef.PRODUCT_CODE.name() + " Text UNIQUE, "
 				+ WomanShopDataDef.PRODUCT_CATEGORY.name() + " Text, "
@@ -25,6 +26,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 				+ WomanShopDataDef.COST_TO_ENTREPRENEUR.name() + " Real, "
 				+ WomanShopDataDef.TOTAL_COST_TO_ENTREP.name() + " Real, "
 				+ WomanShopDataDef.TOTAL_PROFIT_TO_ENTREP.name() + " Real)");
+		*/
+		db.execSQL("Create Table products_dummy (" + "_id Integer Primary Key, "
+				+ WomanShopDataDef.PRODUCT_CODE.name() + " Text UNIQUE, "
+				+ WomanShopDataDef.PRODUCT_CATEGORY.name() + " Text, "
+				+ WomanShopDataDef.ITEM_CATEGORY.name() + " Text, "
+				//+ WomanShopDataDef.QTY.name() + " Integer, "
+				+ WomanShopDataDef.SALE_PRICE.name() + " Real, "
+				//+ WomanShopDataDef.TOTAL_SALE_PRICE.name() + " Real, "
+				+ WomanShopDataDef.COST_TO_ENTREPRENEUR.name() + " Real)");
+				//+ WomanShopDataDef.TOTAL_COST_TO_ENTREP.name() + " Real, "
+				//+ WomanShopDataDef.TOTAL_PROFIT_TO_ENTREP.name() + " Real)");
 		Log.d("debug", "Database onCreate");
 	}
 

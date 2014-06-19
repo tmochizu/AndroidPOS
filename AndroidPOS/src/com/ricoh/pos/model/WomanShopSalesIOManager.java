@@ -2,6 +2,7 @@ package com.ricoh.pos.model;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -276,6 +277,7 @@ public class WomanShopSalesIOManager implements IOManager {
 	}
 	
 	private void writeSalesData(String[] salesData, Context context) {
+		
 		String csvStoragePath = getCSVStoragePath();
 		File csvStorage = new File(csvStoragePath);
 		if (!csvStorage.exists()) {
@@ -295,6 +297,7 @@ public class WomanShopSalesIOManager implements IOManager {
 		} finally {
 			if (filewriter != null) {
 				try {
+					filewriter.flush();
 					filewriter.close();
 				} catch (IOException e) {
 					System.out.println(e);

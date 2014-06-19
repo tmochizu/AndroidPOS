@@ -38,7 +38,7 @@ public class ProductsManager {
 			product.setOriginalCost(Double
 					.parseDouble(fieldData[WomanShopDataDef.COST_TO_ENTREPRENEUR.ordinal()]));
 			product.setPrice(Double.parseDouble(fieldData[WomanShopDataDef.SALE_PRICE.ordinal()]));
-			product.setStock(Integer.parseInt(fieldData[WomanShopDataDef.QTY.ordinal()]));
+			//product.setStock(Integer.parseInt(fieldData[WomanShopDataDef.QTY.ordinal()]));
 			product.setProductImagePath(fieldData[WomanShopDataDef.PRODUCT_CODE.ordinal()]);
 			addNewProductInCategory(fieldData[WomanShopDataDef.PRODUCT_CATEGORY.ordinal()], product);
 		}
