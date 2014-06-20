@@ -1,16 +1,12 @@
 package com.ricoh.pos;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.InputStream;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.view.LayoutInflater;
@@ -25,12 +21,14 @@ import android.widget.TextView;
 import com.ricoh.pos.data.Order;
 import com.ricoh.pos.data.Product;
 import com.ricoh.pos.data.SingleSalesRecord;
+import com.ricoh.pos.model.ProductsManager;
 import com.ricoh.pos.model.SalesCalenderManager;
 import com.ricoh.pos.model.SalesRecordManager;
 
 public class SalesRecordDetailFragment extends ListFragment {
 	// This is the maximum fraction digits for total payment to display.
 	private static final int MAXIMUM_FRACTION_DIGITS = 2;
+	private final int IMAGE_VIEW_SIZE = 120;
 	private ArrayList<Order> orders;
 	
 	@Override
@@ -115,16 +113,22 @@ public class SalesRecordDetailFragment extends ListFragment {
 		}
 		
 		private void setImageView(Product product, ImageView imageView) {
-			File imageFile = new File(product.getProductImagePath());
-			try {
-				InputStream inputStream = new FileInputStream(imageFile);
-				Bitmap tmpImage = BitmapFactory.decodeStream(inputStream);
-				imageView.setImageBitmap(tmpImage);
 
+			try {
+				 
+				Bitmap image = ProductsManager.getInstance().decodeProductImage(product, IMAGE_VIEW_SIZE, IMAGE_VIEW_SIZE);
+				imageView.setImageBitmap(image);
+				imageView.setVisibility(View.VISIBLE);
 			} catch (FileNotFoundException e) {
-				e.printStackTrace();
+				// プロダクトIDに対応する写真がない。ないことは許容されるので問題はない
+				// ただしViewが再利用されるため、関係ない写真がViewに表示される可能性がある。
+				// そのため写真がない場合はinvisibleにしている。
+				// TODO: 裏ではメモリを余計に消費している可能性があるのでそれをクリアした方が本当は良いはず）
+				imageView.setVisibility(View.INVISIBLE);
+				//imageView.setImageBitmap(null);
 			}
 		}
+		
 	}
 
 }

@@ -1,17 +1,11 @@
 package com.ricoh.pos;
 
-import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.FileInputStream;
-import java.net.URL;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.text.Editable;
@@ -128,27 +122,11 @@ public class CategoryDetailFragment extends ListFragment {
 		}
 
 		private void setImageView(Product product, ImageView imageView) {
-			String imagePath = product.getProductImagePath();
-			File imageFile = new File(imagePath);
 
 			try {
-				InputStream inputStream = new FileInputStream(imageFile);
-				//　画像サイズ取得
-				BitmapFactory.Options options = new BitmapFactory.Options();
-				options.inJustDecodeBounds = true;
-				BitmapFactory.decodeStream(inputStream, null, options);
-				int width = options.outWidth;
-				int height = options.outHeight;
-				
-				// 縮小してデコード
-				int scaleW = width / IMAGE_VIEW_SIZE; //imageViewの幅。getWidthだとなぜか0になるので決めうち
-				int scaleH = height / IMAGE_VIEW_SIZE;
-				options.inSampleSize = (int) Math.max(scaleW, scaleH);
-				options.inJustDecodeBounds = false;
-				Bitmap resizedImage = BitmapFactory.decodeFile(imagePath,options);
-				imageView.setImageBitmap(resizedImage);
+				Bitmap image = ProductsManager.getInstance().decodeProductImage(product, IMAGE_VIEW_SIZE, IMAGE_VIEW_SIZE);
+				imageView.setImageBitmap(image);
 				imageView.setVisibility(View.VISIBLE);
-				
 			} catch (FileNotFoundException e) {
 				// プロダクトIDに対応する写真がない。ないことは許容されるので問題はない
 				// ただしViewが再利用されるため、関係ない写真がViewに表示される可能性がある。
