@@ -1,15 +1,11 @@
 package com.ricoh.pos;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.InputStream;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.view.LayoutInflater;
@@ -40,6 +36,8 @@ public class OrderListFragment extends ListFragment {
 	public static final String ARG_ITEM_ID = "item_id";
 	// This is the maximum fraction digits for total payment to display.
 	private static final int MAXIMUM_FRACTION_DIGITS = 2;
+	
+	private final int IMAGE_VIEW_SIZE = 120;
 
 	private RegisterManager registerManager;
 	private ArrayList<Product> orderProductList;
@@ -136,15 +134,20 @@ public class OrderListFragment extends ListFragment {
 			return convertView;
 		}
 		
-		private void setImageView(Product product, ImageView imageView) {
-			File imageFile = new File(product.getProductImagePath());
-			try {
-				InputStream inputStream = new FileInputStream(imageFile);
-				Bitmap tmpImage = BitmapFactory.decodeStream(inputStream);
-				imageView.setImageBitmap(tmpImage);
 
+		private void setImageView(Product product, ImageView imageView) {
+
+			try {
+				Bitmap image = ProductsManager.getInstance().decodeProductImage(product, IMAGE_VIEW_SIZE, IMAGE_VIEW_SIZE);
+				imageView.setImageBitmap(image);
+				imageView.setVisibility(View.VISIBLE);
 			} catch (FileNotFoundException e) {
-				e.printStackTrace();
+				// プロダクトIDに対応する写真がない。ないことは許容されるので問題はない
+				// ただしViewが再利用されるため、関係ない写真がViewに表示される可能性がある。
+				// そのため写真がない場合はinvisibleにしている。
+				// TODO: 裏ではメモリを余計に消費している可能性があるのでそれをクリアした方が本当は良いはず）
+				imageView.setVisibility(View.INVISIBLE);
+				//imageView.setImageBitmap(null);
 			}
 		}
 	}
