@@ -288,25 +288,28 @@ public class WomanShopSalesIOManager implements IOManager {
 		}
 		File salesDataCSV = new File(csvStoragePath + "/sales.csv");
 		FileOutputStream fos = null;
+        OutputStreamWriter filewriter = null;
 		try {
 			fos = new FileOutputStream(salesDataCSV);
 			fos.write(0xef);
 			fos.write(0xbb);
 			fos.write(0xbf);
+            filewriter = new OutputStreamWriter(fos, "UTF-8");
 		} catch(FileNotFoundException e) {
 			Log.d("debug", "sales.csv is not found", e);
 			throw e;
+		} catch(UnsupportedEncodingException e) {
+            Log.d("debug", "UTF-8 unsupported", e);
+            throw e;
 		} catch (IOException e) {
 			Log.d("debug", "file write error", e);
 			throw e;
-		}
-		OutputStreamWriter filewriter = null;
-		try {
-			filewriter = new OutputStreamWriter(fos, "UTF-8");
-		} catch(UnsupportedEncodingException e) {
-			Log.d("debug", "UTF-8 unsupported", e);
-			throw e;
-		}
+		} finally {
+            if(null != fos) {
+                fos.close();
+            }
+        }
+
 		try {
 			for (String singleSalesData : salesData) {
 				Log.d("debug", "write csv:" + singleSalesData);
