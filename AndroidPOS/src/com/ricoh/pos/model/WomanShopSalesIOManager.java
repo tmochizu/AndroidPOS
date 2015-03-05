@@ -1,14 +1,5 @@
 package com.ricoh.pos.model;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.Iterator;
-
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.res.AssetManager;
@@ -21,6 +12,17 @@ import com.ricoh.pos.data.Order;
 import com.ricoh.pos.data.SingleSalesRecord;
 import com.ricoh.pos.data.WomanShopFormatter;
 import com.ricoh.pos.data.WomanShopSalesDef;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.Iterator;
 
 public class WomanShopSalesIOManager implements IOManager {
 
@@ -185,7 +187,7 @@ public class WomanShopSalesIOManager implements IOManager {
 		}
 	}
 	
-	public void exportCSV(Context context) {
+	public void exportCSV(Context context) throws IOException {
 		Cursor cursor = null;
 
 		try {
@@ -276,8 +278,8 @@ public class WomanShopSalesIOManager implements IOManager {
 
 	}
 	
-	private void writeSalesData(String[] salesData, Context context) {
-		
+	private void writeSalesData(String[] salesData, Context context) throws IOException {
+
 		String csvStoragePath = getCSVStoragePath();
 		File csvStorage = new File(csvStoragePath);
 		if (!csvStorage.exists()) {
@@ -285,25 +287,44 @@ public class WomanShopSalesIOManager implements IOManager {
 			csvStorage.mkdir();
 		}
 		File salesDataCSV = new File(csvStoragePath + "/sales.csv");
-		FileWriter filewriter = null;
-		try {
-			filewriter = new FileWriter(salesDataCSV);
-			for (String singleSalesData : salesData) {
-				Log.d("debug", "write csv:" + singleSalesData);
-				filewriter.write(singleSalesData);
-			}
-		} catch (IOException e) {
-			System.out.println(e);
-		} finally {
-			if (filewriter != null) {
-				try {
-					filewriter.flush();
-					filewriter.close();
-				} catch (IOException e) {
-					System.out.println(e);
-				}
-			}
-		}
+		FileOutputStream fos = null;
+        OutputStreamWriter filewriter = null;
+        try {
+            try {
+                fos = new FileOutputStream(salesDataCSV);
+                fos.write(0xef);
+                fos.write(0xbb);
+                fos.write(0xbf);
+                filewriter = new OutputStreamWriter(fos, "UTF-8");
+            } catch (FileNotFoundException e) {
+                Log.d("debug", "sales.csv is not found", e);
+                throw e;
+            } catch (UnsupportedEncodingException e) {
+                Log.d("debug", "UTF-8 unsupported", e);
+                throw e;
+            } catch (IOException e) {
+                Log.d("debug", "file write error", e);
+                throw e;
+            }
+
+            try {
+                for (String singleSalesData : salesData) {
+                    Log.d("debug", "write csv:" + singleSalesData);
+                    filewriter.write(singleSalesData);
+                }
+            } catch (IOException e) {
+                Log.d("debug", "write error", e);
+                throw e;
+            }
+        }finally {
+            if(null != fos) {
+                fos.close();
+            }
+            if (filewriter != null) {
+                filewriter.flush();
+                filewriter.close();
+            }
+        }
 	}
 
 	public String getCSVStoragePath() {
