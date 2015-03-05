@@ -1,7 +1,5 @@
 package com.ricoh.pos;
 
-import java.io.BufferedReader;
-
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
@@ -10,6 +8,9 @@ import android.util.Log;
 import com.ricoh.pos.model.ProductsManager;
 import com.ricoh.pos.model.WomanShopIOManager;
 import com.ricoh.pos.model.WomanShopSalesIOManager;
+
+import java.io.BufferedReader;
+import java.io.IOException;
 
 public class DataSyncTask extends AsyncTask<String, Void, AsyncTaskResult<String>> {
 	final String TAG = "DataSyncTask";
@@ -59,10 +60,14 @@ public class DataSyncTask extends AsyncTask<String, Void, AsyncTaskResult<String
 				Log.d("debug", result);
 			}
 			productsManager.updateProducts(results);
+        } catch(IOException e) {
+            Log.d("debug", "import error", e);
+            return AsyncTaskResult.createErrorResult(R.string.sd_import_error);
+        }
+        try {
 			WomanShopSalesIOManager.getInstance().exportCSV(context);
 		} catch (Exception e) {
-			// TODO: Should separate exception(Import, Export, at least)
-			e.printStackTrace();
+			Log.d("debug", "export error", e);
 			return AsyncTaskResult.createErrorResult(R.string.sd_export_error);
 		}
 		// The argument is null because nothing to notify on success
