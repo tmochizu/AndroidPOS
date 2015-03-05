@@ -289,46 +289,42 @@ public class WomanShopSalesIOManager implements IOManager {
 		File salesDataCSV = new File(csvStoragePath + "/sales.csv");
 		FileOutputStream fos = null;
         OutputStreamWriter filewriter = null;
-		try {
-			fos = new FileOutputStream(salesDataCSV);
-			fos.write(0xef);
-			fos.write(0xbb);
-			fos.write(0xbf);
-            filewriter = new OutputStreamWriter(fos, "UTF-8");
-		} catch(FileNotFoundException e) {
-			Log.d("debug", "sales.csv is not found", e);
-			throw e;
-		} catch(UnsupportedEncodingException e) {
-            Log.d("debug", "UTF-8 unsupported", e);
-            throw e;
-		} catch (IOException e) {
-			Log.d("debug", "file write error", e);
-			throw e;
-		} finally {
+        try {
+            try {
+                fos = new FileOutputStream(salesDataCSV);
+                fos.write(0xef);
+                fos.write(0xbb);
+                fos.write(0xbf);
+                filewriter = new OutputStreamWriter(fos, "UTF-8");
+            } catch (FileNotFoundException e) {
+                Log.d("debug", "sales.csv is not found", e);
+                throw e;
+            } catch (UnsupportedEncodingException e) {
+                Log.d("debug", "UTF-8 unsupported", e);
+                throw e;
+            } catch (IOException e) {
+                Log.d("debug", "file write error", e);
+                throw e;
+            }
+
+            try {
+                for (String singleSalesData : salesData) {
+                    Log.d("debug", "write csv:" + singleSalesData);
+                    filewriter.write(singleSalesData);
+                }
+            } catch (IOException e) {
+                Log.d("debug", "write error", e);
+                throw e;
+            }
+        }finally {
             if(null != fos) {
                 fos.close();
             }
+            if (filewriter != null) {
+                filewriter.flush();
+                filewriter.close();
+            }
         }
-
-		try {
-			for (String singleSalesData : salesData) {
-				Log.d("debug", "write csv:" + singleSalesData);
-				filewriter.write(singleSalesData);
-			}
-		} catch (IOException e) {
-			Log.d("debug", "write error", e);
-			throw e;
-		} finally {
-			if (filewriter != null) {
-				try {
-					filewriter.flush();
-					filewriter.close();
-				} catch (IOException e) {
-					Log.d("debug", "write error", e);
-					throw e;
-				}
-			}
-		}
 	}
 
 	public String getCSVStoragePath() {
