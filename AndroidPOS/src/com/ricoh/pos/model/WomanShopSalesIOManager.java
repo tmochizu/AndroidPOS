@@ -35,14 +35,14 @@ public class WomanShopSalesIOManager implements IOManager {
 	private WomanShopSalesIOManager() {
 		this.salesRecords = new ArrayList<SingleSalesRecord>();
 	}
-	
+
 	public static WomanShopSalesIOManager getInstance(){
 		if (instance == null) {
 			instance = new WomanShopSalesIOManager();
 		}
 		return instance;
 	}
-	
+
 	public static void resetInstance(){
 		Log.d("debug", "Reset Instance:" + "WomanShopSalesIOManager");
 		instance = null;
@@ -101,7 +101,7 @@ public class WomanShopSalesIOManager implements IOManager {
 							WomanShopSalesDef.TOTAL_SALE_PRICE.name(),
 							WomanShopSalesDef.DISCOUNT.name(),
 							WomanShopSalesDef.DATE.name(),
-							WomanShopSalesDef.USER_ATTRIBUTE.name() }, 
+							WomanShopSalesDef.USER_ATTRIBUTE.name() },
 							null, null, null, null, null);
 			String[] results = new String[cursor.getCount()];
 			Log.d("debug", "count:" + cursor.getCount());
@@ -122,7 +122,7 @@ public class WomanShopSalesIOManager implements IOManager {
 		Cursor cursor = null;
 		try {
 			cursor = salesDatabase.query(
-					DATABASE_NAME, 
+					DATABASE_NAME,
 					new String[] { WomanShopSalesDef.PRODUCT_CODE.name(),
 							WomanShopSalesDef.PRODUCT_CATEGORY.name(),
 							WomanShopSalesDef.ITEM_CATEGORY.name(),
@@ -131,8 +131,8 @@ public class WomanShopSalesIOManager implements IOManager {
 							WomanShopSalesDef.TOTAL_SALE_PRICE.name(),
 							WomanShopSalesDef.DISCOUNT.name(),
 							WomanShopSalesDef.DATE.name(),
-							WomanShopSalesDef.USER_ATTRIBUTE.name()}, 
-							WomanShopSalesDef.PRODUCT_CODE.name() + " = ?", 
+							WomanShopSalesDef.USER_ATTRIBUTE.name()},
+							WomanShopSalesDef.PRODUCT_CODE.name() + " = ?",
 							new String[] { code }, null, null, null);
 			return readCursor(cursor);
 		} finally {
@@ -141,10 +141,10 @@ public class WomanShopSalesIOManager implements IOManager {
 			}
 		}
 	}
-	
+
 	public void saveSalesRecord(SingleSalesRecord record){
 		salesRecords.add(record);
-		
+
 		ArrayList<Order> orders = record.getAllOrders();
 		for (Order order : orders) {
 			String salesRecord = order.getProductCode() + "," + order.getProductCategory() + ","
@@ -156,7 +156,7 @@ public class WomanShopSalesIOManager implements IOManager {
 			insertSingleRecord(salesRecord);
 		}
 	}
-	
+
 	public void deleteSingleSalesRecordRelatedTo(String date) {
 		salesDatabase.delete(DATABASE_NAME, WomanShopSalesDef.DATE.name() + "='" + date + "'", null);
 		// Delete the record from salesRecords
@@ -168,7 +168,7 @@ public class WomanShopSalesIOManager implements IOManager {
             }
         }
 	}
-	
+
 	// TODO: Add this function to interface
 	public void setDatabase(SQLiteDatabase database) {
 		if (salesDatabase == null) {
@@ -178,7 +178,7 @@ public class WomanShopSalesIOManager implements IOManager {
 			Log.d("debug", "Database not open:" + DATABASE_NAME);
 		}
 	}
-	
+
 	// TODO: Add this function to interface
 	public void closeDatabase() {
 		if (salesDatabase != null) {
@@ -186,7 +186,7 @@ public class WomanShopSalesIOManager implements IOManager {
 			salesDatabase.close();
 		}
 	}
-	
+
 	public void exportCSV(Context context) throws IOException {
 		Cursor cursor = null;
 
@@ -201,7 +201,7 @@ public class WomanShopSalesIOManager implements IOManager {
 							WomanShopSalesDef.TOTAL_SALE_PRICE.name(),
 							WomanShopSalesDef.DISCOUNT.name(),
 							WomanShopSalesDef.DATE.name(),
-							WomanShopSalesDef.USER_ATTRIBUTE.name() }, 
+							WomanShopSalesDef.USER_ATTRIBUTE.name() },
 							null, null, null, null, null);
 			String[] results = new String[cursor.getCount()];
 			Log.d("debug", "sales count:" + cursor.getCount());
@@ -215,7 +215,7 @@ public class WomanShopSalesIOManager implements IOManager {
 			}
 		}
 	}
-	
+
 	public ArrayList<SingleSalesRecord> getSalesRecords(){
 		return salesRecords;
 	}
@@ -260,9 +260,9 @@ public class WomanShopSalesIOManager implements IOManager {
 		}
 		return result;
 	}
-	
+
 	private void insertSingleRecord(String record) {
-		
+
 		ContentValues contentValue = new ContentValues();
 
 		String[] fieldValues = record.split(",");
@@ -277,7 +277,7 @@ public class WomanShopSalesIOManager implements IOManager {
 				SQLiteDatabase.CONFLICT_REPLACE);
 
 	}
-	
+
 	private void writeSalesData(String[] salesData, Context context) throws IOException {
 
 		String csvStoragePath = getCSVStoragePath();
@@ -317,9 +317,6 @@ public class WomanShopSalesIOManager implements IOManager {
                 throw e;
             }
         }finally {
-            if(null != fos) {
-                fos.close();
-            }
             if (filewriter != null) {
                 filewriter.flush();
                 filewriter.close();
