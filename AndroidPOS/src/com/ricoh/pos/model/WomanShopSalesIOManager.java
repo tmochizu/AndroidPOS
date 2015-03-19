@@ -35,15 +35,15 @@ public class WomanShopSalesIOManager implements IOManager {
 	private WomanShopSalesIOManager() {
 		this.salesRecords = new ArrayList<SingleSalesRecord>();
 	}
-	
-	public static WomanShopSalesIOManager getInstance(){
+
+	public static WomanShopSalesIOManager getInstance() {
 		if (instance == null) {
 			instance = new WomanShopSalesIOManager();
 		}
 		return instance;
 	}
-	
-	public static void resetInstance(){
+
+	public static void resetInstance() {
 		Log.d("debug", "Reset Instance:" + "WomanShopSalesIOManager");
 		instance = null;
 	}
@@ -93,7 +93,7 @@ public class WomanShopSalesIOManager implements IOManager {
 		try {
 			cursor = salesDatabase.query(
 					DATABASE_NAME,
-					new String[] { WomanShopSalesDef.PRODUCT_CODE.name(),
+					new String[]{WomanShopSalesDef.PRODUCT_CODE.name(),
 							WomanShopSalesDef.PRODUCT_CATEGORY.name(),
 							WomanShopSalesDef.ITEM_CATEGORY.name(),
 							WomanShopSalesDef.QTY.name(),
@@ -101,8 +101,8 @@ public class WomanShopSalesIOManager implements IOManager {
 							WomanShopSalesDef.TOTAL_SALE_PRICE.name(),
 							WomanShopSalesDef.DISCOUNT.name(),
 							WomanShopSalesDef.DATE.name(),
-							WomanShopSalesDef.USER_ATTRIBUTE.name() }, 
-							null, null, null, null, null);
+							WomanShopSalesDef.USER_ATTRIBUTE.name()},
+					null, null, null, null, null);
 			String[] results = new String[cursor.getCount()];
 			Log.d("debug", "count:" + cursor.getCount());
 			for (int i = 0; i < cursor.getCount(); i++) {
@@ -122,8 +122,8 @@ public class WomanShopSalesIOManager implements IOManager {
 		Cursor cursor = null;
 		try {
 			cursor = salesDatabase.query(
-					DATABASE_NAME, 
-					new String[] { WomanShopSalesDef.PRODUCT_CODE.name(),
+					DATABASE_NAME,
+					new String[]{WomanShopSalesDef.PRODUCT_CODE.name(),
 							WomanShopSalesDef.PRODUCT_CATEGORY.name(),
 							WomanShopSalesDef.ITEM_CATEGORY.name(),
 							WomanShopSalesDef.QTY.name(),
@@ -131,9 +131,9 @@ public class WomanShopSalesIOManager implements IOManager {
 							WomanShopSalesDef.TOTAL_SALE_PRICE.name(),
 							WomanShopSalesDef.DISCOUNT.name(),
 							WomanShopSalesDef.DATE.name(),
-							WomanShopSalesDef.USER_ATTRIBUTE.name()}, 
-							WomanShopSalesDef.PRODUCT_CODE.name() + " = ?", 
-							new String[] { code }, null, null, null);
+							WomanShopSalesDef.USER_ATTRIBUTE.name()},
+					WomanShopSalesDef.PRODUCT_CODE.name() + " = ?",
+					new String[]{code}, null, null, null);
 			return readCursor(cursor);
 		} finally {
 			if (cursor != null) {
@@ -141,10 +141,10 @@ public class WomanShopSalesIOManager implements IOManager {
 			}
 		}
 	}
-	
-	public void saveSalesRecord(SingleSalesRecord record){
+
+	public void saveSalesRecord(SingleSalesRecord record) {
 		salesRecords.add(record);
-		
+
 		ArrayList<Order> orders = record.getAllOrders();
 		for (Order order : orders) {
 			String salesRecord = order.getProductCode() + "," + order.getProductCategory() + ","
@@ -156,19 +156,19 @@ public class WomanShopSalesIOManager implements IOManager {
 			insertSingleRecord(salesRecord);
 		}
 	}
-	
+
 	public void deleteSingleSalesRecordRelatedTo(String date) {
 		salesDatabase.delete(DATABASE_NAME, WomanShopSalesDef.DATE.name() + "='" + date + "'", null);
 		// Delete the record from salesRecords
 		Iterator<SingleSalesRecord> i = salesRecords.iterator();
-        while(i.hasNext()){
-        	SingleSalesRecord record = i.next();
-            if(record.getSalesDate().toString().equals(date)){
-                i.remove();
-            }
-        }
+		while (i.hasNext()) {
+			SingleSalesRecord record = i.next();
+			if (record.getSalesDate().toString().equals(date)) {
+				i.remove();
+			}
+		}
 	}
-	
+
 	// TODO: Add this function to interface
 	public void setDatabase(SQLiteDatabase database) {
 		if (salesDatabase == null) {
@@ -178,7 +178,7 @@ public class WomanShopSalesIOManager implements IOManager {
 			Log.d("debug", "Database not open:" + DATABASE_NAME);
 		}
 	}
-	
+
 	// TODO: Add this function to interface
 	public void closeDatabase() {
 		if (salesDatabase != null) {
@@ -186,14 +186,14 @@ public class WomanShopSalesIOManager implements IOManager {
 			salesDatabase.close();
 		}
 	}
-	
+
 	public void exportCSV(Context context) throws IOException {
 		Cursor cursor = null;
 
 		try {
 			cursor = salesDatabase.query(
 					DATABASE_NAME,
-					new String[] { WomanShopSalesDef.PRODUCT_CODE.name(),
+					new String[]{WomanShopSalesDef.PRODUCT_CODE.name(),
 							WomanShopSalesDef.PRODUCT_CATEGORY.name(),
 							WomanShopSalesDef.ITEM_CATEGORY.name(),
 							WomanShopSalesDef.QTY.name(),
@@ -201,8 +201,8 @@ public class WomanShopSalesIOManager implements IOManager {
 							WomanShopSalesDef.TOTAL_SALE_PRICE.name(),
 							WomanShopSalesDef.DISCOUNT.name(),
 							WomanShopSalesDef.DATE.name(),
-							WomanShopSalesDef.USER_ATTRIBUTE.name() }, 
-							null, null, null, null, null);
+							WomanShopSalesDef.USER_ATTRIBUTE.name()},
+					null, null, null, null, null);
 			String[] results = new String[cursor.getCount()];
 			Log.d("debug", "sales count:" + cursor.getCount());
 			for (int i = 0; i < cursor.getCount(); i++) {
@@ -215,8 +215,8 @@ public class WomanShopSalesIOManager implements IOManager {
 			}
 		}
 	}
-	
-	public ArrayList<SingleSalesRecord> getSalesRecords(){
+
+	public ArrayList<SingleSalesRecord> getSalesRecords() {
 		return salesRecords;
 	}
 
@@ -260,9 +260,9 @@ public class WomanShopSalesIOManager implements IOManager {
 		}
 		return result;
 	}
-	
+
 	private void insertSingleRecord(String record) {
-		
+
 		ContentValues contentValue = new ContentValues();
 
 		String[] fieldValues = record.split(",");
@@ -277,7 +277,7 @@ public class WomanShopSalesIOManager implements IOManager {
 				SQLiteDatabase.CONFLICT_REPLACE);
 
 	}
-	
+
 	private void writeSalesData(String[] salesData, Context context) throws IOException {
 
 		String csvStoragePath = getCSVStoragePath();
@@ -288,43 +288,43 @@ public class WomanShopSalesIOManager implements IOManager {
 		}
 		File salesDataCSV = new File(csvStoragePath + "/sales.csv");
 		FileOutputStream fos = null;
-        OutputStreamWriter filewriter = null;
-        try {
-            try {
-                fos = new FileOutputStream(salesDataCSV);
-                fos.write(0xef);
-                fos.write(0xbb);
-                fos.write(0xbf);
-                filewriter = new OutputStreamWriter(fos, "UTF-8");
-            } catch (FileNotFoundException e) {
-                Log.d("debug", "sales.csv is not found", e);
-                throw e;
-            } catch (UnsupportedEncodingException e) {
-                Log.d("debug", "UTF-8 unsupported", e);
-                throw e;
-            } catch (IOException e) {
-                Log.d("debug", "file write error", e);
-                throw e;
-            }
+		OutputStreamWriter filewriter = null;
+		try {
+			try {
+				fos = new FileOutputStream(salesDataCSV);
+				fos.write(0xef);
+				fos.write(0xbb);
+				fos.write(0xbf);
+				filewriter = new OutputStreamWriter(fos, "UTF-8");
+			} catch (FileNotFoundException e) {
+				Log.d("debug", "sales.csv is not found", e);
+				throw e;
+			} catch (UnsupportedEncodingException e) {
+				Log.d("debug", "UTF-8 unsupported", e);
+				throw e;
+			} catch (IOException e) {
+				Log.d("debug", "file write error", e);
+				throw e;
+			}
 
-            try {
-                for (String singleSalesData : salesData) {
-                    Log.d("debug", "write csv:" + singleSalesData);
-                    filewriter.write(singleSalesData);
-                }
-            } catch (IOException e) {
-                Log.d("debug", "write error", e);
-                throw e;
-            }
-        }finally {
-            if(null != fos) {
-                fos.close();
-            }
-            if (filewriter != null) {
-                filewriter.flush();
-                filewriter.close();
-            }
-        }
+			try {
+				for (String singleSalesData : salesData) {
+					Log.d("debug", "write csv:" + singleSalesData);
+					filewriter.write(singleSalesData);
+				}
+			} catch (IOException e) {
+				Log.d("debug", "write error", e);
+				throw e;
+			}
+		} finally {
+			if (filewriter != null) {
+				filewriter.flush();
+				filewriter.close();
+			}
+			if (fos != null) {
+				fos.close();
+			}
+		}
 	}
 
 	public String getCSVStoragePath() {
