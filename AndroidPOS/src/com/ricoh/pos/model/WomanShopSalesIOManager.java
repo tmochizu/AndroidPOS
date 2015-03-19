@@ -22,6 +22,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 
 public class WomanShopSalesIOManager implements IOManager {
@@ -157,16 +158,23 @@ public class WomanShopSalesIOManager implements IOManager {
 		}
 	}
 
-	public void deleteSingleSalesRecordRelatedTo(String date) {
-		salesDatabase.delete(DATABASE_NAME, WomanShopSalesDef.DATE.name() + "='" + date + "'", null);
+	public int deleteSingleSalesRecordRelatedTo(Date date) {
+		String[] params = {WomanShopFormatter.formatDate(date)};
+		int delete = salesDatabase.delete(DATABASE_NAME, WomanShopSalesDef.DATE.name() + "=?", params);
+
+		if (delete == 0) {
+			return 0;
+		}
+
 		// Delete the record from salesRecords
 		Iterator<SingleSalesRecord> i = salesRecords.iterator();
 		while (i.hasNext()) {
 			SingleSalesRecord record = i.next();
-			if (record.getSalesDate().toString().equals(date)) {
+			if (record.getSalesDate().equals(date)) {
 				i.remove();
 			}
 		}
+		return delete;
 	}
 
 	// TODO: Add this function to interface
