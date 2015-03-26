@@ -52,8 +52,8 @@
         <fragment
             android:id="@+id/category_list"
             android:name="com.ricoh.pos.CategoryListFragment"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             tools:layout="@android:layout/list_content" />
     </LinearLayout>
     <FrameLayout
