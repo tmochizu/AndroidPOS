@@ -1,9 +1,5 @@
 package com.ricoh.pos;
 
-import java.io.FileNotFoundException;
-import java.text.NumberFormat;
-import java.util.ArrayList;
-
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -27,6 +23,10 @@ import com.ricoh.pos.data.Product;
 import com.ricoh.pos.model.ProductsManager;
 import com.ricoh.pos.model.RegisterManager;
 
+import java.io.FileNotFoundException;
+import java.text.NumberFormat;
+import java.util.ArrayList;
+
 /**
  * A fragment representing a single Category detail screen. This fragment is
  * either contained in a {@link CategoryListActivity} in two-pane mode (on
@@ -39,15 +39,17 @@ public class CategoryDetailFragment extends ListFragment {
 	 * represents.
 	 */
 	public static final String ARG_ITEM_ID = "item_id";
+	public static final String ARG_SEARCH_WORD = "serch_word";
 	// This is the maximum fraction digits for total payment to display.
 	private static final int MAXIMUM_FRACTION_DIGITS = 2;
-	
+
 	private final int IMAGE_VIEW_SIZE = 120;
 
 	private RegisterManager registerManager;
 
 	private String category;
 	private ArrayList<Product> productList;
+	private ArrayList<Product> searchProductList;
 
 	/**
 	 * Mandatory empty constructor for the fragment manager to instantiate the
@@ -69,8 +71,19 @@ public class CategoryDetailFragment extends ListFragment {
 		} else {
 			productList = ProductsManager.getInstance().getProductsInCategory(category);
 		}
+		String searchWord = bundle.getString(CategoryDetailFragment.ARG_SEARCH_WORD);
+		if (null != searchWord && !searchWord.isEmpty()) {
+			searchProductList = new ArrayList<Product>();
+			for (Product product : productList) {
+				if (product.getName().toUpperCase().indexOf(searchWord.toUpperCase()) != -1) {
+					searchProductList.add(product);
+				}
+			}
+		} else {
+			searchProductList = productList;
+		}
 		setListAdapter(new ListAdapter(getActivity()));
-		
+
 		getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
 	}
 
@@ -85,7 +98,7 @@ public class CategoryDetailFragment extends ListFragment {
 
 		@Override
 		public int getCount() {
-			return productList.size();
+			return searchProductList.size();
 		}
 
 		@Override
@@ -105,7 +118,7 @@ public class CategoryDetailFragment extends ListFragment {
 				convertView = inflater.inflate(R.layout.row, null);
 			}
 
-			Product product = productList.get(position);
+			Product product = searchProductList.get(position);
 
 			setImageView(convertView,product);
 			setProductInformationView(convertView,product);

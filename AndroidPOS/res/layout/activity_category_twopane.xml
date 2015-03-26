@@ -20,15 +20,42 @@
     For more on layout aliases, see:
     http://developer.android.com/training/multiscreen/screensizes.html#TaskUseAliasFilters
     -->
-
-    <fragment
-        android:id="@+id/category_list"
-        android:name="com.ricoh.pos.CategoryListFragment"
+    <LinearLayout
         android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="3"
-        tools:layout="@android:layout/list_content" />
-
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_weight="3">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="@dimen/activity_vertical_margin">
+            <FrameLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/ic_search"
+                    android:scaleType="fitStart"
+                    />
+            </FrameLayout>
+            <EditText
+                android:id="@+id/id_search_text_box"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="4"
+                android:lines="1"
+                android:inputType="text"
+                />
+        </LinearLayout>
+        <fragment
+            android:id="@+id/category_list"
+            android:name="com.ricoh.pos.CategoryListFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:layout="@android:layout/list_content" />
+    </LinearLayout>
     <FrameLayout
         android:id="@+id/category_detail_container"
         android:layout_width="0dp"
