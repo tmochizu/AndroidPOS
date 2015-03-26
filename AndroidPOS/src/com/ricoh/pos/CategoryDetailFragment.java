@@ -75,7 +75,7 @@ public class CategoryDetailFragment extends ListFragment {
 		if (null != searchWord && !searchWord.isEmpty()) {
 			searchProductList = new ArrayList<Product>();
 			for (Product product : productList) {
-				if (product.getName().indexOf(searchWord) != -1) {
+				if (product.getName().toUpperCase().indexOf(searchWord.toUpperCase()) != -1) {
 					searchProductList.add(product);
 				}
 			}
