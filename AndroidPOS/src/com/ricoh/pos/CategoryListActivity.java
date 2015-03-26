@@ -76,7 +76,7 @@ public class CategoryListActivity extends FragmentActivity implements
 
 				@Override
 				public void onTextChanged(CharSequence s, int start, int before, int count) {
-					latestSearchWord = editText.getText().toString();
+					latestSearchWord = s.toString();
 					Bundle arguments = new Bundle();
 					arguments.putString(CategoryDetailFragment.ARG_ITEM_ID, latestItemId);
 					arguments.putString(CategoryDetailFragment.ARG_SEARCH_WORD, latestSearchWord);
