@@ -6,6 +6,7 @@ import java.util.Date;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemLongClickListener;
@@ -165,13 +166,14 @@ public class SalesRecordListFragment extends ListFragment {
 	@Override
 	public void onListItemClick(ListView listView, View view, int position, long id) {
 		super.onListItemClick(listView, view, position, id);
+		Log.d("SalseRecordListFragment", "onListItemClick");
 
 		// Notify the active callbacks interface (the activity, if the
 		// fragment is attached to one) that an item has been selected.
-		
+
 		Date clickedDate = this.oneDaySalesRecords.get(position).getSalesDate();
 		SalesCalenderManager.getInstance().setSelectedSalesDate(clickedDate);
-		
+
 		mCallbacks.onItemSelected(clickedDate.toString());
 	}
 

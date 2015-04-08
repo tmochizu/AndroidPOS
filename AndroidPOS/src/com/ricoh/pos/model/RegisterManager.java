@@ -10,10 +10,14 @@ import com.ricoh.pos.data.OrderUpdateInfo;
 import com.ricoh.pos.data.Product;
 import com.ricoh.pos.data.SingleSalesRecord;
 
+/**
+ * シングルトン
+ */
 public class RegisterManager {
 	
 	private static RegisterManager instance;
-	
+
+    // 注文したいリスト(+ボタンで数量を入れたアイテムのリスト)
 	private ArrayList<Order> orderList;
 	
 	private ArrayList<UpdateOrderListener> listeners;
@@ -53,7 +57,10 @@ public class RegisterManager {
 		
 		notifyUpdateOrder();
 	}
-	
+
+    /* 注文数を1個増やす
+     * 1つも注文されていなければorderListに商品を1つ追加する
+     */
 	public void plusNumberOfOrder(Product product){
 		Order orderOfTheProduct = findOrderOfTheProduct(product);
 		
@@ -67,8 +74,10 @@ public class RegisterManager {
 		
 		notifyUpdateOrder();
 	}
-	
-	public void minusNumberOfOrder(Product product) {
+    /* 注文数を1個減らす
+     * 注文数が0の場合は注文を削除する
+     */
+    public void minusNumberOfOrder(Product product) {
 		Order orderOfTheProduct = findOrderOfTheProduct(product);
 		
 		if (orderOfTheProduct == null) {
@@ -127,7 +136,9 @@ public class RegisterManager {
 		discountValue = 0;
 		userAttribute = null;
 	}
-	
+    /**
+     * orderListの中からカテゴリーとプロダクトコードが一致するものを取得する
+     */
 	public Order findOrderOfTheProduct(Product product){
 		for (Order order : orderList) {
 			if ((order.getProductCategory().equals(product.getCategory()) && order.getProductCode().equals(product.getCode()))) {
@@ -158,16 +169,27 @@ public class RegisterManager {
 	public void clearUpdateOrderListener(){
 		listeners.clear();
 	}
-	
-	public void updateDiscountValue(double discountValue)
-	{
-		if (discountValue >= getOriginalTotalAmount()) {
+
+    /*
+    値引き額と、注文商品の合計金額の関係のチェック
+       値引き額>=合計金額でエラー
+     */
+	public void updateDiscountValue(double discountValue){
+
+        Log.d("updateDiscountValue","discountValue=" + discountValue);
+        Log.d("updateDiscountValue","getOriginalTotalAmount=" + getOriginalTotalAmount());
+        double totalAmount = getOriginalTotalAmount();
+
+        if(totalAmount == 0){
+            this.discountValue = 0;
+        } else if (discountValue >= totalAmount) {
 			throw new IllegalArgumentException("discountValues is larger than totalAmount");
-		}
-		this.discountValue = discountValue;
+		} else {
+            this.discountValue = discountValue;
+        }
 		notifyUpdateOrder();
 	}
-	
+
 	public void setUserAttribute(String attribute){
 		if (attribute == null || attribute.length() == 0) {
 			throw new IllegalArgumentException("User attribute is illegal");
@@ -177,6 +199,7 @@ public class RegisterManager {
 	}
 	
 	public SingleSalesRecord getSingleSalesRecord(){
+		Log.d("RegisterManager","getSingleSalesRecord");
 		SingleSalesRecord record = new SingleSalesRecord(new Date());
 		record.setOrders(orderList);
 		record.setDiscountValue(discountValue);

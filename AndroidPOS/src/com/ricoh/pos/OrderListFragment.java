@@ -1,26 +1,32 @@
 package com.ricoh.pos;
 
-import java.io.FileNotFoundException;
-import java.text.NumberFormat;
-import java.util.ArrayList;
-
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.ricoh.pos.data.Order;
 import com.ricoh.pos.data.Product;
 import com.ricoh.pos.model.ProductsManager;
 import com.ricoh.pos.model.RegisterManager;
+import com.ricoh.pos.model.SalesCalenderManager;
+
+import java.io.FileNotFoundException;
+import java.text.NumberFormat;
+import java.util.ArrayList;
+import java.util.Date;
 
 /**
  * A fragment representing a single Category detail screen. This fragment is
@@ -28,7 +34,6 @@ import com.ricoh.pos.model.RegisterManager;
  * tablets) or a {@link CategoryDetailActivity} on handsets.
  */
 public class OrderListFragment extends ListFragment {
-
 	/**
 	 * The fragment argument representing the item ID that this fragment
 	 * represents.
@@ -36,14 +41,30 @@ public class OrderListFragment extends ListFragment {
 	public static final String ARG_ITEM_ID = "item_id";
 	// This is the maximum fraction digits for total payment to display.
 	private static final int MAXIMUM_FRACTION_DIGITS = 2;
-	
+
 	private final int IMAGE_VIEW_SIZE = 120;
 
 	private RegisterManager registerManager;
 	private ArrayList<Product> orderProductList;
 
+	private OnOrderClickListener onOrderClickListener;
+
 	public OrderListFragment() {
 		this.registerManager = RegisterManager.getInstance();
+
+	}
+
+	@Override
+	public void onAttach(Activity activity) {
+		super.onAttach(activity);
+		if (activity instanceof OnOrderClickListener == false) {
+			throw new ClassCastException("OnOrderClickListener isn't implemented");
+		}
+		onOrderClickListener = (OnOrderClickListener) activity;
+	}
+
+	public interface OnOrderClickListener {
+		public void onOrderClicked();
 	}
 
 	@Override
@@ -53,7 +74,28 @@ public class OrderListFragment extends ListFragment {
 		setListAdapter(new ListAdapter(getActivity()));
 		getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
 	}
-	
+
+	@Override
+	public void onActivityCreated(Bundle savedInstanceState) {
+		super.onActivityCreated(savedInstanceState);
+		getListView().setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+			@Override
+			public boolean onItemLongClick(AdapterView<?> adapterView, View view,
+										   int position, long id) {
+				Log.d("OrderListFragment", "onItemLongClick");
+				onOrderClickListener.onOrderClicked();
+				return true;
+			}
+		});
+	}
+
+	@Override
+	public void onListItemClick(ListView listView, View view, int position, long id) {
+		super.onListItemClick(listView, view, position, id);
+		onOrderClickListener.onOrderClicked();
+		Log.d("OrderListFragment", "onListItemClick");
+	}
+
 	private void setOrderProductList()
 	{
 		ArrayList<Product> allProductList = ProductsManager.getInstance().getAllProducts();
@@ -100,6 +142,7 @@ public class OrderListFragment extends ListFragment {
 				convertView = inflater.inflate(R.layout.order_row, null);
 			}
 
+
 			Product product = orderProductList.get(position);
 
 			ImageView imageView = (ImageView) convertView.findViewById(R.id.photo);
@@ -120,20 +163,51 @@ public class OrderListFragment extends ListFragment {
 			NumberFormat.getInstance().setMaximumFractionDigits(MAXIMUM_FRACTION_DIGITS);
 			priceView.setText(NumberFormat.getInstance().format(product.getPrice()));
 
-			TextView numberOfSalseView = (TextView) convertView.findViewById(R.id.numberOfSales);
+			final TextView numberOfSalseView = (TextView) convertView.findViewById(R.id.numberOfSales);
 			numberOfSalseView.setPadding(10, 0, 0, 0);
 
 			Order order = registerManager.findOrderOfTheProduct(product);
-			if (order == null || order.getNumberOfOrder() == 0) {
-				throw new AssertionError("Product which isn't ordered is shown");
-			} else {
+//			if (order == null || order.getNumberOfOrder() == 0) {
+//				throw new AssertionError("Product which isn't ordered is shown");
+//			} else {
+			if (order != null) {
 				int numberOfSales = order.getNumberOfOrder();
 				numberOfSalseView.setText(NumberFormat.getInstance().format(numberOfSales));
+			} else {
+				numberOfSalseView.setText(NumberFormat.getInstance().format(0));
 			}
+//			}
+			// TODO プラスマイナスの実装
+			ProductButton plusBtn = (ProductButton) convertView.findViewById(R.id.plusButton);
+			plusBtn.setProduct(product);
+			plusBtn.setOnClickListener(new View.OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					Log.d("SalesRecordDetail", "onClick");
+					ProductButton button = (ProductButton) v;
+					Product product = button.getProduct();
+					registerManager.plusNumberOfOrder(product);
+					int numberOfOrder = registerManager.getNumberOfOrder(product);
+					numberOfSalseView.setText(NumberFormat.getInstance().format(numberOfOrder));
+				}
+			});
+
+			ProductButton minusBtn = (ProductButton) convertView.findViewById(R.id.minusButton);
+			minusBtn.setProduct(product);
+			minusBtn.setOnClickListener(new View.OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					ProductButton button = (ProductButton) v;
+					Product product = button.getProduct();
+					registerManager.minusNumberOfOrder(product);
+					int numberOfOrder = registerManager.getNumberOfOrder(product);
+					numberOfSalseView.setText(NumberFormat.getInstance().format(numberOfOrder));
+				}
+			});
 
 			return convertView;
 		}
-		
+
 
 		private void setImageView(Product product, ImageView imageView) {
 
@@ -151,4 +225,6 @@ public class OrderListFragment extends ListFragment {
 			}
 		}
 	}
+
+
 }

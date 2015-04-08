@@ -23,6 +23,7 @@ public class MainMenuActivity extends Activity implements DataSyncTaskCallback {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main_menu);
+        Log.d("MainMenuActivity","onCreate");
 
 		womanShopIOManager = new WomanShopIOManager();
 		databaseHelper = new DatabaseHelper(this);
@@ -34,6 +35,7 @@ public class MainMenuActivity extends Activity implements DataSyncTaskCallback {
 		findViewById(R.id.RegisterButton).setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
+                Log.d("MainMenuActivity","RegisterButton onClick");
 				Intent intent = new Intent().setClass(MainMenuActivity.this,
 						CategoryListActivity.class);
 				startActivity(intent);

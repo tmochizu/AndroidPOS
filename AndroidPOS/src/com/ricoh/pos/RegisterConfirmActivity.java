@@ -1,5 +1,9 @@
 package com.ricoh.pos;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.app.DialogFragment;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -11,7 +15,7 @@ import com.ricoh.pos.model.RegisterManager;
 import com.ricoh.pos.model.SalesRecordManager;
 
 public class RegisterConfirmActivity extends FragmentActivity
-implements RegisterConfirmFragment.OnButtonClickListener{
+implements RegisterConfirmFragment.OnButtonClickListener,OrderListFragment.OnOrderClickListener{
 	
 	private SalesDatabaseHelper salesDatabaseHelper;
 	private static SQLiteDatabase salesDatabase;
@@ -20,8 +24,10 @@ implements RegisterConfirmFragment.OnButtonClickListener{
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_register_confirm);
+        Log.d("RegisterConfirmActivity","onCreate");
 		if (findViewById(R.id.order_list_container) != null) {
 			// add OrderListFragment
+            // 合計画面の上の段
 			OrderListFragment fragment = new OrderListFragment();
 			getSupportFragmentManager().beginTransaction()
 			.replace(R.id.order_list_container, fragment).commit();
@@ -38,6 +44,7 @@ implements RegisterConfirmFragment.OnButtonClickListener{
 
 	@Override
 	public void onOkClicked() {
+		Log.d("RegisterComfurmActivity","onOkClicked");
 		// Save this sales record
 		SingleSalesRecord record = RegisterManager.getInstance().getSingleSalesRecord();
 		SalesRecordManager.getInstance().storeSingleSalesRecord(salesDatabase, record);
@@ -74,5 +81,45 @@ implements RegisterConfirmFragment.OnButtonClickListener{
 	{
 		PriceDownDialog dialog = new PriceDownDialog();
 		dialog.show(this);
+	}
+
+	@Override
+	public void onOrderClicked() {
+		Log.d("RegisterCom","onOrderClicked");
+	}
+
+	public static class ChangeSalesDialog extends DialogFragment {
+		private String messageId;
+
+		public void setMessageId(String messageId) {
+			this.messageId = messageId;
+		}
+
+		public static ChangeSalesDialog newInstance(String messageId) {
+			ChangeSalesDialog frag = new ChangeSalesDialog();
+			frag.setMessageId(messageId);
+			return frag;
+		}
+
+		@Override
+		public Dialog onCreateDialog(Bundle savedInstanceState) {
+			AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+
+			builder.setTitle("Change");
+			builder.setMessage(messageId);
+			builder.setCancelable(false);
+			builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					getActivity().finish();
+				}
+			});
+
+			AlertDialog dialog = builder.create();
+			dialog.setCanceledOnTouchOutside(false);
+			setCancelable(false);
+
+			return dialog;
+		}
 	}
 }
