@@ -40,7 +40,7 @@
                     android:scaleType="fitStart"
                     />
             </FrameLayout>
-            <EditText
+            <EditText style="@style/FontMiddle"
                 android:id="@+id/id_search_text_box"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -56,7 +56,7 @@
             android:layout_height="match_parent"
             tools:layout="@android:layout/list_content" />
     </LinearLayout>
-    <FrameLayout
+    <FrameLayout style="@style/FontMiddle"
         android:id="@+id/category_detail_container"
         android:layout_width="0dp"
         android:layout_height="match_parent"
