@@ -12,7 +12,6 @@ import com.ricoh.pos.data.Product;
 import com.ricoh.pos.data.SingleSalesRecord;
 import com.ricoh.pos.data.WomanShopSalesDef;
 import com.ricoh.pos.data.WomanShopSalesOrderDef;
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -32,7 +31,7 @@ import java.util.Calendar;
  */
 public class WomanShopSalesIOManager {
     /** ドリシティ向けに出力する販売実績CSVのファイル名*/
-    public static final String SalesCSVFileName = "sales_dummy.csv";
+    public static final String SalesCSVFileName = "/sales.csv";
 
     /** 販売実績のCSV出力先フォルダ名 */
     public static final String csvStorageFolder = "/Ricoh";
@@ -108,50 +107,7 @@ public class WomanShopSalesIOManager {
         }
     }
 
-    /**
-     * 基底クラスに定義があるのでオーバーライドしているが、使われていない模様
-     */
-/*
-    public BufferedReader importCSVfromAssets(AssetManager assetManager) {
-        BufferedReader bufferReader = null;
-        try {
-            bufferReader = new BufferedReader(new InputStreamReader(assetManager.open(SalesCSVFileName)));
-        } catch (IOException e) {
-            Log.d("debug", "" + e + "");
-        }
-        return bufferReader;
-    }
-*/
-    /**
-     * 基底クラスに定義があるのでオーバーライドしているが、使われていない模様
-     */
-    public void insertRecords(BufferedReader bufferReader)
-    {
-        ContentValues contentValue = new ContentValues();
-        try {
-            // ヘッダ部分を読んで、ファイルポインタを次の行まで進める
-            readFieldName(bufferReader);
-
-            /*
-			String record;
-			while ((record = bufferReader.readLine()) != null)
-            {
-				String[] fieldValues = record.split(",");
-				int i = 0;
-				for (WomanShopSalesDef field : WomanShopSalesDef.values()) {
-					contentValue.put(field.name(), fieldValues[i++]);
-				}
-
-				salesDatabase.insertWithOnConflict(DATABASE_NAME, null, contentValue, SQLiteDatabase.CONFLICT_REPLACE);
-			}
-			*/
-        } catch (IOException e) {
-            Log.d("debug", "" + e + "");
-        }
-    }
-
-
-    /**
+   /**
      * データ件数を返す
      * @return 全データ件数
      */
@@ -396,7 +352,7 @@ public class WomanShopSalesIOManager {
         String[] params = { dateStr };
         salesDatabase.beginTransaction();
 
-        Cursor cursor = null;
+        Cursor cursor;
         try {
             // まず指定されたデータがあるかどうか
             String[] columns = { "ROWID" };
@@ -453,11 +409,8 @@ public class WomanShopSalesIOManager {
             writeSalesData(records, context);
         }
         catch (Exception e) {
-
+            Log.d("debug", "exportCSV Exception occuered.");
         }
-        finally {
-
-       }
     }
 
     private void writeSalesData(ArrayList<SingleSalesRecord> records, Context context) throws IOException {
@@ -468,9 +421,12 @@ public class WomanShopSalesIOManager {
         if (!csvStorage.exists()) {
             Log.d("debug", "make directory:" + csvStoragePath);
             boolean result = csvStorage.mkdir();
+            if (!result) {
+                throw new IOException("Make csv storage directory fail.");
+            }
         }
 
-        File salesDataCSV = new File(csvStoragePath + "/sales.csv");
+        File salesDataCSV = new File(csvStoragePath + SalesCSVFileName);
         FileOutputStream fos = null;
         OutputStreamWriter fileWriter = null;
 
@@ -536,15 +492,5 @@ public class WomanShopSalesIOManager {
         File extStorage = Environment.getExternalStorageDirectory();
         Log.d("debug", "Environment External:" + extStorage.getAbsolutePath());
         return extStorage.getAbsolutePath() + csvStorageFolder;
-    }
-
-    private void readFieldName(BufferedReader bufferReader) throws IOException
-    {
-        String record = bufferReader.readLine();
-
-        String[] fieldNames = record.split(",");
-        for (String fieldName : fieldNames) {
-            Log.d("debug", fieldName);
-        }
     }
 }

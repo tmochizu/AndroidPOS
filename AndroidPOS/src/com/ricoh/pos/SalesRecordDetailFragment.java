@@ -17,7 +17,6 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.ricoh.pos.data.Order;
 import com.ricoh.pos.data.Product;

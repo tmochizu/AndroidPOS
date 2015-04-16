@@ -1,11 +1,9 @@
 package com.ricoh.pos.model;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 
 import android.database.sqlite.SQLiteDatabase;
-import android.util.Log;
 
 import com.ricoh.pos.data.SingleSalesRecord;
 
@@ -35,7 +33,7 @@ public class SalesRecordManager {
     /**
      * 指定されたその日の売り上げリストを返す
      * @param date 日付けデータ。時分秒のパラメータはあっても無視される。
-     * @return
+     * @return 検索結果配列
      */
 	public ArrayList<SingleSalesRecord> restoreSingleSalesRecordsOfTheDay(Date date){
         return WomanShopSalesIOManager.getInstance().searchByDate(date, true);
