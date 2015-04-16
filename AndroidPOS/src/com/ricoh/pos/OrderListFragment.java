@@ -1,13 +1,11 @@
 package com.ricoh.pos;
 
-import java.io.FileNotFoundException;
-import java.text.NumberFormat;
-import java.util.ArrayList;
-
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
+import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,11 +14,16 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.ricoh.pos.data.Order;
 import com.ricoh.pos.data.Product;
 import com.ricoh.pos.model.ProductsManager;
 import com.ricoh.pos.model.RegisterManager;
+
+import java.io.FileNotFoundException;
+import java.text.NumberFormat;
+import java.util.ArrayList;
 
 /**
  * A fragment representing a single Category detail screen. This fragment is
@@ -100,12 +103,28 @@ public class OrderListFragment extends ListFragment {
 				convertView = inflater.inflate(R.layout.order_row, null);
 			}
 
-			Product product = orderProductList.get(position);
+			final Product product = orderProductList.get(position);
 
 			ImageView imageView = (ImageView) convertView.findViewById(R.id.photo);
 			imageView.setLayoutParams(new LinearLayout.LayoutParams(120, 120));
 			imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
 			setImageView(product, imageView);
+			imageView.setOnClickListener(new View.OnClickListener() {
+				@Override
+				public void onClick(View view) {
+					try {
+						ProductDetailDialogFragment dialogFragment = new ProductDetailDialogFragment();
+						Bundle arguments = new Bundle();
+						DisplayMetrics metrics = getResources().getDisplayMetrics();
+						arguments.putParcelable(ProductDetailDialogFragment.ARG_KEY_IMAGE_BITMAP, product.decodeProductImage(metrics.widthPixels, metrics.heightPixels));
+						dialogFragment.setArguments(arguments);
+						dialogFragment.show(getActivity().getFragmentManager(), ProductDetailDialogFragment.DIALOG_TAG);
+					} catch (FileNotFoundException e) {
+						Log.e("OrderListFragment", "Product image file is not found.", e);
+						Toast.makeText(getActivity(), R.string.error_image_file_not_found, Toast.LENGTH_SHORT).show();
+					}
+				}
+			});
 
 			TextView textView = (TextView) convertView.findViewById(R.id.filename);
 			textView.setPadding(10, 0, 0, 0);
@@ -138,7 +157,7 @@ public class OrderListFragment extends ListFragment {
 		private void setImageView(Product product, ImageView imageView) {
 
 			try {
-				Bitmap image = ProductsManager.getInstance().decodeProductImage(product, IMAGE_VIEW_SIZE, IMAGE_VIEW_SIZE);
+				Bitmap image = product.decodeProductImage(IMAGE_VIEW_SIZE, IMAGE_VIEW_SIZE);
 				imageView.setImageBitmap(image);
 				imageView.setVisibility(View.VISIBLE);
 			} catch (FileNotFoundException e) {
