@@ -5,14 +5,14 @@
     android:layout_height="wrap_content" >
     
     <TableRow>
-        <TextView
+        <TextView style="@style/FontLarge"
             android:id="@+id/beforwTotalAmountText"
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
 	        android:text="@string/undiscounted_price"
 	        android:textAlignment="center"
 	        android:textAppearance="?android:attr/textAppearanceLarge" />
-        <TextView
+        <TextView style="@style/FontMiddle"
 	        android:id="@+id/beforwTotalAmountView"
 	        android:layout_width="@dimen/register_confirm_table_row_value_row_width"
 	        android:layout_height="wrap_content"
@@ -20,7 +20,7 @@
 	        android:textAppearance="?android:attr/textAppearanceLarge"
             android:padding="@dimen/common_padding" />
 
-        <TextView
+        <TextView style="@style/FontLarge"
 	        android:id="@+id/userAttributeText"
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
@@ -37,7 +37,7 @@
     </TableRow>
 
     <TableRow>
-        <TextView
+        <TextView style="@style/FontLarge"
             android:id="@+id/discountValueText"
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
@@ -50,7 +50,7 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:paddingRight="@dimen/common_padding">
-            <EditText
+            <EditText style="@style/FontMiddle"
                 android:id="@+id/discountValue"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -58,7 +58,7 @@
                 android:inputType="numberDecimal"
                 android:textAlignment="center"
                 android:textAppearance="?android:attr/textAppearanceLarge" />
-            <TextView
+            <TextView style="@style/FontMiddle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical"
@@ -68,14 +68,14 @@
 	</TableRow>
 	   
     <TableRow>
-        <TextView
+        <TextView style="@style/FontLarge"
             android:id="@+id/textView1"
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
 	        android:text="@string/title_total_payment"
 	        android:textAlignment="center"
 	        android:textAppearance="?android:attr/textAppearanceLarge" />
-        <TextView
+        <TextView style="@style/FontMiddle"
             android:id="@+id/totalPaymentView"
 	        android:layout_width="@dimen/register_confirm_table_row_value_row_width"
 	        android:layout_height="wrap_content"
@@ -90,7 +90,7 @@
         android:layout_gravity="center_horizontal"
         android:orientation="horizontal" >
 
-        <Button
+        <Button style="@style/FontLarge"
             android:id="@+id/cancel_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -99,7 +99,7 @@
             android:text="@string/cancel"
             android:textAlignment="center" />
 
-        <Button
+        <Button style="@style/FontLarge"
             android:id="@+id/ok_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
