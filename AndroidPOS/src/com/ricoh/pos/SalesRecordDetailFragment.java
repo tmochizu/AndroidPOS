@@ -17,6 +17,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.ricoh.pos.data.Order;
 import com.ricoh.pos.data.Product;
@@ -44,8 +45,13 @@ public class SalesRecordDetailFragment extends ListFragment {
 			salesRecord = SalesRecordManager.getInstance().getSingleSalesRecord(date);
 		}
 
-		orders = salesRecord.getAllOrders();
-		
+        if (salesRecord == null) {
+            orders = new ArrayList<Order>(); // 空の配列を置いておく
+        }
+        else {
+            orders = salesRecord.getAllOrders();
+        }
+
 		setListAdapter(new ListAdapter(getActivity()));
 		getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
 	}

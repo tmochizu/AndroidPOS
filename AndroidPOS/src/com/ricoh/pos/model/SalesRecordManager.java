@@ -29,38 +29,31 @@ public class SalesRecordManager {
 			throw new IllegalArgumentException("The passing record is null");
 		}
 		
-		WomanShopSalesIOManager.getInstance().saveSalesRecord(record);
-		
-		//TODO: for debug
-		String[] results = WomanShopSalesIOManager.getInstance().searchAlldata();
-		for (String result : results) {
-			Log.d("debug", "Sales:" + result);
-		}
+		WomanShopSalesIOManager.getInstance().insertSalesRecord(record);
 	}
-	
+
+    /**
+     * 指定されたその日の売り上げリストを返す
+     * @param date 日付けデータ。時分秒のパラメータはあっても無視される。
+     * @return
+     */
 	public ArrayList<SingleSalesRecord> restoreSingleSalesRecordsOfTheDay(Date date){
-		ArrayList<SingleSalesRecord> allSalesRecords = WomanShopSalesIOManager.getInstance().getSalesRecords();
-		ArrayList<SingleSalesRecord> salesRecordsOfTheDay = new ArrayList<SingleSalesRecord>();
-		
-		for (SingleSalesRecord record : allSalesRecords) {
-			if ( areSameDay(date,record.getSalesDate()) ) {
-				salesRecordsOfTheDay.add(record);
-			}
-		}
-		return salesRecordsOfTheDay;
+        return WomanShopSalesIOManager.getInstance().searchByDate(date, true);
 	}
-	
+
+    /**
+     * 指定した日付けデータと一致するデータを返す。こちらは日付けをユニークデータとして扱って検索する。
+     * @param date　日付けデータ
+     * @return 該当するSingleSalesRecord形式のデータインスタンス。検索でhitしなければnullが返る。
+     */
 	public SingleSalesRecord getSingleSalesRecord(Date date){
-		ArrayList<SingleSalesRecord> allSalesRecords = WomanShopSalesIOManager.getInstance().getSalesRecords();
-		
-		for (SingleSalesRecord record : allSalesRecords) {
-			if (areSameSecond(record.getSalesDate(), date)) {
-				return record;
-			}
-		}
-		
-		throw new IllegalStateException("Single sales record of the date is not found");
-	}
+        ArrayList<SingleSalesRecord> records = WomanShopSalesIOManager.getInstance().searchByDate(date, false);
+        if (records.size() != 1) {
+            return null;
+        }
+
+        return records.get(0);
+    }
 	
 	public double getOneDayTotalSales(Date date){
 		ArrayList<SingleSalesRecord> salesRecords = restoreSingleSalesRecordsOfTheDay(date);
@@ -79,42 +72,5 @@ public class SalesRecordManager {
 		}
 		return totalRevenue;
 	}
-	
-	private boolean areSameDay(Date date1, Date date2){
-		Calendar cal1 = Calendar.getInstance();
-		cal1.setTime(date1);
-		
-		Calendar cal2 = Calendar.getInstance();
-		cal2.setTime(date2);
-		
-		if ( cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR) &&
-			 cal1.get(Calendar.MONTH) == cal2.get(Calendar.MONTH) &&
-			 cal1.get(Calendar.DAY_OF_MONTH) == cal2.get(Calendar.DAY_OF_MONTH)
-			) {
-			return true;
-		} else {
-			return false;
-		}
-	}
-	
-	private boolean areSameSecond(Date date1, Date date2){
-		Calendar cal1 = Calendar.getInstance();
-		cal1.setTime(date1);
-		
-		Calendar cal2 = Calendar.getInstance();
-		cal2.setTime(date2);
-		
-		if ( cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR) &&
-			 cal1.get(Calendar.MONTH) == cal2.get(Calendar.MONTH) &&
-			 cal1.get(Calendar.DAY_OF_MONTH) == cal2.get(Calendar.DAY_OF_MONTH) &&
-			 cal1.get(Calendar.HOUR_OF_DAY) == cal2.get(Calendar.HOUR_OF_DAY) &&
-			 cal1.get(Calendar.MINUTE) == cal2.get(Calendar.MINUTE) &&
-			 cal1.get(Calendar.SECOND) == cal2.get(Calendar.SECOND)
-			) {
-			return true;
-		} else {
-			return false;
-		}
-	}
-	
+
 }
