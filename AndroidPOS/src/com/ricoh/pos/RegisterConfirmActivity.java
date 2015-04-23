@@ -169,7 +169,7 @@ implements RegisterConfirmFragment.OnButtonClickListener,OrderListFragment.OnOrd
 			});
 
 
-			final EditText numberOfSalesText = (EditText) view
+			final TextView numberOfSalesText = (TextView) view
 					.findViewById(R.id.numberOfSales);
 			numberOfSalesText.setInputType(InputType.TYPE_CLASS_NUMBER);
 			numberOfSalesText.setImeOptions(EditorInfo.IME_ACTION_DONE);
