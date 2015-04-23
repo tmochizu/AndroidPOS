@@ -31,13 +31,13 @@ import java.util.Calendar;
  */
 public class WomanShopSalesIOManager {
     /** ドリシティ向けに出力する販売実績CSVのファイル名*/
-    public static final String SalesCSVFileName = "/sales.csv";
+    private static final String SALES_CSV_FILE_NAME = "/sales.csv";
 
     /** 販売実績のCSV出力先フォルダ名 */
-    public static final String csvStorageFolder = "/Ricoh";
+    private static final String CSV_STORAGE_FOLDER = "/Ricoh";
 
     /** DBに格納する時の日付けフォーマット */
-    public static final String dateFormat = "yyyy-MM-dd HH:mm:ss";
+    private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     //------------------------ private -----------------------------
     /** Singleton Instance */
@@ -147,7 +147,6 @@ public class WomanShopSalesIOManager {
         ArrayList<SingleSalesRecord> sales = new ArrayList<SingleSalesRecord>();
 
         try {
-            SimpleDateFormat sdf = new SimpleDateFormat(dateFormat);
             String query = makeBasicQuery();
             cursor = salesDatabase.rawQuery(query, new String[]{});
 
@@ -158,7 +157,7 @@ public class WomanShopSalesIOManager {
             for (int i = 0; i < cursor.getCount(); i++) {
                 if (record == null) {
                     sales_id = cursor.getInt(9);
-                    Date salesDate = sdf.parse(cursor.getString(0));
+                    Date salesDate = DATE_FORMAT.parse(cursor.getString(0));
 
                     record = new SingleSalesRecord(salesDate);
                     record.setDiscountValue(cursor.getDouble(1));
@@ -167,7 +166,7 @@ public class WomanShopSalesIOManager {
                     sales.add(record);
 
                     sales_id = cursor.getInt(9);
-                    Date salesDate = sdf.parse(cursor.getString(0));
+                    Date salesDate = DATE_FORMAT.parse(cursor.getString(0));
                     record = new SingleSalesRecord(salesDate);
                     record.setDiscountValue(cursor.getDouble(1));
                     record.setUserAttribute(cursor.getString(2));
@@ -207,7 +206,6 @@ public class WomanShopSalesIOManager {
     {
         Cursor cursor = null;
         ArrayList<SingleSalesRecord> sales = new ArrayList<SingleSalesRecord>();
-        SimpleDateFormat sdf = new SimpleDateFormat(dateFormat);
 
         try {
             String query = makeBasicQuery();
@@ -230,13 +228,13 @@ public class WomanShopSalesIOManager {
                 query = query + " where "
                               + SalesDatabaseHelper.WS_SALES_TABLE_NAME + "." + WomanShopSalesDef.DATE.name() + " >= ? and "
                               + SalesDatabaseHelper.WS_SALES_TABLE_NAME + "." + WomanShopSalesDef.DATE.name() + "<= ?";
-                String[] params = { sdf.format(start.getTime()) ,  sdf.format(end.getTime()) };
+                String[] params = { DATE_FORMAT.format(start.getTime()) ,  DATE_FORMAT.format(end.getTime()) };
 
                 cursor = salesDatabase.rawQuery(query, params);
             }
             else {
                 query = query + " where " + SalesDatabaseHelper.WS_SALES_TABLE_NAME + "." + WomanShopSalesDef.DATE.name() + " = ?";
-                String[] params = { sdf.format(date) };
+                String[] params = { DATE_FORMAT.format(date) };
                 cursor = salesDatabase.rawQuery(query, params);
             }
 
@@ -248,7 +246,7 @@ public class WomanShopSalesIOManager {
             {
                 if (record == null) {
                     sales_id = cursor.getInt(9);
-                    Date salesDate = sdf.parse(cursor.getString(0));
+                    Date salesDate = DATE_FORMAT.parse(cursor.getString(0));
                     record = new SingleSalesRecord(salesDate);
                     record.setDiscountValue(cursor.getDouble(1));
                     record.setUserAttribute(cursor.getString(2));
@@ -257,7 +255,7 @@ public class WomanShopSalesIOManager {
                     sales.add(record);
 
                     sales_id = cursor.getInt(9);
-                    Date salesDate = sdf.parse(cursor.getString(0));
+                    Date salesDate = DATE_FORMAT.parse(cursor.getString(0));
                     record = new SingleSalesRecord(salesDate);
                     record.setDiscountValue(cursor.getDouble(1));
                     record.setUserAttribute(cursor.getString(2));
@@ -296,8 +294,7 @@ public class WomanShopSalesIOManager {
         salesDatabase.beginTransaction();
 
         try {
-            SimpleDateFormat sdf = new SimpleDateFormat(dateFormat);
-            String dateStr = sdf.format(record.getSalesDate());
+            String dateStr = DATE_FORMAT.format(record.getSalesDate());
 
             singleRecord.put(WomanShopSalesDef.DATE.name(), dateStr);
             singleRecord.put(WomanShopSalesDef.DISCOUNT.name(), record.getDiscountValue());
@@ -346,8 +343,7 @@ public class WomanShopSalesIOManager {
     public int deleteSingleSalesRecordRelatedTo(Date date)
     {
         int deleted = 0;
-        SimpleDateFormat sdf = new SimpleDateFormat(dateFormat);
-        String dateStr = sdf.format(date);
+        String dateStr = DATE_FORMAT.format(date);
 
         String[] params = { dateStr };
         salesDatabase.beginTransaction();
@@ -401,19 +397,19 @@ public class WomanShopSalesIOManager {
         return deleted;
     }
 
-    public void exportCSV(Context context) throws IOException {
+    public void exportCSV() throws IOException {
         try {
             // 全件検索してファイルに出力。
             // FIXME;全件でいいの？ある日付け以降とかでなく。
             ArrayList<SingleSalesRecord> records = this.searchAll();
-            writeSalesData(records, context);
+            writeSalesData(records);
         }
         catch (Exception e) {
             Log.d("debug", "exportCSV Exception occuered.");
         }
     }
 
-    private void writeSalesData(ArrayList<SingleSalesRecord> records, Context context) throws IOException {
+    private void writeSalesData(ArrayList<SingleSalesRecord> records) throws IOException {
 
         String csvStoragePath = getCSVStoragePath();
         File csvStorage = new File(csvStoragePath);
@@ -426,7 +422,7 @@ public class WomanShopSalesIOManager {
             }
         }
 
-        File salesDataCSV = new File(csvStoragePath + SalesCSVFileName);
+        File salesDataCSV = new File(csvStoragePath + SALES_CSV_FILE_NAME);
         FileOutputStream fos = null;
         OutputStreamWriter fileWriter = null;
 
@@ -491,6 +487,6 @@ public class WomanShopSalesIOManager {
     public String getCSVStoragePath() {
         File extStorage = Environment.getExternalStorageDirectory();
         Log.d("debug", "Environment External:" + extStorage.getAbsolutePath());
-        return extStorage.getAbsolutePath() + csvStorageFolder;
+        return extStorage.getAbsolutePath() + CSV_STORAGE_FOLDER;
     }
 }

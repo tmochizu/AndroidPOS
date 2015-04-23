@@ -28,8 +28,7 @@ public class SalesDatabaseHelper extends SQLiteOpenHelper {
                         + "_id Integer Primary Key, "
                         + WomanShopSalesDef.DATE.name() + " Text, "
                         + WomanShopSalesDef.DISCOUNT.name() + " Real, "
-                        + WomanShopSalesDef.USER_AGES.name() + " Text, "
-                        + WomanShopSalesDef.FILLER.name() + " Text)"
+                        + WomanShopSalesDef.USER_AGES.name() + " Text)"
         );
         Log.d("debug", "SingleSales Table onCreate");
 
