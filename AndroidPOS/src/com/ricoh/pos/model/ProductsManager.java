@@ -1,20 +1,12 @@
 package com.ricoh.pos.model;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.util.Log;
-import android.view.View;
-import android.widget.ImageView;
 
 import com.ricoh.pos.data.Product;
 import com.ricoh.pos.data.WomanShopDataDef;
+
+import java.util.ArrayList;
+import java.util.HashMap;
 
 public class ProductsManager {
 
@@ -175,28 +167,5 @@ public class ProductsManager {
 
 	public int getCategoryCount() {
 		return productsMap.entrySet().size();
-	}
-
-	// Productの画像を返す
-	// 引数のサイズに合わせて画像を縮小してデコードする
-	// 縮小しないとメモリが溢れる可能性があるため
-	public Bitmap decodeProductImage(Product product, int imageWidth, int imageHeight) throws FileNotFoundException{
-		String imagePath = product.getProductImagePath();
-		File imageFile = new File(imagePath);
-
-		InputStream inputStream = new FileInputStream(imageFile);
-		//　画像サイズ取得
-		BitmapFactory.Options options = new BitmapFactory.Options();
-		options.inJustDecodeBounds = true;
-		BitmapFactory.decodeStream(inputStream, null, options);
-		int width = options.outWidth;
-		int height = options.outHeight;
-			
-		// 縮小してデコード
-		int scaleW = width / imageWidth; //imageViewの幅。getWidthだとなぜか0になるので決めうち
-		int scaleH = height / imageHeight;
-		options.inSampleSize = (int) Math.max(scaleW, scaleH);
-		options.inJustDecodeBounds = false;
-		return BitmapFactory.decodeFile(imagePath,options);
 	}
 }

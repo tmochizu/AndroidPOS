@@ -1,12 +1,5 @@
 package com.ricoh.pos.model;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-
 import android.content.ContentValues;
 import android.content.res.AssetManager;
 import android.database.Cursor;
@@ -15,6 +8,13 @@ import android.os.Environment;
 import android.util.Log;
 
 import com.ricoh.pos.data.WomanShopDataDef;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 
 public class WomanShopIOManager implements IOManager {
 
@@ -47,7 +47,7 @@ public class WomanShopIOManager implements IOManager {
 	}
 
 	@Override
-	public void insertRecords(BufferedReader bufferReader) {
+	public void insertRecords(BufferedReader bufferReader) throws IOException {
 
 		ContentValues contentValue = new ContentValues();
 		try {
@@ -67,7 +67,8 @@ public class WomanShopIOManager implements IOManager {
 						SQLiteDatabase.CONFLICT_REPLACE);
 			}
 		} catch (IOException e) {
-			Log.d("debug", "" + e + "");
+			Log.d("debug", "" + e + "", e);
+            throw e;
 		}
 	}
 
@@ -111,7 +112,7 @@ public class WomanShopIOManager implements IOManager {
 		}
 	}
 	
-	public BufferedReader importCSVfromSD() {
+	public BufferedReader importCSVfromSD() throws FileNotFoundException {
 		BufferedReader bufferReader = null;
 		
 		try {
@@ -119,7 +120,8 @@ public class WomanShopIOManager implements IOManager {
 			File productDataCSV = new File(csvStoragePath + "/Product.csv");
 			bufferReader = new BufferedReader(new FileReader(productDataCSV));
 		} catch (FileNotFoundException e) {
-			System.out.println(e);
+			Log.d("debug", "import error", e);
+            throw e;
 		}
 		return bufferReader;
 	}

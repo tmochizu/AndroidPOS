@@ -11,6 +11,8 @@ import android.support.v4.app.ListFragment;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
+import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -21,11 +23,16 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.ricoh.pos.data.Order;
 import com.ricoh.pos.data.Product;
 import com.ricoh.pos.model.ProductsManager;
 import com.ricoh.pos.model.RegisterManager;
+
+import java.io.FileNotFoundException;
+import java.text.NumberFormat;
+import java.util.ArrayList;
 
 /**
  * A fragment representing a single Category detail screen. This fragment is
@@ -39,15 +46,17 @@ public class CategoryDetailFragment extends ListFragment {
 	 * represents.
 	 */
 	public static final String ARG_ITEM_ID = "item_id";
+	public static final String ARG_SEARCH_WORD = "serch_word";
 	// This is the maximum fraction digits for total payment to display.
 	private static final int MAXIMUM_FRACTION_DIGITS = 2;
-	
+
 	private final int IMAGE_VIEW_SIZE = 120;
 
 	private RegisterManager registerManager;
 
 	private String category;
 	private ArrayList<Product> productList;
+	private ArrayList<Product> searchProductList;
 
 	/**
 	 * Mandatory empty constructor for the fragment manager to instantiate the
@@ -69,7 +78,18 @@ public class CategoryDetailFragment extends ListFragment {
 		} else {
 			productList = ProductsManager.getInstance().getProductsInCategory(category);
 		}
-		
+		String searchWord = bundle.getString(CategoryDetailFragment.ARG_SEARCH_WORD);
+		if (null != searchWord && !searchWord.isEmpty()) {
+			searchProductList = new ArrayList<Product>();
+			for (Product product : productList) {
+				if (product.getName().toUpperCase().indexOf(searchWord.toUpperCase()) != -1) {
+					searchProductList.add(product);
+				}
+			}
+		} else {
+			searchProductList = productList;
+		}
+
 		getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
 	}
 
@@ -94,7 +114,7 @@ public class CategoryDetailFragment extends ListFragment {
 
 		@Override
 		public int getCount() {
-			return productList.size();
+			return searchProductList.size();
 		}
 
 		@Override
@@ -114,7 +134,7 @@ public class CategoryDetailFragment extends ListFragment {
 				convertView = inflater.inflate(R.layout.row, null);
 			}
 
-			Product product = productList.get(position);
+			Product product = searchProductList.get(position);
 
 			setImageView(convertView,product);
 			setProductInformationView(convertView,product);
@@ -123,17 +143,33 @@ public class CategoryDetailFragment extends ListFragment {
 			return convertView;
 		}
 		
-		private void setImageView(View convertView, Product product){
+		private void setImageView(View convertView, final Product product){
 			ImageView imageView = (ImageView) convertView.findViewById(R.id.photo);
 			imageView.setLayoutParams(new LinearLayout.LayoutParams(IMAGE_VIEW_SIZE, IMAGE_VIEW_SIZE));
 			imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
 			setImageView(product, imageView);
+			imageView.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View view) {
+					try {
+						ProductDetailDialogFragment dialogFragment = new ProductDetailDialogFragment();
+						Bundle arguments = new Bundle();
+						DisplayMetrics metrics = getResources().getDisplayMetrics();
+						arguments.putParcelable(ProductDetailDialogFragment.ARG_KEY_IMAGE_BITMAP, product.decodeProductImage(metrics.widthPixels, metrics.heightPixels));
+						dialogFragment.setArguments(arguments);
+						dialogFragment.show(getActivity().getFragmentManager(), ProductDetailDialogFragment.DIALOG_TAG);
+					} catch (FileNotFoundException e) {
+						Log.e("CategoryDetailFragment", "Product image file is not found.", e);
+						Toast.makeText(getActivity(), R.string.error_image_file_not_found, Toast.LENGTH_SHORT).show();
+					}
+				}
+			});
 		}
 
 		private void setImageView(Product product, ImageView imageView) {
 
 			try {
-				Bitmap image = ProductsManager.getInstance().decodeProductImage(product, IMAGE_VIEW_SIZE, IMAGE_VIEW_SIZE);
+				Bitmap image = product.decodeProductImage(IMAGE_VIEW_SIZE, IMAGE_VIEW_SIZE);
 				imageView.setImageBitmap(image);
 				imageView.setVisibility(View.VISIBLE);
 			} catch (FileNotFoundException e) {
@@ -159,7 +195,7 @@ public class CategoryDetailFragment extends ListFragment {
 
 			TextView priceView = (TextView) convertView.findViewById(R.id.price);
 			priceView.setPadding(10, 0, 0, 0);
-			priceView.setText(getString(R.string.price_label) + " " + NumberFormat.getInstance().format(product.getPrice()) + getString(R.string.currency_india));
+			priceView.setText(NumberFormat.getInstance().format(product.getPrice()) + getString(R.string.currency_india));
 		}
 
 		private void setNumberOfOrderView(View convertView, Product product){

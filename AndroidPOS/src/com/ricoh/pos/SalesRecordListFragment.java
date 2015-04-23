@@ -1,8 +1,5 @@
 package com.ricoh.pos;
 
-import java.util.ArrayList;
-import java.util.Date;
-
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
@@ -11,12 +8,16 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+
 import com.ricoh.pos.data.SingleSalesRecord;
 import com.ricoh.pos.model.SalesCalenderManager;
 import com.ricoh.pos.model.SalesRecordManager;
 
+import java.util.ArrayList;
+import java.util.Date;
+
 public class SalesRecordListFragment extends ListFragment {
-	
+
 	/**
 	 * The serialization (saved instance state) Bundle key representing the
 	 * activated item position. Only used on tablets.
@@ -33,11 +34,11 @@ public class SalesRecordListFragment extends ListFragment {
 	 * The current activated item position. Only used on tablets.
 	 */
 	private int mActivatedPosition = ListView.INVALID_POSITION;
-	
+
 	private Date selectedDate;
-	
+
 	private ArrayList<SingleSalesRecord> oneDaySalesRecords;
-	
+
 	/**
 	 * A callback interface that all activities containing this fragment must
 	 * implement. This mechanism allows activities to be notified of item
@@ -48,7 +49,8 @@ public class SalesRecordListFragment extends ListFragment {
 		 * Callback for when an item has been selected.
 		 */
 		public void onItemSelected(String id);
-		public void onItemLongSelected(String id);
+
+		public void onItemLongSelected(Date id);
 	}
 
 	/**
@@ -58,16 +60,16 @@ public class SalesRecordListFragment extends ListFragment {
 	private static Callbacks sDummyCallbacks = new Callbacks() {
 		@Override
 		public void onItemSelected(String id) {
-			
+
 		}
-		
+
 		@Override
-		public void onItemLongSelected(String id) {
-			
+		public void onItemLongSelected(Date id) {
+
 		}
 	};
-	
-	
+
+
 	/**
 	 * Mandatory empty constructor for the fragment manager to instantiate the
 	 * fragment (e.g. upon screen orientation changes).
@@ -80,45 +82,45 @@ public class SalesRecordListFragment extends ListFragment {
 		super.onCreate(savedInstanceState);
 
 		this.selectedDate = SalesCalenderManager.getInstance().getSelectedDate();
-		this.oneDaySalesRecords =  SalesRecordManager.getInstance().restoreSingleSalesRecordsOfTheDay(selectedDate);
-		
+		this.oneDaySalesRecords = SalesRecordManager.getInstance().restoreSingleSalesRecordsOfTheDay(selectedDate);
+
 		Date initialDate = this.oneDaySalesRecords.get(0).getSalesDate();
 		SalesCalenderManager.getInstance().setSelectedSalesDate(initialDate);
-		
+
 		setListAdapter(new ArrayAdapter<String>(
 				getActivity(),
 				android.R.layout.simple_list_item_activated_1,
 				android.R.id.text1,
 				getSalesRecordListTitles(this.selectedDate)));
 	}
-	
+
 	@Override
 	public void onActivityCreated(Bundle savedState) {
-	    super.onActivityCreated(savedState);
+		super.onActivityCreated(savedState);
 
-	    getListView().setOnItemLongClickListener(new OnItemLongClickListener() {
-	        @Override
-	        public boolean onItemLongClick(AdapterView<?> adapterView, View view,
-	                int position, long id) {
-	            Date clickedDate = oneDaySalesRecords.get(position).getSalesDate();
-	    		SalesCalenderManager.getInstance().setSelectedSalesDate(clickedDate);
-	    		mCallbacks.onItemLongSelected(clickedDate.toString());
-	            return true;
-	        }
-	    });
+		getListView().setOnItemLongClickListener(new OnItemLongClickListener() {
+			@Override
+			public boolean onItemLongClick(AdapterView<?> adapterView, View view,
+										   int position, long id) {
+				Date clickedDate = oneDaySalesRecords.get(position).getSalesDate();
+				SalesCalenderManager.getInstance().setSelectedSalesDate(clickedDate);
+				mCallbacks.onItemLongSelected(clickedDate);
+				return true;
+			}
+		});
 	}
-	
-	private ArrayList<String> getSalesRecordListTitles(Date date){
+
+	private ArrayList<String> getSalesRecordListTitles(Date date) {
 		//ArrayList<SingleSalesRecord> records =  SalesRecordManager.getInstance().restoreSingleSalesRecordsOfTheDay(date);
 		ArrayList<String> titles = new ArrayList<String>();
-		
+
 		// TODO: Fix Me
 		//titles.add("ALL");
-		
+
 		for (SingleSalesRecord record : this.oneDaySalesRecords) {
 			titles.add(record.getSalesDate().toString());
 		}
-		
+
 		return titles;
 	}
 

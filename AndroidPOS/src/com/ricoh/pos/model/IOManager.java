@@ -1,6 +1,7 @@
 package com.ricoh.pos.model;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 
 import android.content.res.AssetManager;
 
@@ -21,7 +22,7 @@ public interface IOManager {
 	 * Insert all record into database.
 	 * @param bufferReader buffered records imported from csv file
 	 */
-	public abstract void insertRecords(BufferedReader bufferReader);
+	public abstract void insertRecords(BufferedReader bufferReader) throws IOException;
 
 	/**
 	 * Search all record from database.

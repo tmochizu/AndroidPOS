@@ -22,6 +22,18 @@ import com.ricoh.pos.data.SingleSalesRecord;
 import com.ricoh.pos.data.WomanShopFormatter;
 import com.ricoh.pos.data.WomanShopSalesDef;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Iterator;
+
 public class WomanShopSalesIOManager implements IOManager {
 
 	private static WomanShopSalesIOManager instance = null;
@@ -33,15 +45,15 @@ public class WomanShopSalesIOManager implements IOManager {
 	private WomanShopSalesIOManager() {
 		this.salesRecords = new ArrayList<SingleSalesRecord>();
 	}
-	
-	public static WomanShopSalesIOManager getInstance(){
+
+	public static WomanShopSalesIOManager getInstance() {
 		if (instance == null) {
 			instance = new WomanShopSalesIOManager();
 		}
 		return instance;
 	}
-	
-	public static void resetInstance(){
+
+	public static void resetInstance() {
 		Log.d("debug", "Reset Instance:" + "WomanShopSalesIOManager");
 		instance = null;
 	}
@@ -91,7 +103,7 @@ public class WomanShopSalesIOManager implements IOManager {
 		try {
 			cursor = salesDatabase.query(
 					DATABASE_NAME,
-					new String[] { WomanShopSalesDef.PRODUCT_CODE.name(),
+					new String[]{WomanShopSalesDef.PRODUCT_CODE.name(),
 							WomanShopSalesDef.PRODUCT_CATEGORY.name(),
 							WomanShopSalesDef.ITEM_CATEGORY.name(),
 							WomanShopSalesDef.QTY.name(),
@@ -99,8 +111,8 @@ public class WomanShopSalesIOManager implements IOManager {
 							WomanShopSalesDef.TOTAL_SALE_PRICE.name(),
 							WomanShopSalesDef.DISCOUNT.name(),
 							WomanShopSalesDef.DATE.name(),
-							WomanShopSalesDef.USER_ATTRIBUTE.name() },
-							null, null, null, null, null);
+							WomanShopSalesDef.USER_ATTRIBUTE.name()},
+					null, null, null, null, null);
 			String[] results = new String[cursor.getCount()];
 			Log.d("debug", "count:" + cursor.getCount());
 			for (int i = 0; i < cursor.getCount(); i++) {
@@ -121,7 +133,7 @@ public class WomanShopSalesIOManager implements IOManager {
 		try {
 			cursor = salesDatabase.query(
 					DATABASE_NAME,
-					new String[] { WomanShopSalesDef.PRODUCT_CODE.name(),
+					new String[]{WomanShopSalesDef.PRODUCT_CODE.name(),
 							WomanShopSalesDef.PRODUCT_CATEGORY.name(),
 							WomanShopSalesDef.ITEM_CATEGORY.name(),
 							WomanShopSalesDef.QTY.name(),
@@ -130,8 +142,8 @@ public class WomanShopSalesIOManager implements IOManager {
 							WomanShopSalesDef.DISCOUNT.name(),
 							WomanShopSalesDef.DATE.name(),
 							WomanShopSalesDef.USER_ATTRIBUTE.name()},
-							WomanShopSalesDef.PRODUCT_CODE.name() + " = ?",
-							new String[] { code }, null, null, null);
+					WomanShopSalesDef.PRODUCT_CODE.name() + " = ?",
+					new String[]{code}, null, null, null);
 			return readCursor(cursor);
 		} finally {
 			if (cursor != null) {
@@ -140,7 +152,7 @@ public class WomanShopSalesIOManager implements IOManager {
 		}
 	}
 
-	public void saveSalesRecord(SingleSalesRecord record){
+	public void saveSalesRecord(SingleSalesRecord record) {
 		salesRecords.add(record);
 
 		ArrayList<Order> orders = record.getAllOrders();
@@ -154,19 +166,26 @@ public class WomanShopSalesIOManager implements IOManager {
 			insertSingleRecord(salesRecord);
 		}
 	}
-	
-	public void deleteSingleSalesRecordRelatedTo(String date) {
-		salesDatabase.delete(DATABASE_NAME, WomanShopSalesDef.DATE.name() + "='" + date + "'", null);
+
+	public int deleteSingleSalesRecordRelatedTo(Date date) {
+		String[] params = {WomanShopFormatter.formatDate(date)};
+		int delete = salesDatabase.delete(DATABASE_NAME, WomanShopSalesDef.DATE.name() + "=?", params);
+
+		if (delete == 0) {
+			return 0;
+		}
+
 		// Delete the record from salesRecords
 		Iterator<SingleSalesRecord> i = salesRecords.iterator();
-        while(i.hasNext()){
-        	SingleSalesRecord record = i.next();
-            if(record.getSalesDate().toString().equals(date)){
-                i.remove();
-            }
-        }
+		while (i.hasNext()) {
+			SingleSalesRecord record = i.next();
+			if (record.getSalesDate().equals(date)) {
+				i.remove();
+			}
+		}
+		return delete;
 	}
-	
+
 	// TODO: Add this function to interface
 	public void setDatabase(SQLiteDatabase database) {
 		if (salesDatabase == null) {
@@ -176,7 +195,7 @@ public class WomanShopSalesIOManager implements IOManager {
 			Log.d("debug", "Database not open:" + DATABASE_NAME);
 		}
 	}
-	
+
 	// TODO: Add this function to interface
 	public void closeDatabase() {
 		if (salesDatabase != null) {
@@ -184,14 +203,14 @@ public class WomanShopSalesIOManager implements IOManager {
 			salesDatabase.close();
 		}
 	}
-	
-	public void exportCSV(Context context) {
+
+	public void exportCSV(Context context) throws IOException {
 		Cursor cursor = null;
 
 		try {
 			cursor = salesDatabase.query(
 					DATABASE_NAME,
-					new String[] { WomanShopSalesDef.PRODUCT_CODE.name(),
+					new String[]{WomanShopSalesDef.PRODUCT_CODE.name(),
 							WomanShopSalesDef.PRODUCT_CATEGORY.name(),
 							WomanShopSalesDef.ITEM_CATEGORY.name(),
 							WomanShopSalesDef.QTY.name(),
@@ -199,8 +218,8 @@ public class WomanShopSalesIOManager implements IOManager {
 							WomanShopSalesDef.TOTAL_SALE_PRICE.name(),
 							WomanShopSalesDef.DISCOUNT.name(),
 							WomanShopSalesDef.DATE.name(),
-							WomanShopSalesDef.USER_ATTRIBUTE.name() }, 
-							null, null, null, null, null);
+							WomanShopSalesDef.USER_ATTRIBUTE.name()},
+					null, null, null, null, null);
 			String[] results = new String[cursor.getCount()];
 			Log.d("debug", "sales count:" + cursor.getCount());
 			for (int i = 0; i < cursor.getCount(); i++) {
@@ -213,8 +232,8 @@ public class WomanShopSalesIOManager implements IOManager {
 			}
 		}
 	}
-	
-	public ArrayList<SingleSalesRecord> getSalesRecords(){
+
+	public ArrayList<SingleSalesRecord> getSalesRecords() {
 		return salesRecords;
 	}
 
@@ -258,9 +277,9 @@ public class WomanShopSalesIOManager implements IOManager {
 		}
 		return result;
 	}
-	
+
 	private void insertSingleRecord(String record) {
-		
+
 		ContentValues contentValue = new ContentValues();
 
 		String[] fieldValues = record.split(",");
@@ -275,9 +294,9 @@ public class WomanShopSalesIOManager implements IOManager {
 				SQLiteDatabase.CONFLICT_REPLACE);
 
 	}
-	
-	private void writeSalesData(String[] salesData, Context context) {
-		
+
+	private void writeSalesData(String[] salesData, Context context) throws IOException {
+
 		String csvStoragePath = getCSVStoragePath();
 		File csvStorage = new File(csvStoragePath);
 		if (!csvStorage.exists()) {
@@ -285,23 +304,42 @@ public class WomanShopSalesIOManager implements IOManager {
 			csvStorage.mkdir();
 		}
 		File salesDataCSV = new File(csvStoragePath + "/sales.csv");
-		FileWriter filewriter = null;
+		FileOutputStream fos = null;
+		OutputStreamWriter filewriter = null;
 		try {
-			filewriter = new FileWriter(salesDataCSV);
-			for (String singleSalesData : salesData) {
-				Log.d("debug", "write csv:" + singleSalesData);
-				filewriter.write(singleSalesData);
+			try {
+				fos = new FileOutputStream(salesDataCSV);
+				fos.write(0xef);
+				fos.write(0xbb);
+				fos.write(0xbf);
+				filewriter = new OutputStreamWriter(fos, "UTF-8");
+			} catch (FileNotFoundException e) {
+				Log.d("debug", "sales.csv is not found", e);
+				throw e;
+			} catch (UnsupportedEncodingException e) {
+				Log.d("debug", "UTF-8 unsupported", e);
+				throw e;
+			} catch (IOException e) {
+				Log.d("debug", "file write error", e);
+				throw e;
 			}
-		} catch (IOException e) {
-			System.out.println(e);
+
+			try {
+				for (String singleSalesData : salesData) {
+					Log.d("debug", "write csv:" + singleSalesData);
+					filewriter.write(singleSalesData);
+				}
+			} catch (IOException e) {
+				Log.d("debug", "write error", e);
+				throw e;
+			}
 		} finally {
 			if (filewriter != null) {
-				try {
-					filewriter.flush();
-					filewriter.close();
-				} catch (IOException e) {
-					System.out.println(e);
-				}
+				filewriter.flush();
+				filewriter.close();
+			}
+			if (fos != null) {
+				fos.close();
 			}
 		}
 	}
