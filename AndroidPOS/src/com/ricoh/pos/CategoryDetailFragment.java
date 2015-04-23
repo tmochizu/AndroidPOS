@@ -83,7 +83,7 @@ public class CategoryDetailFragment extends ListFragment {
     }
 
 
-    public class ListAdapter extends BaseAdapter {
+	public class ListAdapter extends BaseAdapter {
 		// private Context contextInAdapter;
 		private LayoutInflater inflater;
 
@@ -206,6 +206,7 @@ public class CategoryDetailFragment extends ListFragment {
 					}
 				}
 			});
+
 			Order order = registerManager.findOrderOfTheProduct(product);
 			if (order == null || order.getNumberOfOrder() == 0) {
 				numberOfSalesText.getEditableText().clear();
@@ -217,7 +218,7 @@ public class CategoryDetailFragment extends ListFragment {
 		}
 	}
 
-    public class NumberOfSalesWatcher implements TextWatcher {
+	public class NumberOfSalesWatcher implements TextWatcher {
 
 		private ProductEditText productEditView;
 

@@ -10,17 +10,14 @@ import com.ricoh.pos.data.OrderUpdateInfo;
 import com.ricoh.pos.data.Product;
 import com.ricoh.pos.data.SingleSalesRecord;
 
-/**
- * シングルトン
- */
 public class RegisterManager {
 	
 	private static RegisterManager instance;
 
-    // 注文したいリスト(+ボタンで数量を入れたアイテムのリスト)
 	private ArrayList<Order> orderList;
 	
 	private ArrayList<UpdateOrderListener> listeners;
+	private ArrayList<UpdateOrderListListener> orderListListeners;
 	
 	private double discountValue;
 	
@@ -29,6 +26,7 @@ public class RegisterManager {
 	private RegisterManager(){
 		orderList = new ArrayList<Order>();
 		listeners = new ArrayList<UpdateOrderListener>();
+		orderListListeners = new ArrayList<UpdateOrderListListener>();
 	}
 	
 	public static RegisterManager getInstance(){
@@ -58,9 +56,6 @@ public class RegisterManager {
 		notifyUpdateOrder();
 	}
 
-    /* 注文数を1個増やす
-     * 1つも注文されていなければorderListに商品を1つ追加する
-     */
 	public void plusNumberOfOrder(Product product){
 		Order orderOfTheProduct = findOrderOfTheProduct(product);
 		
@@ -71,13 +66,11 @@ public class RegisterManager {
 		} else {
 			orderOfTheProduct.plusNumberOfOrder();
 		}
-		
+
 		notifyUpdateOrder();
 	}
-    /* 注文数を1個減らす
-     * 注文数が0の場合は注文を削除する
-     */
-    public void minusNumberOfOrder(Product product) {
+
+	public void minusNumberOfOrder(Product product) {
 		Order orderOfTheProduct = findOrderOfTheProduct(product);
 		
 		if (orderOfTheProduct == null) {
@@ -110,6 +103,21 @@ public class RegisterManager {
 					, getTotalAmountAfterDiscount()));
 		}
 	}
+
+	public void notifyUpdateOrderList(){
+		if (orderListListeners == null || orderListListeners.isEmpty()) {
+			throw new IllegalStateException("UpdateOrderListListener is not resgistered");
+		}
+
+		for (UpdateOrderListListener listener : orderListListeners) {
+			if (listener == null) {
+				throw new IllegalStateException("UpdateOrderListListener to register is null");
+			}
+			listener.notifyUpdateOrderList();
+		}
+
+	}
+
 	
 	public double getOriginalTotalAmount(){
 		double totalAmount = 0;
@@ -136,9 +144,7 @@ public class RegisterManager {
 		discountValue = 0;
 		userAttribute = null;
 	}
-    /**
-     * orderListの中からカテゴリーとプロダクトコードが一致するものを取得する
-     */
+
 	public Order findOrderOfTheProduct(Product product){
 		for (Order order : orderList) {
 			if ((order.getProductCategory().equals(product.getCategory()) && order.getProductCode().equals(product.getCode()))) {
@@ -170,16 +176,19 @@ public class RegisterManager {
 		listeners.clear();
 	}
 
-    /*
-    値引き額と、注文商品の合計金額の関係のチェック
-       値引き額>=合計金額でエラー
-     */
+	public void setUpdateOrderListListener(UpdateOrderListListener listener){orderListListeners.add(listener);}
+
+	public void removeUpdateOrderListListener(UpdateOrderListListener listener){
+		orderListListeners.remove(listener);
+	}
+
+	public void clearUpdateOrderListListener(){
+		orderListListeners.clear();
+	}
+
+
 	public void updateDiscountValue(double discountValue){
-
-        Log.d("updateDiscountValue","discountValue=" + discountValue);
-        Log.d("updateDiscountValue","getOriginalTotalAmount=" + getOriginalTotalAmount());
         double totalAmount = getOriginalTotalAmount();
-
         if(totalAmount == 0){
             this.discountValue = 0;
         } else if (discountValue >= totalAmount) {
@@ -199,7 +208,6 @@ public class RegisterManager {
 	}
 	
 	public SingleSalesRecord getSingleSalesRecord(){
-		Log.d("RegisterManager","getSingleSalesRecord");
 		SingleSalesRecord record = new SingleSalesRecord(new Date());
 		record.setOrders(orderList);
 		record.setDiscountValue(discountValue);

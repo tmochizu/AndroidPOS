@@ -25,7 +25,6 @@ public class SalesRecordManager {
 	}
 	
 	public void storeSingleSalesRecord(SQLiteDatabase database, SingleSalesRecord record){
-		Log.d("SalesRecordManager","storeSingleSalesRecord");
 		if (record == null) {
 			throw new IllegalArgumentException("The passing record is null");
 		}

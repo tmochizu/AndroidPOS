@@ -1,10 +1,8 @@
 package com.ricoh.pos;
 
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
-import android.util.Log;
 
 /**
  * An activity representing a list of Products. This activity has different
@@ -60,18 +58,12 @@ public class CategoryListActivity extends FragmentActivity implements
 			TotalPaymentFragment paymentFragment = new TotalPaymentFragment();
 			getSupportFragmentManager().beginTransaction()
 					.replace(R.id.total_payment_container, paymentFragment).commit();
-        }
+		}
 
 		// TODO: If exposing deep links into your app, handle intents here.
 	}
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        Log.d("CategoryListActivity","onResume()");
-    }
-
-    /**
+	/**
 	 * Callback method from {@link CategoryListFragment.Callbacks} indicating
 	 * that the item with the given ID was selected.
 	 */

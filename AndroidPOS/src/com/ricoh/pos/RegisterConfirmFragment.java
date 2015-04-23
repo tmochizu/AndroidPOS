@@ -153,5 +153,4 @@ public class RegisterConfirmFragment extends Fragment implements UpdateOrderList
 			}
 		}
 	}
-
 }

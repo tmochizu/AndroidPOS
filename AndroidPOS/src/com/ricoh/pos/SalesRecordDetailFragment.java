@@ -9,7 +9,6 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,13 +17,11 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.ricoh.pos.data.Order;
 import com.ricoh.pos.data.Product;
 import com.ricoh.pos.data.SingleSalesRecord;
 import com.ricoh.pos.model.ProductsManager;
-import com.ricoh.pos.model.RegisterManager;
 import com.ricoh.pos.model.SalesCalenderManager;
 import com.ricoh.pos.model.SalesRecordManager;
 
@@ -77,14 +74,12 @@ public class SalesRecordDetailFragment extends ListFragment {
 
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
-				if (convertView == null) {
-					convertView = inflater.inflate(R.layout.order_row, null);
-				}
+			if (convertView == null) {
+				convertView = inflater.inflate(R.layout.order_row, null);
+			}
 			
-			final Order order = orders.get(position);
+			Order order = orders.get(position);
 			Product product = order.getProduct();
-
-
 
 			ImageView imageView = (ImageView) convertView.findViewById(R.id.photo);
 			imageView.setLayoutParams(new LinearLayout.LayoutParams(120, 120));
@@ -104,7 +99,7 @@ public class SalesRecordDetailFragment extends ListFragment {
 			NumberFormat.getInstance().setMaximumFractionDigits(MAXIMUM_FRACTION_DIGITS);
 			priceView.setText(NumberFormat.getInstance().format(product.getPrice()));
 
-			final TextView numberOfSalseView = (TextView) convertView.findViewById(R.id.numberOfSales);
+			TextView numberOfSalseView = (TextView) convertView.findViewById(R.id.numberOfSales);
 			numberOfSalseView.setPadding(10, 0, 0, 0);
 
 			if (order == null || order.getNumberOfOrder() == 0) {
@@ -113,7 +108,6 @@ public class SalesRecordDetailFragment extends ListFragment {
 				int numberOfSales = order.getNumberOfOrder();
 				numberOfSalseView.setText(NumberFormat.getInstance().format(numberOfSales));
 			}
-
 
 			return convertView;
 		}
