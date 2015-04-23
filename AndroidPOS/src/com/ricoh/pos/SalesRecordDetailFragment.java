@@ -1,14 +1,11 @@
 package com.ricoh.pos;
 
-import java.io.FileNotFoundException;
-import java.text.NumberFormat;
-import java.util.ArrayList;
-import java.util.Date;
-
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
+import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,13 +14,18 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.ricoh.pos.data.Order;
 import com.ricoh.pos.data.Product;
 import com.ricoh.pos.data.SingleSalesRecord;
-import com.ricoh.pos.model.ProductsManager;
 import com.ricoh.pos.model.SalesCalenderManager;
 import com.ricoh.pos.model.SalesRecordManager;
+
+import java.io.FileNotFoundException;
+import java.text.NumberFormat;
+import java.util.ArrayList;
+import java.util.Date;
 
 public class SalesRecordDetailFragment extends ListFragment {
 	// This is the maximum fraction digits for total payment to display.
@@ -79,7 +81,7 @@ public class SalesRecordDetailFragment extends ListFragment {
 			}
 			
 			Order order = orders.get(position);
-			Product product = order.getProduct();
+			final Product product = order.getProduct();
 
 			ImageView imageView = (ImageView) convertView.findViewById(R.id.photo);
 			imageView.setLayoutParams(new LinearLayout.LayoutParams(120, 120));
@@ -93,6 +95,23 @@ public class SalesRecordDetailFragment extends ListFragment {
 				throw new NullPointerException("Product name is not valid");
 			}
 			textView.setText(productName);
+			imageView.setOnClickListener(new View.OnClickListener() {
+				@Override
+				public void onClick(View view) {
+					try {
+						ProductDetailDialogFragment dialogFragment = new ProductDetailDialogFragment();
+						Bundle arguments = new Bundle();
+						DisplayMetrics metrics = getResources().getDisplayMetrics();
+						arguments.putParcelable(ProductDetailDialogFragment.ARG_KEY_IMAGE_BITMAP, product.decodeProductImage(metrics.widthPixels, metrics.heightPixels));
+						dialogFragment.setArguments(arguments);
+						dialogFragment.show(getActivity().getFragmentManager(), ProductDetailDialogFragment.DIALOG_TAG);
+					} catch (FileNotFoundException e) {
+						Log.e("SalesRecordDetail", "Product image file is not found.", e);
+						Toast.makeText(getActivity(), R.string.error_image_file_not_found, Toast.LENGTH_SHORT).show();
+					}
+				}
+			});
+
 
 			TextView priceView = (TextView) convertView.findViewById(R.id.price);
 			priceView.setPadding(10, 0, 0, 0);
@@ -116,7 +135,7 @@ public class SalesRecordDetailFragment extends ListFragment {
 
 			try {
 				 
-				Bitmap image = ProductsManager.getInstance().decodeProductImage(product, IMAGE_VIEW_SIZE, IMAGE_VIEW_SIZE);
+				Bitmap image = product.decodeProductImage(IMAGE_VIEW_SIZE, IMAGE_VIEW_SIZE);
 				imageView.setImageBitmap(image);
 				imageView.setVisibility(View.VISIBLE);
 			} catch (FileNotFoundException e) {

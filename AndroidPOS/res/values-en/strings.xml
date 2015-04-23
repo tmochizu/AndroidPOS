@@ -37,5 +37,7 @@
         <item>अन्य</item>
     </string-array>
   	<string name="user_attribute_label">विशेषता</string>
+    <string name="close">close</string>
+    <string name="error_image_file_not_found">Product image is not found.</string>
 
 </resources>

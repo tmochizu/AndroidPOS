@@ -1,9 +1,14 @@
 package com.ricoh.pos.data;
 
-import java.io.File;
-
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Environment;
 import android.util.Log;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 
 public class Product {
 
@@ -117,5 +122,34 @@ public class Product {
 		File exterlStorage = Environment.getExternalStorageDirectory();
 		Log.d("debug", "Environment External:" + exterlStorage.getAbsolutePath());
 		return exterlStorage.getAbsolutePath() + imageStorageFolder;
+	}
+
+	/**
+	 * Productの画像を返す
+	 * 引数のサイズに合わせて画像を縮小してデコードする
+	 * 縮小しないとメモリが溢れる可能性があるため
+	 *
+	 * @param imageWidth
+	 * @param imageHeight
+	 * @return
+	 * @throws FileNotFoundException
+	 */
+	public Bitmap decodeProductImage(int imageWidth, int imageHeight) throws FileNotFoundException {
+		File imageFile = new File(imagePath);
+
+		InputStream inputStream = new FileInputStream(imageFile);
+		//　画像サイズ取得
+		BitmapFactory.Options options = new BitmapFactory.Options();
+		options.inJustDecodeBounds = true;
+		BitmapFactory.decodeStream(inputStream, null, options);
+		int width = options.outWidth;
+		int height = options.outHeight;
+
+		// 縮小してデコード
+		int scaleW = width / imageWidth; //imageViewの幅。getWidthだとなぜか0になるので決めうち
+		int scaleH = height / imageHeight;
+		options.inSampleSize = (int) Math.max(scaleW, scaleH);
+		options.inJustDecodeBounds = false;
+		return BitmapFactory.decodeFile(imagePath, options);
 	}
 }

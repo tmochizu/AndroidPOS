@@ -55,5 +55,7 @@
     <string name="category_name_15">Chou-Chou</string>
     <string name="category_name_16">Kitchen Item (Utensils)</string>
     <string name="category_name_17">Fabric</string>
+    <string name="close">close</string>
+    <string name="error_image_file_not_found">Product image is not found.</string>
   	
 </resources>
