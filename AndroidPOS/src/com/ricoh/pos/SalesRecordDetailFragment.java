@@ -31,7 +31,7 @@ public class SalesRecordDetailFragment extends ListFragment {
 	// This is the maximum fraction digits for total payment to display.
 	private static final int MAXIMUM_FRACTION_DIGITS = 2;
 	private final int IMAGE_VIEW_SIZE = 120;
-	private ArrayList<Order> orders;
+	private ArrayList<Order> orders = new ArrayList<Order>();
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -46,8 +46,10 @@ public class SalesRecordDetailFragment extends ListFragment {
 			salesRecord = SalesRecordManager.getInstance().getSingleSalesRecord(date);
 		}
 
-		orders = salesRecord.getAllOrders();
-		
+        if (salesRecord != null) {
+            orders = salesRecord.getAllOrders(); // 検索結果があるならordersを差し替え
+        }
+
 		setListAdapter(new ListAdapter(getActivity()));
 		getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
 	}

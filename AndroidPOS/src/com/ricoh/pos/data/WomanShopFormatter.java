@@ -7,7 +7,7 @@ public class WomanShopFormatter {
 	public static String formatDate(Date date) {
 		String formatDate = "";
 		String[] splitDate = null;
-		
+
 		splitDate = date.toString().split(" ");
 		for (String element : splitDate) {
 			if (element.indexOf(":") != -1) {
@@ -15,7 +15,7 @@ public class WomanShopFormatter {
 			}
 			formatDate += element;
 		}
-		
+
 		return formatDate;
 	}
 

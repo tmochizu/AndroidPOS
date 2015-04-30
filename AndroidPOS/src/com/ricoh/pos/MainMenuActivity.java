@@ -67,7 +67,7 @@ public class MainMenuActivity extends Activity implements DataSyncTaskCallback {
 		WomanShopSalesIOManager.getInstance().closeDatabase();
 		databaseHelper.close();
 		salesDatabaseHelper.close();
-		WomanShopSalesIOManager.resetInstance();
+		WomanShopSalesIOManager.removeInstance();
 		Log.d("debug", "Exit onDestroy");
 	}
 
