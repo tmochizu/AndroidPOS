@@ -40,4 +40,6 @@
     <string name="close">close</string>
     <string name="error_image_file_not_found">Product image is not found.</string>
 
+    <string name="dialog_title_edit_number_of_order">Edit</string>
+
 </resources>

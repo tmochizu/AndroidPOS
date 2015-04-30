@@ -17,6 +17,7 @@ public class RegisterManager {
 	private ArrayList<Order> orderList;
 	
 	private ArrayList<UpdateOrderListener> listeners;
+	private ArrayList<UpdateOrderListListener> orderListListeners;
 	
 	private double discountValue;
 	
@@ -25,6 +26,7 @@ public class RegisterManager {
 	private RegisterManager(){
 		orderList = new ArrayList<Order>();
 		listeners = new ArrayList<UpdateOrderListener>();
+		orderListListeners = new ArrayList<UpdateOrderListListener>();
 	}
 	
 	public static RegisterManager getInstance(){
@@ -102,6 +104,19 @@ public class RegisterManager {
 		}
 	}
 	
+	public void notifyUpdateOrderList(){
+		if (orderListListeners == null || orderListListeners.isEmpty()) {
+			throw new IllegalStateException("UpdateOrderListListener is not resgistered");
+		}
+
+		for (UpdateOrderListListener listener : orderListListeners) {
+			if (listener == null) {
+				throw new IllegalStateException("UpdateOrderListListener to register is null");
+			}
+			listener.notifyUpdateOrderList();
+		}
+	}
+
 	public double getOriginalTotalAmount(){
 		double totalAmount = 0;
 		for (Order order: orderList) {
@@ -159,12 +174,26 @@ public class RegisterManager {
 		listeners.clear();
 	}
 	
-	public void updateDiscountValue(double discountValue)
-	{
-		if (discountValue >= getOriginalTotalAmount()) {
+	public void setUpdateOrderListListener(UpdateOrderListListener listener){orderListListeners.add(listener);}
+
+	public void removeUpdateOrderListListener(UpdateOrderListListener listener){
+		orderListListeners.remove(listener);
+	}
+
+	public void clearUpdateOrderListListener(){
+		orderListListeners.clear();
+	}
+
+
+	public void updateDiscountValue(double discountValue){
+        double totalAmount = getOriginalTotalAmount();
+        if(totalAmount == 0){
+            this.discountValue = 0;
+        } else if (discountValue >= totalAmount) {
 			throw new IllegalArgumentException("discountValues is larger than totalAmount");
+		} else {
+            this.discountValue = discountValue;
 		}
-		this.discountValue = discountValue;
 		notifyUpdateOrder();
 	}
 	

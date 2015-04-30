@@ -1,5 +1,7 @@
 package com.ricoh.pos;
 
+import android.app.Activity;
+
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -20,6 +22,7 @@ import com.ricoh.pos.data.Order;
 import com.ricoh.pos.data.Product;
 import com.ricoh.pos.model.ProductsManager;
 import com.ricoh.pos.model.RegisterManager;
+import com.ricoh.pos.model.UpdateOrderListListener;
 
 import java.io.FileNotFoundException;
 import java.text.NumberFormat;
@@ -30,7 +33,7 @@ import java.util.ArrayList;
  * either contained in a {@link CategoryListActivity} in two-pane mode (on
  * tablets) or a {@link CategoryDetailActivity} on handsets.
  */
-public class OrderListFragment extends ListFragment {
+public class OrderListFragment extends ListFragment implements UpdateOrderListListener {
 
 	/**
 	 * The fragment argument representing the item ID that this fragment
@@ -45,13 +48,35 @@ public class OrderListFragment extends ListFragment {
 	private RegisterManager registerManager;
 	private ArrayList<Product> orderProductList;
 
+	private OnOrderClickListener onOrderClickListener;
+
 	public OrderListFragment() {
 		this.registerManager = RegisterManager.getInstance();
 	}
 
 	@Override
+	public void onAttach(Activity activity) {
+		super.onAttach(activity);
+		if (activity instanceof OnOrderClickListener == false) {
+			throw new ClassCastException("OnOrderClickListener isn't implemented");
+		}
+		onOrderClickListener = (OnOrderClickListener) activity;
+	}
+
+	@Override
+	public void notifyUpdateOrderList() {
+		setOrderProductList();
+		setListAdapter(new ListAdapter(getActivity()));
+	}
+
+	public interface OnOrderClickListener {
+		public void onOrderClicked(Product product);
+	}
+
+	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		registerManager.setUpdateOrderListListener(this);
 		setOrderProductList();
 		setListAdapter(new ListAdapter(getActivity()));
 		getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
@@ -139,16 +164,23 @@ public class OrderListFragment extends ListFragment {
 			NumberFormat.getInstance().setMaximumFractionDigits(MAXIMUM_FRACTION_DIGITS);
 			priceView.setText(NumberFormat.getInstance().format(product.getPrice()));
 
-			TextView numberOfSalseView = (TextView) convertView.findViewById(R.id.numberOfSales);
+			final TextView numberOfSalseView = (TextView) convertView.findViewById(R.id.numberOfSales);
 			numberOfSalseView.setPadding(10, 0, 0, 0);
 
 			Order order = registerManager.findOrderOfTheProduct(product);
-			if (order == null || order.getNumberOfOrder() == 0) {
-				throw new AssertionError("Product which isn't ordered is shown");
-			} else {
+			if (order != null) {
 				int numberOfSales = order.getNumberOfOrder();
 				numberOfSalseView.setText(NumberFormat.getInstance().format(numberOfSales));
+			} else {
+				numberOfSalseView.setText(NumberFormat.getInstance().format(0));
 			}
+
+			convertView.setOnClickListener(new View.OnClickListener() {
+				@Override
+				public void onClick(View view) {
+					onOrderClickListener.onOrderClicked(product);
+				}
+			});
 
 			return convertView;
 		}
@@ -170,4 +202,11 @@ public class OrderListFragment extends ListFragment {
 			}
 		}
 	}
+
+	@Override
+	public void onDestroy(){
+		super.onDestroy();
+		registerManager.removeUpdateOrderListListener(this);
+	}
+
 }

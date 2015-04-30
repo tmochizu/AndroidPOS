@@ -1,5 +1,9 @@
 package com.ricoh.pos;
 
+import java.io.FileNotFoundException;
+import java.text.NumberFormat;
+import java.util.ArrayList;
+
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -85,9 +89,14 @@ public class CategoryDetailFragment extends ListFragment {
 		} else {
 			searchProductList = productList;
 		}
-		setListAdapter(new ListAdapter(getActivity()));
 
 		getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
+	}
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        setListAdapter(new ListAdapter(getActivity()));
 	}
 
 	public class ListAdapter extends BaseAdapter {

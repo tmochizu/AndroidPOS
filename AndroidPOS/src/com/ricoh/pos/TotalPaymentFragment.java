@@ -71,6 +71,7 @@ public class TotalPaymentFragment extends Fragment implements UpdateOrderListene
 	public void onDestroy(){
 		super.onDestroy();
 		RegisterManager.getInstance().clearUpdateOrderListener();
+		RegisterManager.getInstance().clearUpdateOrderListListener();
 	}
 
 	public interface OnOkButtonClickListener {  
