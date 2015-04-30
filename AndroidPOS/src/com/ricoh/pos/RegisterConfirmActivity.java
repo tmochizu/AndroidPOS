@@ -9,21 +9,19 @@ import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
-import android.text.InputType;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.inputmethod.EditorInfo;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 import com.ricoh.pos.data.Order;
 import com.ricoh.pos.data.Product;
 import com.ricoh.pos.data.SingleSalesRecord;
-import com.ricoh.pos.model.ProductsManager;
 import com.ricoh.pos.model.RegisterManager;
 import com.ricoh.pos.model.SalesRecordManager;
 
@@ -40,6 +38,8 @@ implements RegisterConfirmFragment.OnButtonClickListener,OrderListFragment.OnOrd
 	public RegisterConfirmActivity() {
 		this.registerManager = RegisterManager.getInstance();
 	}
+
+	private static final int IMAGE_VIEW_SIZE = 240;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -63,10 +63,12 @@ implements RegisterConfirmFragment.OnButtonClickListener,OrderListFragment.OnOrd
 
 	@Override
 	public void onOkClicked() {
-		// Save this sales record
-		SingleSalesRecord record = RegisterManager.getInstance().getSingleSalesRecord();
-		SalesRecordManager.getInstance().storeSingleSalesRecord(salesDatabase, record);
-		
+		if(RegisterManager.getInstance().getOriginalTotalAmount() != 0){
+			// Save this sales record
+			SingleSalesRecord record = RegisterManager.getInstance().getSingleSalesRecord();
+			SalesRecordManager.getInstance().storeSingleSalesRecord(salesDatabase, record);
+		}
+
 		// Clear this record
 		RegisterManager.getInstance().clearAllOrders();
 		
@@ -104,13 +106,11 @@ implements RegisterConfirmFragment.OnButtonClickListener,OrderListFragment.OnOrd
 	@Override
 	public void onOrderClicked(Product product) {
 		Order order = registerManager.findOrderOfTheProduct(product);
-		EditSalesDialog dialog = EditSalesDialog.newInstance(product,order);
+		EditNumberOfOrderDialog dialog = EditNumberOfOrderDialog.newInstance(product, order);
 		dialog.show(getFragmentManager(), null);
-
-
 	}
 
-	public static class EditSalesDialog extends DialogFragment {
+	public static class EditNumberOfOrderDialog extends DialogFragment {
 		private Product product;
 		private Order order;
 		private int orderNum = 0;
@@ -120,8 +120,8 @@ implements RegisterConfirmFragment.OnButtonClickListener,OrderListFragment.OnOrd
 		}
 		public void setOrder(Order order){this.order = order;}
 
-		public static EditSalesDialog newInstance(Product product,Order order) {
-			EditSalesDialog frag = new EditSalesDialog();
+		public static EditNumberOfOrderDialog newInstance(Product product,Order order) {
+			EditNumberOfOrderDialog frag = new EditNumberOfOrderDialog();
 			frag.setProduct(product);
 			frag.setOrder(order);
 			return frag;
@@ -129,7 +129,6 @@ implements RegisterConfirmFragment.OnButtonClickListener,OrderListFragment.OnOrd
 
 		@Override
 		public Dialog onCreateDialog(Bundle savedInstanceState) {
-			Log.d("RegisterConfirmActivity","orderNum="+orderNum);
 
 			final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
@@ -137,23 +136,9 @@ implements RegisterConfirmFragment.OnButtonClickListener,OrderListFragment.OnOrd
 			final View view = inflater.inflate(R.layout.change_order_num_dialog, null);
 			builder.setView(view);
 
-			ImageView imageView = (ImageView) view.findViewById(R.id.photo);
-			imageView.setLayoutParams(new LinearLayout.LayoutParams(240, 240));
-			imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
-			setImageView(product, imageView);
-
-			TextView textView = (TextView) view.findViewById(R.id.filename);
-			textView.setPadding(10, 0, 0, 0);
-			String productName = product.getName();
-			if (productName == null || productName.length() == 0) {
-				throw new NullPointerException("Product name is not valid");
-			}
-			textView.setText(productName);
-
-			TextView priceView = (TextView) view.findViewById(R.id.price);
-			priceView.setPadding(10, 0, 0, 0);
-			NumberFormat.getInstance().setMaximumFractionDigits(2);
-			priceView.setText(NumberFormat.getInstance().format(product.getPrice()));
+			setImageView(view);
+			setProductInformationView(view);
+			setNumberOfOrderView(view);
 
 			builder.setTitle("Edit");
 			builder.setCancelable(false);
@@ -167,56 +152,36 @@ implements RegisterConfirmFragment.OnButtonClickListener,OrderListFragment.OnOrd
 					}
 				}
 			});
-
-
-			final TextView numberOfSalesText = (TextView) view
-					.findViewById(R.id.numberOfSales);
-			numberOfSalesText.setInputType(InputType.TYPE_CLASS_NUMBER);
-			numberOfSalesText.setImeOptions(EditorInfo.IME_ACTION_DONE);
-
-			ProductButton plusBtn = (ProductButton) view.findViewById(R.id.plusButton);
-			plusBtn.setOnClickListener(new View.OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					NumberFormat.getInstance().setMaximumFractionDigits(2);
-					numberOfSalesText.setText(String.valueOf(Integer.parseInt(numberOfSalesText.getText().toString()) + 1));
-					orderNum++;
-				}
-			});
-
-			ProductButton minusBtn = (ProductButton) view.findViewById(R.id.minusButton);
-			minusBtn.setOnClickListener(new View.OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					NumberFormat.getInstance().setMaximumFractionDigits(2);
-					int i = Integer.parseInt(numberOfSalesText.getText().toString());
-					if (i != 0) {
-						numberOfSalesText.setText(String.valueOf(i - 1));
-						orderNum--;
-					}
-				}
-			});
-
-			if (order == null || order.getNumberOfOrder() == 0) {
-				numberOfSalesText.getEditableText().clear();
-			} else {
-
-				int numberOfSales = order.getNumberOfOrder();
-				NumberFormat.getInstance().setMaximumFractionDigits(2);
-				numberOfSalesText.setText(NumberFormat.getInstance().format(numberOfSales));
-			}
-
-
-
 			AlertDialog dialog = builder.create();
-
 			return dialog;
 		}
 
-		private void setImageView(Product product, ImageView imageView) {
+		private void setImageView(View convertView){
+			ImageView imageView = (ImageView) convertView.findViewById(R.id.photo);
+			imageView.setLayoutParams(new LinearLayout.LayoutParams(IMAGE_VIEW_SIZE, IMAGE_VIEW_SIZE));
+			imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
+			setImageView(product, imageView);
+			imageView.setOnClickListener(new View.OnClickListener() {
+				@Override
+				public void onClick(View view) {
+					try {
+						ProductDetailDialogFragment dialogFragment = new ProductDetailDialogFragment();
+						Bundle arguments = new Bundle();
+						DisplayMetrics metrics = getResources().getDisplayMetrics();
+						arguments.putParcelable(ProductDetailDialogFragment.ARG_KEY_IMAGE_BITMAP, product.decodeProductImage(metrics.widthPixels, metrics.heightPixels));
+						dialogFragment.setArguments(arguments);
+						dialogFragment.show(getActivity().getFragmentManager(), ProductDetailDialogFragment.DIALOG_TAG);
+					} catch (FileNotFoundException e) {
+						Log.e("RegisterConfirmActivity", "Product image file is not found.", e);
+						Toast.makeText(getActivity(), R.string.error_image_file_not_found, Toast.LENGTH_SHORT).show();
+					}
+				}
+			});
+		}
 
+		private void setImageView(Product product, ImageView imageView) {
 			try {
-				Bitmap image = ProductsManager.getInstance().decodeProductImage(product, 240, 240);
+				Bitmap image = product.decodeProductImage(IMAGE_VIEW_SIZE, IMAGE_VIEW_SIZE);
 				imageView.setImageBitmap(image);
 				imageView.setVisibility(View.VISIBLE);
 			} catch (FileNotFoundException e) {
@@ -226,6 +191,54 @@ implements RegisterConfirmFragment.OnButtonClickListener,OrderListFragment.OnOrd
 				// TODO: 裏ではメモリを余計に消費している可能性があるのでそれをクリアした方が本当は良いはず）
 				imageView.setVisibility(View.INVISIBLE);
 				//imageView.setImageBitmap(null);
+			}
+		}
+
+		private void setProductInformationView(View contentView){
+			TextView textView = (TextView) contentView.findViewById(R.id.filename);
+			textView.setPadding(10, 0, 0, 0);
+			String productName = product.getName();
+			if (productName == null || productName.length() == 0) {
+				throw new NullPointerException("Product name is not valid");
+			}
+			textView.setText(productName);
+
+			TextView priceView = (TextView) contentView.findViewById(R.id.price);
+			priceView.setPadding(10, 0, 0, 0);
+			NumberFormat.getInstance().setMaximumFractionDigits(2);
+			priceView.setText(NumberFormat.getInstance().format(product.getPrice()));
+		}
+
+		private void setNumberOfOrderView(View contenView){
+			final TextView numberOfSalesText = (TextView) contenView
+					.findViewById(R.id.numberOfSales);
+
+			ProductButton plusBtn = (ProductButton) contenView.findViewById(R.id.plusButton);
+			plusBtn.setOnClickListener(new View.OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					numberOfSalesText.setText(String.valueOf(Integer.parseInt(numberOfSalesText.getText().toString()) + 1));
+					orderNum++;
+				}
+			});
+
+			ProductButton minusBtn = (ProductButton) contenView.findViewById(R.id.minusButton);
+			minusBtn.setOnClickListener(new View.OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					int i = Integer.parseInt(numberOfSalesText.getText().toString());
+					if (i != 0) {
+						numberOfSalesText.setText(String.valueOf(i - 1));
+						orderNum--;
+					}
+				}
+			});
+
+			if (order == null) {
+				numberOfSalesText.setText("0");
+			} else {
+				int numberOfSales = order.getNumberOfOrder();
+				numberOfSalesText.setText(NumberFormat.getInstance().format(numberOfSales));
 			}
 		}
 	}

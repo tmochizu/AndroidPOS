@@ -182,7 +182,6 @@ public class OrderListFragment extends ListFragment implements UpdateOrderListLi
 				}
 			});
 
-
 			return convertView;
 		}
 		

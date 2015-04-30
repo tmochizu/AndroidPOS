@@ -93,15 +93,11 @@ public class CategoryDetailFragment extends ListFragment {
 		getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
 	}
 
-
-
     @Override
     public void onResume() {
         super.onResume();
-
         setListAdapter(new ListAdapter(getActivity()));
     }
-
 
 	public class ListAdapter extends BaseAdapter {
 		// private Context contextInAdapter;

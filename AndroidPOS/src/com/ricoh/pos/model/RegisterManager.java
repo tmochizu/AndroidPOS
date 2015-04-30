@@ -115,10 +115,8 @@ public class RegisterManager {
 			}
 			listener.notifyUpdateOrderList();
 		}
-
 	}
 
-	
 	public double getOriginalTotalAmount(){
 		double totalAmount = 0;
 		for (Order order: orderList) {
