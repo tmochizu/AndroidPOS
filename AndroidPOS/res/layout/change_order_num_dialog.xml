@@ -21,26 +21,24 @@
         android:layout_marginRight="30dp">
 
         <TextView
+            style="@style/FontMiddle"
             android:id="@+id/filename"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="20dp"
-            android:text="text"/>
+            android:layout_height="wrap_content"/>
 
         <TextView
+            style="@style/FontMiddle"
             android:id="@+id/price"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="20dp"
-            android:text="text"/>
+            android:layout_height="wrap_content"/>
     </LinearLayout>
 
     <TextView
+        style="@style/FontLarge"
         android:id="@+id/numberOfSales"
         android:layout_width="120dp"
         android:layout_height="80sp"
         android:adjustViewBounds="true"
-        android:textSize="30dp"
         android:gravity="center"
         />
 

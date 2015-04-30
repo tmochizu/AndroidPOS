@@ -140,9 +140,9 @@ implements RegisterConfirmFragment.OnButtonClickListener,OrderListFragment.OnOrd
 			setProductInformationView(view);
 			setNumberOfOrderView(view);
 
-			builder.setTitle("Edit");
+			builder.setTitle(R.string.dialog_title_edit_number_of_order);
 			builder.setCancelable(false);
-			builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+			builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
 				@Override
 				public void onClick(DialogInterface dialog, int which) {
 					if(orderNum > 0){
