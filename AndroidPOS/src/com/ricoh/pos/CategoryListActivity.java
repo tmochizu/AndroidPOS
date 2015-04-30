@@ -53,7 +53,7 @@ public class CategoryListActivity extends FragmentActivity implements
 			((CategoryListFragment) getSupportFragmentManager()
 					.findFragmentById(R.id.category_list))
 					.setActivateOnItemClick(true);
-
+			
 			Bundle arguments = new Bundle();
 			arguments.putString(CategoryDetailFragment.ARG_ITEM_ID, getString(R.string.category_title_default));
 			final CategoryDetailFragment fragment = new CategoryDetailFragment();

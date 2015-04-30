@@ -13,7 +13,7 @@ import com.ricoh.pos.data.SingleSalesRecord;
 public class RegisterManager {
 	
 	private static RegisterManager instance;
-
+	
 	private ArrayList<Order> orderList;
 	
 	private ArrayList<UpdateOrderListener> listeners;
@@ -55,7 +55,7 @@ public class RegisterManager {
 		
 		notifyUpdateOrder();
 	}
-
+	
 	public void plusNumberOfOrder(Product product){
 		Order orderOfTheProduct = findOrderOfTheProduct(product);
 		
@@ -66,10 +66,10 @@ public class RegisterManager {
 		} else {
 			orderOfTheProduct.plusNumberOfOrder();
 		}
-
+		
 		notifyUpdateOrder();
 	}
-
+	
 	public void minusNumberOfOrder(Product product) {
 		Order orderOfTheProduct = findOrderOfTheProduct(product);
 		
@@ -103,7 +103,7 @@ public class RegisterManager {
 					, getTotalAmountAfterDiscount()));
 		}
 	}
-
+	
 	public void notifyUpdateOrderList(){
 		if (orderListListeners == null || orderListListeners.isEmpty()) {
 			throw new IllegalStateException("UpdateOrderListListener is not resgistered");
@@ -142,7 +142,7 @@ public class RegisterManager {
 		discountValue = 0;
 		userAttribute = null;
 	}
-
+	
 	public Order findOrderOfTheProduct(Product product){
 		for (Order order : orderList) {
 			if ((order.getProductCategory().equals(product.getCategory()) && order.getProductCode().equals(product.getCode()))) {
@@ -173,7 +173,7 @@ public class RegisterManager {
 	public void clearUpdateOrderListener(){
 		listeners.clear();
 	}
-
+	
 	public void setUpdateOrderListListener(UpdateOrderListListener listener){orderListListeners.add(listener);}
 
 	public void removeUpdateOrderListListener(UpdateOrderListListener listener){
@@ -193,10 +193,10 @@ public class RegisterManager {
 			throw new IllegalArgumentException("discountValues is larger than totalAmount");
 		} else {
             this.discountValue = discountValue;
-        }
+		}
 		notifyUpdateOrder();
 	}
-
+	
 	public void setUserAttribute(String attribute){
 		if (attribute == null || attribute.length() == 0) {
 			throw new IllegalArgumentException("User attribute is illegal");

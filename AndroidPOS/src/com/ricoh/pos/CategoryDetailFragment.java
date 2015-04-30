@@ -97,7 +97,7 @@ public class CategoryDetailFragment extends ListFragment {
     public void onResume() {
         super.onResume();
         setListAdapter(new ListAdapter(getActivity()));
-    }
+	}
 
 	public class ListAdapter extends BaseAdapter {
 		// private Context contextInAdapter;
@@ -238,7 +238,7 @@ public class CategoryDetailFragment extends ListFragment {
 					}
 				}
 			});
-
+			
 			Order order = registerManager.findOrderOfTheProduct(product);
 			if (order == null || order.getNumberOfOrder() == 0) {
 				numberOfSalesText.getEditableText().clear();

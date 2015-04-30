@@ -56,7 +56,7 @@ implements RegisterConfirmFragment.OnButtonClickListener,OrderListFragment.OnOrd
 			getSupportFragmentManager().beginTransaction()
 			.replace(R.id.register_confirm_container, registerConfirmFragment).commit();
 		}
-
+		
 		salesDatabaseHelper = new SalesDatabaseHelper(this);
 		salesDatabase = salesDatabaseHelper.getWritableDatabase();
 	}
@@ -68,7 +68,7 @@ implements RegisterConfirmFragment.OnButtonClickListener,OrderListFragment.OnOrd
 			SingleSalesRecord record = RegisterManager.getInstance().getSingleSalesRecord();
 			SalesRecordManager.getInstance().storeSingleSalesRecord(salesDatabase, record);
 		}
-
+		
 		// Clear this record
 		RegisterManager.getInstance().clearAllOrders();
 		
