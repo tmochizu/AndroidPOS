@@ -173,6 +173,7 @@ public class WomanShopSalesIOManager {
                 }
 
                 Product product = new Product(cursor.getString(3), cursor.getString(4), cursor.getString(5));
+                product.setProductImagePath(cursor.getString(3));
                 product.setOriginalCost(cursor.getDouble(6));
                 product.setPrice(cursor.getDouble(7));
                 Order order = new Order(product, cursor.getInt(8));
@@ -262,6 +263,7 @@ public class WomanShopSalesIOManager {
                 }
 
                 Product product = new Product(cursor.getString(3), cursor.getString(4), cursor.getString(5));
+                product.setProductImagePath(cursor.getString(3));
                 product.setOriginalCost(cursor.getDouble(6));
                 product.setPrice(cursor.getDouble(7));
                 Order order = new Order(product, cursor.getInt(8));
