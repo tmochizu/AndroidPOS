@@ -119,7 +119,7 @@ public class WomanShopSalesIOManager {
     {
         return "select "
                 + combinedColumns[0] + ", "
-                + combinedColumns[1] + ", "0
+                + combinedColumns[1] + ", "
                 + combinedColumns[2] + ", "
                 + combinedColumns[3] + ", "
                 + combinedColumns[4] + ", "
