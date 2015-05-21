@@ -460,9 +460,9 @@ public class WomanShopSalesIOManager {
                                 + product.getCategory() + ","
                                 + product.getName() + ","
                                 + order.getNumberOfOrder() + ","
-                                + product.getPrice() + ","
-                                + product.getPrice() * order.getNumberOfOrder() + ","
-                                + record.getDiscountValue() + ","
+                                + String.format("%.2f", product.getPrice()) + ","
+                                + String.format("%.2f", product.getPrice() * order.getNumberOfOrder()) + ","
+                                + String.format("%.2f", record.getDiscountValue()) + ","
                                 + record.getSalesDate().toString() + ","
                                 + record.getUserAttribute() + "\n";
 
