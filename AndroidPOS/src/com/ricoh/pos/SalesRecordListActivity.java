@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.widget.Toast;
 
+import com.ricoh.pos.model.SalesRecordManager;
 import com.ricoh.pos.model.WomanShopSalesIOManager;
 
 import java.util.Date;
@@ -75,7 +76,7 @@ public class SalesRecordListActivity extends FragmentActivity implements
 				}
 				// When no records exist, go to the calender activiry.
 				SalesRecordListActivity.this.finish();
-				if (WomanShopSalesIOManager.getInstance().getSalesCount() > 0) {
+				if (SalesRecordManager.getInstance().restoreSingleSalesRecordsOfTheDay(date).size() > 0) { 
 					startActivity((new Intent(SalesRecordListActivity.this, SalesRecordListActivity.class)));
 				}
 				Toast.makeText(SalesRecordListActivity.this, R.string.success_deleted_message, Toast.LENGTH_LONG).show();
