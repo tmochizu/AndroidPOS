@@ -496,9 +496,8 @@ public class WomanShopSalesIOManager {
                     Log.d("MediaScannerConnection", "-> uri=" + uri);
                 }
             };
-            String targetMimeType = CSV_MIME_TYPE;
             String[] paths = { Environment.getExternalStorageDirectory().getPath() + CSV_STORAGE_FOLDER + SALES_CSV_FILE_NAME };
-            String[] mimeTypes = { targetMimeType };
+            String[] mimeTypes = { CSV_MIME_TYPE };
             MediaScannerConnection.scanFile(context, paths, mimeTypes, mScanCompletedListener);
         }
     }
