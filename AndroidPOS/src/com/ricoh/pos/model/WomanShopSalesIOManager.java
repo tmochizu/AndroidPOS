@@ -41,7 +41,7 @@ public class WomanShopSalesIOManager {
     /** DBに格納する時の日付けフォーマット */
     private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-    /** csファイルのMIMタイプ **/
+    /** csvファイルのMIMEタイプ **/
     private static final String CSV_MIME_TYPE = "text/comma-separated-values";
 
     //------------------------ private -----------------------------
