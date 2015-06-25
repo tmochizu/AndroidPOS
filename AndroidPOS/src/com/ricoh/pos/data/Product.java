@@ -75,7 +75,7 @@ public class Product {
 		if (imagePath == null || imagePath.length() == 0) {
 			throw new IllegalArgumentException("Passing imagePath is not valid");
 		}
-		
+
 		String imageStoragePath = getImageStoragePath();
 		this.imagePath = imageStoragePath + "/" + imagePath + ".jpg";
 	}
@@ -87,7 +87,7 @@ public class Product {
 	public String getCode() {
 		return this.code;
 	}
-	
+
 	public String getCategory() {
 		return this.category;
 	}
@@ -113,11 +113,11 @@ public class Product {
 	}
 
 	@Override
-	public boolean equals(Object object){
+	public boolean equals(Object object) {
 		Product targetProduct = (Product) object;
 		return this.code.equals(targetProduct.getCode());
 	}
-	
+
 	private String getImageStoragePath() {
 		File exterlStorage = Environment.getExternalStorageDirectory();
 		Log.d("debug", "Environment External:" + exterlStorage.getAbsolutePath());
@@ -151,5 +151,18 @@ public class Product {
 		options.inSampleSize = (int) Math.max(scaleW, scaleH);
 		options.inJustDecodeBounds = false;
 		return BitmapFactory.decodeFile(imagePath, options);
+	}
+
+	@Override
+	public String toString() {
+		return "Product{" +
+				"code='" + code + '\'' +
+				", category='" + category + '\'' +
+				", name='" + name + '\'' +
+				", originalCost=" + originalCost +
+				", price=" + price +
+				", stock=" + stock +
+				", imagePath='" + imagePath + '\'' +
+				'}';
 	}
 }
