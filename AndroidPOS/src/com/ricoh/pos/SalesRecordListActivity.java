@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.widget.Toast;
 
+import com.ricoh.pos.model.SalesRecordManager;
 import com.ricoh.pos.model.WomanShopSalesIOManager;
 
 import java.util.Date;
@@ -69,16 +70,17 @@ public class SalesRecordListActivity extends FragmentActivity implements
 		alert.setMessage(getString(R.string.sales_record_delete_confirm_message) + "\n" + date);
 		alert.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int which) {
+				// When no records exist, go to the calender activiry.
+				SalesRecordListActivity.this.finish();
 				int delete = WomanShopSalesIOManager.getInstance().deleteSingleSalesRecordRelatedTo(date);
 				if (delete == 0) {
 					Toast.makeText(SalesRecordListActivity.this, R.string.error_deleted_message, Toast.LENGTH_LONG).show();
+				} else {
+				    if (SalesRecordManager.getInstance().restoreSingleSalesRecordsOfTheDay(date).size() > 0) { 
+						startActivity((new Intent(SalesRecordListActivity.this, SalesRecordListActivity.class)));
+					}
+					Toast.makeText(SalesRecordListActivity.this, R.string.success_deleted_message, Toast.LENGTH_LONG).show();
 				}
-				// When no records exist, go to the calender activiry.
-				SalesRecordListActivity.this.finish();
-				if (WomanShopSalesIOManager.getInstance().getSalesCount() > 0) {
-					startActivity((new Intent(SalesRecordListActivity.this, SalesRecordListActivity.class)));
-				}
-				Toast.makeText(SalesRecordListActivity.this, R.string.success_deleted_message, Toast.LENGTH_LONG).show();
 			}
 		});
 		alert.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
