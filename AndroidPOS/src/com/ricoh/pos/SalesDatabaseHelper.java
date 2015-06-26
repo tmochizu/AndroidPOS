@@ -40,6 +40,7 @@ public class SalesDatabaseHelper extends SQLiteOpenHelper {
                         + WomanShopSalesOrderDef.PURCHASE_PRICE.name() + " Real, "
                         + WomanShopSalesOrderDef.UNIT_PRICE.name() + " Real, "
                         + WomanShopSalesOrderDef.QTY.name() + " Integer, "
+                        + WomanShopSalesOrderDef.DISCOUNT.name() + " Real, "
                         + WomanShopSalesOrderDef.SINGLE_SALES_ID.name() + " Integer)"
         );
         Log.d("debug", "SingleSalesOrder table onCreate");
