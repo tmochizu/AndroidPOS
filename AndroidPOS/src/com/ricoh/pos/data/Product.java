@@ -10,6 +10,10 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 
+/**
+ * 商品データそのものを表すクラス
+ * 概ね、ドリシティの用意するCSVと互換
+ */
 public class Product {
 
 	private String code;

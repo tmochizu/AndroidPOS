@@ -64,6 +64,7 @@ public class WomanShopSalesIOManager {
             SalesDatabaseHelper.WS_SALES_ORDER_TABLE_NAME + "." + WomanShopSalesOrderDef.PURCHASE_PRICE.name(),
             SalesDatabaseHelper.WS_SALES_ORDER_TABLE_NAME + "." + WomanShopSalesOrderDef.UNIT_PRICE.name(),
             SalesDatabaseHelper.WS_SALES_ORDER_TABLE_NAME + "." + WomanShopSalesOrderDef.QTY.name(),
+            SalesDatabaseHelper.WS_SALES_ORDER_TABLE_NAME + "." + WomanShopSalesOrderDef.DISCOUNT.name(),
             SalesDatabaseHelper.WS_SALES_ORDER_TABLE_NAME + "." + WomanShopSalesOrderDef.SINGLE_SALES_ID.name()
     };
 
@@ -135,13 +136,14 @@ public class WomanShopSalesIOManager {
                 + combinedColumns[6] + ", "
                 + combinedColumns[7] + ", "
                 + combinedColumns[8] + ", "
-                + combinedColumns[9]
+                + combinedColumns[9] + ", "
+                + combinedColumns[10]
                 + " from " +  SalesDatabaseHelper.WS_SALES_TABLE_NAME
                 + " left join "
                 +  SalesDatabaseHelper.WS_SALES_ORDER_TABLE_NAME
                 + " on "
                 + SalesDatabaseHelper.WS_SALES_TABLE_NAME + ".ROWID = "
-                + combinedColumns[9];
+                + combinedColumns[10];
     }
 
 
@@ -164,16 +166,16 @@ public class WomanShopSalesIOManager {
             cursor.moveToFirst();
             for (int i = 0; i < cursor.getCount(); i++) {
                 if (record == null) {
-                    sales_id = cursor.getInt(9);
+                    sales_id = cursor.getInt(10);
                     Date salesDate = DATE_FORMAT.parse(cursor.getString(0));
 
                     record = new SingleSalesRecord(salesDate);
                     record.setDiscountValue(cursor.getDouble(1));
                     record.setUserAttribute(cursor.getString(2));
-                } else if (sales_id != cursor.getInt(9)) {
+                } else if (sales_id != cursor.getInt(10)) {
                     sales.add(record);
 
-                    sales_id = cursor.getInt(9);
+                    sales_id = cursor.getInt(10);
                     Date salesDate = DATE_FORMAT.parse(cursor.getString(0));
                     record = new SingleSalesRecord(salesDate);
                     record.setDiscountValue(cursor.getDouble(1));
@@ -185,6 +187,7 @@ public class WomanShopSalesIOManager {
                 product.setOriginalCost(cursor.getDouble(6));
                 product.setPrice(cursor.getDouble(7));
                 Order order = new Order(product, cursor.getInt(8));
+                order.setDiscount(cursor.getDouble(9));
                 record.addOrder(order);
                 cursor.moveToNext();
             }
@@ -254,16 +257,16 @@ public class WomanShopSalesIOManager {
             for (int i = 0; i < cursor.getCount(); i++)
             {
                 if (record == null) {
-                    sales_id = cursor.getInt(9);
+                    sales_id = cursor.getInt(10);
                     Date salesDate = DATE_FORMAT.parse(cursor.getString(0));
                     record = new SingleSalesRecord(salesDate);
                     record.setDiscountValue(cursor.getDouble(1));
                     record.setUserAttribute(cursor.getString(2));
                 }
-                else if (sales_id != cursor.getInt(9)) {
+                else if (sales_id != cursor.getInt(10)) {
                     sales.add(record);
 
-                    sales_id = cursor.getInt(9);
+                    sales_id = cursor.getInt(10);
                     Date salesDate = DATE_FORMAT.parse(cursor.getString(0));
                     record = new SingleSalesRecord(salesDate);
                     record.setDiscountValue(cursor.getDouble(1));
@@ -275,6 +278,7 @@ public class WomanShopSalesIOManager {
                 product.setOriginalCost(cursor.getDouble(6));
                 product.setPrice(cursor.getDouble(7));
                 Order order = new Order(product, cursor.getInt(8));
+                order.setDiscount(cursor.getDouble(9));
                 record.addOrder(order);
                 cursor.moveToNext();
             }
@@ -328,6 +332,7 @@ public class WomanShopSalesIOManager {
                 orderRecord.put(WomanShopSalesOrderDef.PURCHASE_PRICE.name(), product.getOriginalCost());
                 orderRecord.put(WomanShopSalesOrderDef.UNIT_PRICE.name(), product.getPrice());
                 orderRecord.put(WomanShopSalesOrderDef.QTY.name(), order.getNumberOfOrder());
+                orderRecord.put(WomanShopSalesOrderDef.DISCOUNT.name(), order.getDiscount());
                 orderRecord.put(WomanShopSalesOrderDef.SINGLE_SALES_ID.name(), rowID);
 
                 salesDatabase.insertWithOnConflict(
@@ -470,7 +475,7 @@ public class WomanShopSalesIOManager {
                                 + order.getNumberOfOrder() + ","
                                 + String.format("%.2f", product.getPrice()) + ","
                                 + String.format("%.2f", product.getPrice() * order.getNumberOfOrder()) + ","
-                                + String.format("%.2f", record.getDiscountValue()) + ","
+                                + String.format("%.2f", order.getDiscount()) + ","
                                 + record.getSalesDate().toString() + ","
                                 + record.getUserAttribute() + "\n";
 

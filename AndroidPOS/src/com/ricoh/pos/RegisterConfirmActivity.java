@@ -66,6 +66,7 @@ public class RegisterConfirmActivity extends FragmentActivity
 		if (RegisterManager.getInstance().getOriginalTotalAmount() != 0) {
 			// Save this sales record
 			SingleSalesRecord record = RegisterManager.getInstance().getSingleSalesRecord();
+			record.calcDiscountAllocation(); // 値引き割り当ての実施
 			SalesRecordManager.getInstance().storeSingleSalesRecord(salesDatabase, record);
 		}
 

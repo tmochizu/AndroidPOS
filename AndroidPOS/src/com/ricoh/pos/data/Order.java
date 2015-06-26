@@ -3,24 +3,19 @@ package com.ricoh.pos.data;
 public class Order {
 
 	private Product product;
-
 	private int num;
+	private double discountValue;
 
-	public Order() {
-		// Do nothing
-	}
-
-	public Order(Product product, int numberOfOrder) {
-
-		if (product == null || numberOfOrder < 0) {
+	public Order(Product product,int numberOfOrder)
+	{
+		if(product == null || numberOfOrder < 0) {
 			throw new IllegalArgumentException();
 		}
-
-		setOrder(product, numberOfOrder);
+		setOrder(product,numberOfOrder);
 	}
-
-	public void setOrder(Product product, int numberOfOrder) {
-
+	
+	public void setOrder(Product product,int numberOfOrder)
+	{
 		if (product == null || numberOfOrder < 0) {
 			throw new IllegalArgumentException();
 		}
@@ -36,14 +31,14 @@ public class Order {
 
 		this.num = num;
 	}
-
-	public void plusNumberOfOrder() {
+	
+	public void plusNumberOfOrder(){
 		num++;
 	}
-
-	public void minusNumberOfOrder() {
+	
+	public void minusNumberOfOrder(){
 		if (num == 0) {
-			// Do Nothing		
+
 		} else if (num > 0) {
 			num--;
 		} else {
@@ -83,8 +78,22 @@ public class Order {
 		return product.getOriginalCost() * num;
 	}
 
+	public double getRevenue(boolean enableDisCount) {
+		double result = (product.getPrice() - product.getOriginalCost()) * num;
+		if (enableDisCount) {
+			return (result - discountValue);
+		}
+		return result;
+	}
 
-	protected boolean equals(String productName) {
+	public void setDiscount(double discount) {
+		discountValue = discount;
+	}
+	public double getDiscount() {
+		return discountValue;
+	}
+
+	protected boolean equals(String productName){
 		return productName.equals(product.getName());
 	}
 
