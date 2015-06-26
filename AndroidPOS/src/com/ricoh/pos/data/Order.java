@@ -6,16 +6,14 @@ public class Order {
 	private int num;
 	private double discountValue;
 
-	public Order(Product product,int numberOfOrder)
-	{
-		if(product == null || numberOfOrder < 0) {
+	public Order(Product product, int numberOfOrder) {
+		if (product == null || numberOfOrder < 0) {
 			throw new IllegalArgumentException();
 		}
-		setOrder(product,numberOfOrder);
+		setOrder(product, numberOfOrder);
 	}
-	
-	public void setOrder(Product product,int numberOfOrder)
-	{
+
+	public void setOrder(Product product, int numberOfOrder) {
 		if (product == null || numberOfOrder < 0) {
 			throw new IllegalArgumentException();
 		}
@@ -31,12 +29,12 @@ public class Order {
 
 		this.num = num;
 	}
-	
-	public void plusNumberOfOrder(){
+
+	public void plusNumberOfOrder() {
 		num++;
 	}
-	
-	public void minusNumberOfOrder(){
+
+	public void minusNumberOfOrder() {
 		if (num == 0) {
 
 		} else if (num > 0) {
@@ -89,11 +87,12 @@ public class Order {
 	public void setDiscount(double discount) {
 		discountValue = discount;
 	}
+
 	public double getDiscount() {
 		return discountValue;
 	}
 
-	protected boolean equals(String productName){
+	protected boolean equals(String productName) {
 		return productName.equals(product.getName());
 	}
 
