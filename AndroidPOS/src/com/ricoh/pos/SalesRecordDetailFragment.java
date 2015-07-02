@@ -85,63 +85,51 @@ public class SalesRecordDetailFragment extends ListFragment {
 			Order order = orders.get(position);
 			final Product product = order.getProduct();
 
-			try {
+			ImageView imageView = (ImageView) convertView.findViewById(R.id.photo);
+			imageView.setLayoutParams(new LinearLayout.LayoutParams(120, 120));
+			imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
+			setImageView(product, imageView);
 
-				ImageView imageView = (ImageView) convertView.findViewById(R.id.photo);
-				imageView.setLayoutParams(new LinearLayout.LayoutParams(120, 120));
-				imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
-				setImageView(product, imageView);
-
-				TextView textView = (TextView) convertView.findViewById(R.id.filename);
-				textView.setPadding(10, 0, 0, 0);
-				String productName = product.getName();
-				if (productName == null || productName.length() == 0) {
-					throw new NullPointerException("Product name is not valid");
-				}
-				textView.setText(productName);
-				imageView.setOnClickListener(new View.OnClickListener() {
-					@Override
-					public void onClick(View view) {
-						try {
-							ProductDetailDialogFragment dialogFragment = new ProductDetailDialogFragment();
-							Bundle arguments = new Bundle();
-							DisplayMetrics metrics = getResources().getDisplayMetrics();
-							arguments.putParcelable(ProductDetailDialogFragment.ARG_KEY_IMAGE_BITMAP, product.decodeProductImage(metrics.widthPixels, metrics.heightPixels));
-							dialogFragment.setArguments(arguments);
-							dialogFragment.show(getActivity().getFragmentManager(), ProductDetailDialogFragment.DIALOG_TAG);
-						} catch (FileNotFoundException e) {
-							Log.e("SalesRecordDetail", "Product image file is not found.", e);
-							Toast.makeText(getActivity(), R.string.error_image_file_not_found, Toast.LENGTH_SHORT).show();
-						}
-					}
-				});
-
-				TextView priceView = (TextView) convertView.findViewById(R.id.price);
-				priceView.setPadding(10, 0, 0, 0);
-				NumberFormat.getInstance().setMaximumFractionDigits(MAXIMUM_FRACTION_DIGITS);
-				priceView.setText(NumberFormat.getInstance().format(product.getPrice()));
-
-				TextView numberOfSalseView = (TextView) convertView.findViewById(R.id.numberOfSales);
-				numberOfSalseView.setPadding(10, 0, 0, 0);
-
-				if (order == null || order.getNumberOfOrder() == 0) {
-					throw new AssertionError("Product which isn't ordered is shown");
-				} else {
-					int numberOfSales = order.getNumberOfOrder();
-					numberOfSalseView.setText(NumberFormat.getInstance().format(numberOfSales));
-				}
-
-				return convertView;
-
-			} catch (Throwable t) {
-				TextView errorMessage = new TextView(getActivity());
-				errorMessage.setText("error:" + t.getMessage());
-
-				((ViewGroup) convertView).removeAllViews();
-				((ViewGroup) convertView).addView(errorMessage);
-
-				return convertView;
+			TextView textView = (TextView) convertView.findViewById(R.id.filename);
+			textView.setPadding(10, 0, 0, 0);
+			String productName = product.getName();
+			if (productName == null || productName.length() == 0) {
+				throw new NullPointerException("Product name is not valid");
 			}
+			textView.setText(productName);
+			imageView.setOnClickListener(new View.OnClickListener() {
+				@Override
+				public void onClick(View view) {
+					try {
+						ProductDetailDialogFragment dialogFragment = new ProductDetailDialogFragment();
+						Bundle arguments = new Bundle();
+						DisplayMetrics metrics = getResources().getDisplayMetrics();
+						arguments.putParcelable(ProductDetailDialogFragment.ARG_KEY_IMAGE_BITMAP, product.decodeProductImage(metrics.widthPixels, metrics.heightPixels));
+						dialogFragment.setArguments(arguments);
+						dialogFragment.show(getActivity().getFragmentManager(), ProductDetailDialogFragment.DIALOG_TAG);
+					} catch (FileNotFoundException e) {
+						Log.e("SalesRecordDetail", "Product image file is not found.", e);
+						Toast.makeText(getActivity(), R.string.error_image_file_not_found, Toast.LENGTH_SHORT).show();
+					}
+				}
+			});
+
+			TextView priceView = (TextView) convertView.findViewById(R.id.price);
+			priceView.setPadding(10, 0, 0, 0);
+			NumberFormat.getInstance().setMaximumFractionDigits(MAXIMUM_FRACTION_DIGITS);
+			priceView.setText(NumberFormat.getInstance().format(product.getPrice()));
+
+			TextView numberOfSalseView = (TextView) convertView.findViewById(R.id.numberOfSales);
+			numberOfSalseView.setPadding(10, 0, 0, 0);
+
+			if (order == null || order.getNumberOfOrder() == 0) {
+				throw new AssertionError("Product which isn't ordered is shown");
+			} else {
+				int numberOfSales = order.getNumberOfOrder();
+				numberOfSalseView.setText(NumberFormat.getInstance().format(numberOfSales));
+			}
+
+			return convertView;
 		}
 
 		private void setImageView(Product product, ImageView imageView) {
