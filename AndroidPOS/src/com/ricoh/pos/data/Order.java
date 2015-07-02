@@ -98,9 +98,11 @@ public class Order {
 
 	@Override
 	public String toString() {
-		return "Order{" +
-				"product=" + product == null ? "null" : product +
-				", num=" + num +
-				'}';
+		final StringBuilder sb = new StringBuilder("Order{");
+		sb.append("product=").append(product == null ? "null" : product);
+		sb.append(", num=").append(num);
+		sb.append(", discountValue=").append(discountValue);
+		sb.append("}");
+		return sb.toString();
 	}
 }

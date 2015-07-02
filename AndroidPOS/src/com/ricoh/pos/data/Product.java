@@ -159,14 +159,15 @@ public class Product {
 
 	@Override
 	public String toString() {
-		return "Product{" +
-				"code='" + code + '\'' +
-				", category='" + category + '\'' +
-				", name='" + name + '\'' +
-				", originalCost=" + originalCost +
-				", price=" + price +
-				", stock=" + stock +
-				", imagePath='" + imagePath + '\'' +
-				'}';
+		final StringBuilder sb = new StringBuilder("Product{");
+		sb.append("code='").append(code).append("'");
+		sb.append(", category='").append(category).append("'");
+		sb.append(", name='").append(name).append("'");
+		sb.append(", originalCost=").append(originalCost);
+		sb.append(", price=").append(price);
+		sb.append(", stock=").append(stock);
+		sb.append(", imagePath='").append(imagePath).append("'");
+		sb.append("}");
+		return sb.toString();
 	}
 }
