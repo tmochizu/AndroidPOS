@@ -13,11 +13,11 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
 
 import com.ricoh.pos.data.Order;
 import com.ricoh.pos.data.Product;
@@ -63,6 +63,13 @@ implements RegisterConfirmFragment.OnButtonClickListener,OrderListFragment.OnOrd
 
 	@Override
 	public void onOkClicked() {
+		EditText discount = (EditText)RegisterConfirmActivity.this.findViewById(R.id.discountValue);
+		try {
+			RegisterManager.getInstance().updateDiscountValue(Double.parseDouble(discount.getText().toString()));
+		} catch (IllegalArgumentException e) {
+			Toast.makeText(RegisterConfirmActivity.this.getBaseContext(), R.string.discount_error, Toast.LENGTH_LONG).show();
+			return;
+		}
 		if(RegisterManager.getInstance().getOriginalTotalAmount() != 0){
 			// Save this sales record
 			SingleSalesRecord record = RegisterManager.getInstance().getSingleSalesRecord();
