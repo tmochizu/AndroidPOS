@@ -136,9 +136,6 @@ public class SalesRecordDetailFragment extends ListFragment {
 			} catch (Throwable t) {
 				TextView errorMessage = new TextView(getActivity());
 				errorMessage.setText("error:" + t.getMessage());
-				if (order != null) {
-					errorMessage.append("\n" + order.toString());
-				}
 
 				((ViewGroup) convertView).removeAllViews();
 				((ViewGroup) convertView).addView(errorMessage);
