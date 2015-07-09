@@ -1,14 +1,14 @@
 package com.ricoh.pos.model;
 
-import java.util.ArrayList;
-import java.util.Date;
-
 import android.util.Log;
 
 import com.ricoh.pos.data.Order;
 import com.ricoh.pos.data.OrderUpdateInfo;
 import com.ricoh.pos.data.Product;
 import com.ricoh.pos.data.SingleSalesRecord;
+
+import java.util.ArrayList;
+import java.util.Date;
 
 public class RegisterManager {
 	
@@ -124,6 +124,14 @@ public class RegisterManager {
 		}
 		return totalAmount;
 	}
+
+	public double getOriginalTotalCost() {
+		double totalCost = 0;
+		for (Order order : orderList) {
+			totalCost += order.getTotalCost();
+		}
+		return totalCost;
+	}
 	
 	public double getTotalAmountAfterDiscount(){
 		return getOriginalTotalAmount() - discountValue;
@@ -186,15 +194,16 @@ public class RegisterManager {
 
 
 	public void updateDiscountValue(double discountValue){
-        double totalAmount = getOriginalTotalAmount();
-        if(totalAmount == 0){
-            this.discountValue = 0;
-        } else if (discountValue >= totalAmount) {
-			throw new IllegalArgumentException("discountValues is larger than totalAmount");
-		} else {
-            this.discountValue = discountValue;
+		this.discountValue = discountValue;
+        double totalCost = getOriginalTotalCost();
+		double totalAmount = getOriginalTotalAmount();
+		try {
+			if (discountValue >= (totalAmount - totalCost)) {
+				throw new IllegalArgumentException("discountValues is larger than totalCost");
+			}
+		}finally {
+			notifyUpdateOrder();
 		}
-		notifyUpdateOrder();
 	}
 	
 	public void setUserAttribute(String attribute){
