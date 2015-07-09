@@ -196,8 +196,9 @@ public class RegisterManager {
 	public void updateDiscountValue(double discountValue){
 		this.discountValue = discountValue;
         double totalCost = getOriginalTotalCost();
+		double totalAmount = getOriginalTotalAmount();
 		try {
-			if (discountValue >= totalCost) {
+			if (discountValue >= (totalAmount - totalCost)) {
 				throw new IllegalArgumentException("discountValues is larger than totalCost");
 			}
 		}finally {
