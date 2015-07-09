@@ -121,7 +121,9 @@ public class SingleSalesRecord {
 	 * @return double 利益金額
 	 */
 	public double getTotalRevenue() {
-		return getTotalSales() - getTotalCost();
+		BigDecimal totalSales = BigDecimal.valueOf(getTotalSales());
+		BigDecimal totalCost = BigDecimal.valueOf(getTotalCost());
+		return totalSales.subtract(totalCost).doubleValue();
 	}
 
 	public Date getSalesDate(){
