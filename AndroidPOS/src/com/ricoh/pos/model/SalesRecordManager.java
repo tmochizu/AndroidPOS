@@ -56,20 +56,20 @@ public class SalesRecordManager {
 	
 	public double getOneDayTotalSales(Date date){
 		ArrayList<SingleSalesRecord> salesRecords = restoreSingleSalesRecordsOfTheDay(date);
-		double totalSales = 0;
+		BigDecimal totalSales = BigDecimal.valueOf(0.0);
 		for (SingleSalesRecord record : salesRecords) {
-			totalSales += record.getTotalSales();
+			totalSales = totalSales.add(BigDecimal.valueOf(record.getTotalSales()));
 		}
-		return totalSales;
+		return totalSales.doubleValue();
 	}
 	
 	public double getOneDayTotalRevenue(Date date){
 		ArrayList<SingleSalesRecord> salesRecords = restoreSingleSalesRecordsOfTheDay(date);
-		double totalRevenue = 0;
+		BigDecimal totalRevenue = BigDecimal.valueOf(0.0);
 		for (SingleSalesRecord record : salesRecords) {
-			totalRevenue += record.getTotalRevenue();
+			totalRevenue = totalRevenue.add(BigDecimal.valueOf(record.getTotalRevenue()));
 		}
-		return totalRevenue;
+		return totalRevenue.doubleValue();
 	}
 
 	/**
