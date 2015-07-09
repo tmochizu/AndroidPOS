@@ -29,8 +29,8 @@ import java.io.FileNotFoundException;
 import java.text.NumberFormat;
 
 public class RegisterConfirmActivity extends FragmentActivity
-implements RegisterConfirmFragment.OnButtonClickListener,OrderListFragment.OnOrderClickListener{
-	
+		implements RegisterConfirmFragment.OnButtonClickListener, OrderListFragment.OnOrderClickListener {
+
 	private SalesDatabaseHelper salesDatabaseHelper;
 	private static SQLiteDatabase salesDatabase;
 	private RegisterManager registerManager;
@@ -44,19 +44,20 @@ implements RegisterConfirmFragment.OnButtonClickListener,OrderListFragment.OnOrd
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+
 		setContentView(R.layout.activity_register_confirm);
 		if (findViewById(R.id.order_list_container) != null) {
 			// add OrderListFragment
 			OrderListFragment fragment = new OrderListFragment();
 			getSupportFragmentManager().beginTransaction()
-			.replace(R.id.order_list_container, fragment).commit();
+					.replace(R.id.order_list_container, fragment).commit();
 
 			// add RegisterConfirmFragment
 			RegisterConfirmFragment registerConfirmFragment = new RegisterConfirmFragment();
 			getSupportFragmentManager().beginTransaction()
-			.replace(R.id.register_confirm_container, registerConfirmFragment).commit();
+					.replace(R.id.register_confirm_container, registerConfirmFragment).commit();
 		}
-		
+
 		salesDatabaseHelper = new SalesDatabaseHelper(this);
 		salesDatabase = salesDatabaseHelper.getWritableDatabase();
 	}
@@ -76,10 +77,10 @@ implements RegisterConfirmFragment.OnButtonClickListener,OrderListFragment.OnOrd
 			record.calcDiscountAllocation(); // 値引き割り当ての実施
 			SalesRecordManager.getInstance().storeSingleSalesRecord(salesDatabase, record);
 		}
-		
+
 		// Clear this record
 		RegisterManager.getInstance().clearAllOrders();
-		
+
 		// Go to the CategoryListActivity
 		Intent intent = new Intent(this, CategoryListActivity.class);
 		intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -96,7 +97,7 @@ implements RegisterConfirmFragment.OnButtonClickListener,OrderListFragment.OnOrd
 	public void onPriceDownClicked() {
 		showPriceDownDialog();
 	}
-	
+
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
@@ -105,8 +106,7 @@ implements RegisterConfirmFragment.OnButtonClickListener,OrderListFragment.OnOrd
 		Log.d("debug", "Exit RegisterConfirmActivity onDestroy");
 	}
 
-	private void showPriceDownDialog()
-	{
+	private void showPriceDownDialog() {
 		PriceDownDialog dialog = new PriceDownDialog();
 		dialog.show(this);
 	}
@@ -126,9 +126,12 @@ implements RegisterConfirmFragment.OnButtonClickListener,OrderListFragment.OnOrd
 		public void setProduct(Product product) {
 			this.product = product;
 		}
-		public void setOrder(Order order){this.order = order;}
 
-		public static EditNumberOfOrderDialog newInstance(Product product,Order order) {
+		public void setOrder(Order order) {
+			this.order = order;
+		}
+
+		public static EditNumberOfOrderDialog newInstance(Product product, Order order) {
 			EditNumberOfOrderDialog frag = new EditNumberOfOrderDialog();
 			frag.setProduct(product);
 			frag.setOrder(order);
@@ -153,10 +156,10 @@ implements RegisterConfirmFragment.OnButtonClickListener,OrderListFragment.OnOrd
 			builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
 				@Override
 				public void onClick(DialogInterface dialog, int which) {
-					if(orderNum > 0){
-						new RegisterConfirmActivity().addProduct(orderNum,product);
-					} else if(orderNum < 0){
-						new RegisterConfirmActivity().removeProduct(orderNum,product);
+					if (orderNum > 0) {
+						new RegisterConfirmActivity().addProduct(orderNum, product);
+					} else if (orderNum < 0) {
+						new RegisterConfirmActivity().removeProduct(orderNum, product);
 					}
 				}
 			});
@@ -164,7 +167,7 @@ implements RegisterConfirmFragment.OnButtonClickListener,OrderListFragment.OnOrd
 			return dialog;
 		}
 
-		private void setImageView(View convertView){
+		private void setImageView(View convertView) {
 			ImageView imageView = (ImageView) convertView.findViewById(R.id.photo);
 			imageView.setLayoutParams(new LinearLayout.LayoutParams(IMAGE_VIEW_SIZE, IMAGE_VIEW_SIZE));
 			imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
@@ -202,7 +205,7 @@ implements RegisterConfirmFragment.OnButtonClickListener,OrderListFragment.OnOrd
 			}
 		}
 
-		private void setProductInformationView(View contentView){
+		private void setProductInformationView(View contentView) {
 			TextView textView = (TextView) contentView.findViewById(R.id.filename);
 			textView.setPadding(10, 0, 0, 0);
 			String productName = product.getName();
@@ -217,7 +220,7 @@ implements RegisterConfirmFragment.OnButtonClickListener,OrderListFragment.OnOrd
 			priceView.setText(NumberFormat.getInstance().format(product.getPrice()));
 		}
 
-		private void setNumberOfOrderView(View contenView){
+		private void setNumberOfOrderView(View contenView) {
 			final TextView numberOfSalesText = (TextView) contenView
 					.findViewById(R.id.numberOfSales);
 
@@ -251,15 +254,16 @@ implements RegisterConfirmFragment.OnButtonClickListener,OrderListFragment.OnOrd
 		}
 	}
 
-	private void addProduct(int num,Product product){
-		for(int i=0; i<num;i++){
+	private void addProduct(int num, Product product) {
+		for (int i = 0; i < num; i++) {
 			registerManager.plusNumberOfOrder(product);
 		}
 		registerManager.notifyUpdateOrderList();
 
 	}
-	private void removeProduct(int num,Product product){
-		for(int i=0; i>num;i--){
+
+	private void removeProduct(int num, Product product) {
+		for (int i = 0; i > num; i--) {
 			registerManager.minusNumberOfOrder(product);
 		}
 		registerManager.notifyUpdateOrderList();
