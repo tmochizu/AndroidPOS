@@ -13,6 +13,7 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -63,7 +64,14 @@ public class RegisterConfirmActivity extends FragmentActivity
 
 	@Override
 	public void onOkClicked() {
-		if (RegisterManager.getInstance().getOriginalTotalAmount() != 0) {
+		EditText discount = (EditText)RegisterConfirmActivity.this.findViewById(R.id.discountValue);
+		try {
+			RegisterManager.getInstance().updateDiscountValue(Double.parseDouble(discount.getText().toString()));
+		} catch (IllegalArgumentException e) {
+			Toast.makeText(RegisterConfirmActivity.this.getBaseContext(), R.string.discount_error, Toast.LENGTH_LONG).show();
+			return;
+		}
+		if(RegisterManager.getInstance().getOriginalTotalAmount() != 0){
 			// Save this sales record
 			SingleSalesRecord record = RegisterManager.getInstance().getSingleSalesRecord();
 			record.calcDiscountAllocation(); // 値引き割り当ての実施
