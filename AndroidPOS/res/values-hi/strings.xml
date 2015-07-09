@@ -16,7 +16,7 @@
     <string name="original_cost_label">लागत</string>
     <string name="currency_india">Rp</string>
     <string name="number_tag">X</string>
-    <string name="discount_error">छूट दी गयी राशि की जाँच करे ये मूल लागत से ज्यादा  है</string>
+    <string name="discount_error">छूट दी गयी राशि की जाँच करे ये मूल कीमत से ज्यादा  है</string>
     <string name="discount">छूट</string>
     <string name="zero_order_error">उत्पादों की संख्या डाले</string>
     <string name="title_oneday_total_sales">कुल बिरी</string>
