@@ -165,17 +165,4 @@ public class SingleSalesRecord {
 	public void setId(long id) {
 		this.id = id;
 	}
-
-	//FIXME detele this method
-	@Override
-	public String toString() {
-		final StringBuilder sb = new StringBuilder("SingleSalesRecord{");
-		sb.append("id=").append(id);
-		sb.append(", salesDate=").append(salesDate);
-		sb.append(", discountValue=").append(discountValue);
-		sb.append(", userAttribute='").append(userAttribute).append("'");
-		sb.append(", orders=").append(orders);
-		sb.append("}");
-		return sb.toString();
-	}
 }
