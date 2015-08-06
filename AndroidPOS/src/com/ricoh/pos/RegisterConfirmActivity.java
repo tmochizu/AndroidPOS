@@ -69,6 +69,7 @@ public class RegisterConfirmActivity extends FragmentActivity
 			String text = discount.getText().toString();
 			RegisterManager.getInstance().updateDiscountValue(text.isEmpty() ? 0 : Double.parseDouble(text));
 		} catch (IllegalArgumentException e) {
+			Log.e("RegisterConfirmActivity","failed in discount value check.", e);
 			Toast.makeText(RegisterConfirmActivity.this.getBaseContext(), R.string.discount_error, Toast.LENGTH_LONG).show();
 			return;
 		}
