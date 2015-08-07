@@ -91,7 +91,6 @@ public class RegisterConfirmActivity extends FragmentActivity
 
 	@Override
 	public void onCancelClicked() {
-		RegisterManager.getInstance().updateDiscountValue(0);
 		finish();
 	}
 
@@ -105,6 +104,7 @@ public class RegisterConfirmActivity extends FragmentActivity
 		super.onDestroy();
 		salesDatabase.close();
 		salesDatabaseHelper.close();
+		RegisterManager.getInstance().clearDiscountValue();
 		Log.d("debug", "Exit RegisterConfirmActivity onDestroy");
 	}
 

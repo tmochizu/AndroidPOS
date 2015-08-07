@@ -222,4 +222,8 @@ public class RegisterManager {
 		return record;
 	}
 
+	public void clearDiscountValue() {
+		this.discountValue = 0;
+	}
+
 }
