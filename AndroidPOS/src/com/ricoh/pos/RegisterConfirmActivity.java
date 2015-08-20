@@ -64,14 +64,16 @@ public class RegisterConfirmActivity extends FragmentActivity
 
 	@Override
 	public void onOkClicked() {
-		EditText discount = (EditText)RegisterConfirmActivity.this.findViewById(R.id.discountValue);
+		EditText discount = (EditText) RegisterConfirmActivity.this.findViewById(R.id.discountValue);
 		try {
-			RegisterManager.getInstance().updateDiscountValue(Double.parseDouble(discount.getText().toString()));
+			String text = discount.getText().toString();
+			RegisterManager.getInstance().updateDiscountValue(text.isEmpty() ? 0 : Double.parseDouble(text));
 		} catch (IllegalArgumentException e) {
+			Log.e("RegisterConfirmActivity","failed in discount value check.", e);
 			Toast.makeText(RegisterConfirmActivity.this.getBaseContext(), R.string.discount_error, Toast.LENGTH_LONG).show();
 			return;
 		}
-		if(RegisterManager.getInstance().getOriginalTotalAmount() != 0){
+		if (RegisterManager.getInstance().getOriginalTotalAmount() != 0) {
 			// Save this sales record
 			SingleSalesRecord record = RegisterManager.getInstance().getSingleSalesRecord();
 			record.calcDiscountAllocation(); // 値引き割り当ての実施
@@ -89,7 +91,6 @@ public class RegisterConfirmActivity extends FragmentActivity
 
 	@Override
 	public void onCancelClicked() {
-		RegisterManager.getInstance().updateDiscountValue(0);
 		finish();
 	}
 
@@ -103,6 +104,7 @@ public class RegisterConfirmActivity extends FragmentActivity
 		super.onDestroy();
 		salesDatabase.close();
 		salesDatabaseHelper.close();
+		RegisterManager.getInstance().clearDiscountValue();
 		Log.d("debug", "Exit RegisterConfirmActivity onDestroy");
 	}
 

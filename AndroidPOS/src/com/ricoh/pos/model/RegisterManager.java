@@ -7,6 +7,7 @@ import com.ricoh.pos.data.OrderUpdateInfo;
 import com.ricoh.pos.data.Product;
 import com.ricoh.pos.data.SingleSalesRecord;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -115,22 +116,22 @@ public class RegisterManager {
 	}
 
 	public double getOriginalTotalAmount() {
-		double totalAmount = 0;
+		BigDecimal totalAmount = BigDecimal.valueOf(0.0);
 		for (Order order : orderList) {
-			totalAmount += order.getTotalAmount();
+			totalAmount = totalAmount.add(BigDecimal.valueOf(order.getTotalAmount()));
 		}
-		return totalAmount;
+		return totalAmount.doubleValue();
 	}
 
 	public double getOriginalTotalCost() {
-		double totalCost = 0;
+		BigDecimal totalCost = BigDecimal.valueOf(0.0);
 		for (Order order : orderList) {
-			totalCost += order.getTotalCost();
+			totalCost = totalCost.add(BigDecimal.valueOf(order.getTotalCost()));
 		}
-		return totalCost;
+		return totalCost.doubleValue();
 	}
-	
-	public double getTotalAmountAfterDiscount(){
+
+	public double getTotalAmountAfterDiscount() {
 		return getOriginalTotalAmount() - discountValue;
 	}
 
@@ -192,15 +193,15 @@ public class RegisterManager {
 	}
 
 
-	public void updateDiscountValue(double discountValue){
+	public void updateDiscountValue(double discountValue) {
 		this.discountValue = discountValue;
-        double totalCost = getOriginalTotalCost();
-		double totalAmount = getOriginalTotalAmount();
+		BigDecimal totalCost = BigDecimal.valueOf(getOriginalTotalCost());
+		BigDecimal totalAmount = BigDecimal.valueOf(getOriginalTotalAmount());
 		try {
-			if (discountValue >= (totalAmount - totalCost)) {
+			if (discountValue >= (totalAmount.subtract(totalCost)).doubleValue()) {
 				throw new IllegalArgumentException("discountValues is larger than totalCost");
 			}
-		}finally {
+		} finally {
 			notifyUpdateOrder();
 		}
 	}
@@ -219,6 +220,10 @@ public class RegisterManager {
 		record.setDiscountValue(discountValue);
 		record.setUserAttribute(userAttribute);
 		return record;
+	}
+
+	public void clearDiscountValue() {
+		this.discountValue = 0;
 	}
 
 }
