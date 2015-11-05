@@ -34,7 +34,8 @@ public class MainMenuActivity extends Activity implements DataSyncTaskCallback {
 		findViewById(R.id.RegisterButton).setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Intent intent = new Intent().setClass(MainMenuActivity.this,
+				Intent intent = new Intent().setClass(
+						MainMenuActivity.this,
 						CategoryListActivity.class);
 				startActivity(intent);
 			}
@@ -44,8 +45,7 @@ public class MainMenuActivity extends Activity implements DataSyncTaskCallback {
 		findViewById(R.id.SalesButton).setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Intent intent = new Intent().setClass(MainMenuActivity.this,
-						SalesCalenderActivity.class);
+				Intent intent = new Intent().setClass(MainMenuActivity.this, SalesCalenderActivity.class);
 				startActivity(intent);
 			}
 		});
@@ -53,8 +53,10 @@ public class MainMenuActivity extends Activity implements DataSyncTaskCallback {
 		findViewById(R.id.SyncButton).setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				DataSyncTask syncTask = new DataSyncTask(MainMenuActivity.this,
-						MainMenuActivity.this, womanShopIOManager);
+				DataSyncTask syncTask = new DataSyncTask(
+						MainMenuActivity.this,
+						MainMenuActivity.this,
+						womanShopIOManager);
 				syncTask.execute();
 			}
 		});
