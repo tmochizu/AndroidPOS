@@ -139,13 +139,13 @@ public class RegisterConfirmFragment extends Fragment implements UpdateOrderList
 
 		@Override
 		public void onTextChanged(CharSequence s, int start, int before, int count) {
-			if (s.length() == 0) {
-				registerManager.updateDiscountValue(0);
-			} else {
-				try {
+			try {
+				if (s.length() == 0) {
+					registerManager.updateDiscountValue(0);
+				} else {
 					registerManager.updateDiscountValue(Double.parseDouble(s.toString()));
-				} catch (IllegalArgumentException e) {
 				}
+			} catch (IllegalArgumentException e) {
 			}
 		}
 	}
