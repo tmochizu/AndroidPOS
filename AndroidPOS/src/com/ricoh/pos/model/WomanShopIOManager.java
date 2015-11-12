@@ -16,7 +16,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-public class WomanShopIOManager implements IOManager {
+public class WomanShopIOManager {
 
 	private SQLiteDatabase database;
 	private static String DATABASE_NAME = "products_dummy";
@@ -33,59 +33,20 @@ public class WomanShopIOManager implements IOManager {
 		// Nothing to do
 	}
 
-	@Override
-	public BufferedReader importCSVfromAssets(AssetManager assetManager) {
-		BufferedReader bufferReader = null;
-		try {
-			// TODO: Should import & export data
-			bufferReader = new BufferedReader(new InputStreamReader(assetManager.open(DATABASE_NAME
-					+ ".csv")));
-		} catch (IOException e) {
-			Log.d("debug", "" + e + "");
-		}
-		return bufferReader;
-	}
-
-	@Override
-	public void insertRecords(BufferedReader bufferReader) throws IOException {
-
-		ContentValues contentValue = new ContentValues();
-		try {
-			readFieldName(bufferReader);
-
-			String record;
-			while ((record = bufferReader.readLine()) != null) {
-				String[] fieldValues = record.split(",");
-				Log.d("debug", "Product Code" + fieldValues[0]);
-
-				int i = 0;
-				for (WomanShopDataDef field : WomanShopDataDef.values()) {
-					contentValue.put(field.name(), fieldValues[i++]);
-				}
-
-				database.insertWithOnConflict(DATABASE_NAME, null, contentValue,
-						SQLiteDatabase.CONFLICT_REPLACE);
-			}
-		} catch (IOException e) {
-			Log.d("debug", "" + e + "", e);
-            throw e;
-		}
-	}
-
-	@Override
 	public String[] searchAlldata() {
 		Cursor cursor = null;
 
 		try {
 			cursor = database.query(
 					DATABASE_NAME,
-					WomanShopDataStructure, 
-							null, null, null, null, null);
+					WomanShopDataStructure,
+					null, null, null, null, null);
 			String[] results = new String[cursor.getCount()];
 			Log.d("debug", "count:" + cursor.getCount());
 			for (int i = 0; i < cursor.getCount(); i++) {
 				results[i] = readCursor(cursor);
 			}
+
 			return results;
 		} finally {
 			if (cursor != null) {
@@ -95,15 +56,17 @@ public class WomanShopIOManager implements IOManager {
 	}
 
 	// TODO: Temporary function
-	@Override
 	public String searchByCode(String code) {
 		Cursor cursor = null;
 		try {
 			cursor = database.query(
-					DATABASE_NAME, 
-					WomanShopDataStructure, 
-							WomanShopDataDef.PRODUCT_CODE.name() + " = ?", 
-							new String[] { code }, null, null, null);
+					DATABASE_NAME,
+					WomanShopDataStructure,
+					WomanShopDataDef.PRODUCT_CODE.name() + " = ?",
+					new String[] { code },
+					null,
+					null,
+					null);
 			return readCursor(cursor);
 		} finally {
 			if (cursor != null) {
@@ -111,21 +74,77 @@ public class WomanShopIOManager implements IOManager {
 			}
 		}
 	}
-	
-	public BufferedReader importCSVfromSD() throws FileNotFoundException {
+
+	/**
+	 * Assertから在庫DBにデータをimportする。使ってない。
+	 * @param assetManager
+	 * @throws IOException
+	 */
+	public void importCSVfromAssets(AssetManager assetManager) throws IOException {
+		try {
+			BufferedReader bufferReader = new BufferedReader(new InputStreamReader(assetManager.open(DATABASE_NAME + ".csv")));
+			this.insertRecords(bufferReader);
+			bufferReader.close();
+		} catch (IOException e) {
+			Log.d("debug", "" + e + "");
+			throw e;
+		}
+	}
+
+	/**
+	 * 固定パスのCSVから、内容を在庫DBにinsertする。
+	 * @throws IOException
+	 */
+	public void importCSVfromSD() throws IOException {
 		BufferedReader bufferReader = null;
-		
 		try {
 			String csvStoragePath = getCSVStoragePath();
 			File productDataCSV = new File(csvStoragePath + "/Product.csv");
 			bufferReader = new BufferedReader(new FileReader(productDataCSV));
-		} catch (FileNotFoundException e) {
-			Log.d("debug", "import error", e);
-            throw e;
+			this.insertRecords(bufferReader);
 		}
-		return bufferReader;
+		catch (FileNotFoundException e) {
+			Log.d("debug", "CSV File not found.", e);
+			throw e;
+		}
+		catch (IOException ioe) {
+			Log.d("debug", "insert Record fail", ioe);
+			throw ioe;
+		}
+		finally {
+			bufferReader.close();
+		}
 	}
-	
+
+	private void insertRecords(BufferedReader bufferReader) throws IOException {
+		ContentValues contentValue = new ContentValues();
+		// CSVの先頭にカラム名を書いた行があるので読み飛ばす
+		String record = bufferReader.readLine();
+		//this.writeFieldName(record); // debug用
+
+		while ((record = bufferReader.readLine()) != null) {
+			String[] fieldValues = record.split(",");
+			Log.d("debug", "Product Code" + fieldValues[0]);
+
+			int i = 0;
+			for (WomanShopDataDef field : WomanShopDataDef.values()) {
+				contentValue.put(field.name(), fieldValues[i++]);
+			}
+			database.insertWithOnConflict(DATABASE_NAME, null, contentValue, SQLiteDatabase.CONFLICT_REPLACE);
+		}
+	}
+
+	/**
+	 * debug用にカラム名を出力する
+	 * @param record CSVの一行目の文字列
+	 */
+	private void writeFieldName(String record) {
+		String[] fieldNames = record.split(",");
+		for (String fieldName : fieldNames) {
+			Log.d("debug", fieldName);
+		}
+	}
+
 	// TODO: Add this function to interface
 	public void setDatabase(SQLiteDatabase database) {
 		if (this.database == null) {
@@ -139,16 +158,6 @@ public class WomanShopIOManager implements IOManager {
 		if (database != null) {
 			Log.d("debug", "Database closed:" + DATABASE_NAME);
 			database.close();
-		}
-	}
-
-	private void readFieldName(BufferedReader bufferReader) throws IOException {
-		String record = bufferReader.readLine();
-
-		// TODO: Show field name for debug
-		String[] fieldNames = record.split(",");
-		for (String fieldName : fieldNames) {
-			Log.d("debug", fieldName);
 		}
 	}
 

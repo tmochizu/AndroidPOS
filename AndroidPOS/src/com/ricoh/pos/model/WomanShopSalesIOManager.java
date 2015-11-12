@@ -401,8 +401,9 @@ public class WomanShopSalesIOManager {
 			// FIXME;全件でいいの？ある日付け以降とかでなく。
 			ArrayList<SingleSalesRecord> records = this.searchAll();
 			writeSalesData(context, records);
-		} catch (Exception e) {
+		} catch (IOException e) {
 			Log.d("debug", "exportCSV Exception occuered.", e);
+			throw e;
 		}
 	}
 
