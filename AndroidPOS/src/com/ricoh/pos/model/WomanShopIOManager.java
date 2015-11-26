@@ -78,10 +78,6 @@ public class WomanShopIOManager implements IOManager {
 
 			// skipping header
 			String header = reader.readLine();
-			String[] fieldNames = header.split(",");
-			for (String fieldName : fieldNames) {
-				Log.d("debug", fieldName);
-			}
 
 			// adding arrived goods to DB
 			String line;

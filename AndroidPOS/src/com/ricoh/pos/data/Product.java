@@ -44,7 +44,7 @@ public class Product {
 		this.originalCost = originalCost;
 		this.price = price;
 		this.stock = stock;
-		this.imagePath = code;
+		this.imagePath = setProductImagePath(code);
 	}
 
 	// /////////////////////////
@@ -77,14 +77,14 @@ public class Product {
 		this.stock = stock;
 	}
 
-	public void setProductImagePath(String imagePath) {
+	public String setProductImagePath(String fileName) {
 
-		if (imagePath == null || imagePath.length() == 0) {
+		if (fileName == null || fileName.length() == 0) {
 			throw new IllegalArgumentException("Passing imagePath is not valid");
 		}
 
 		String imageStoragePath = getImageStoragePath();
-		this.imagePath = imageStoragePath + "/" + imagePath + ".jpg";
+		return imageStoragePath + "/" + imagePath + ".jpg";
 	}
 
 	// /////////////////////////
