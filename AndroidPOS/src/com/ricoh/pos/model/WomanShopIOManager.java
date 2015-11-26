@@ -10,6 +10,7 @@ import com.ricoh.pos.data.Product;
 import com.ricoh.pos.data.WomanShopDataDef;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -69,6 +70,7 @@ public class WomanShopIOManager implements IOManager {
 
 		// import に失敗した行だけをもとの CSV ファイルに残す。そのために一度ファイルごと削除
 		FileUtils.forceDelete(original);
+		original.createNewFile();
 
 		BufferedReader reader = null;
 		try {
@@ -105,9 +107,7 @@ public class WomanShopIOManager implements IOManager {
 			}
 
 		} finally {
-			if (reader != null) {
-				reader.close();
-			}
+			IOUtils.closeQuietly(reader);
 		}
 
 	}
