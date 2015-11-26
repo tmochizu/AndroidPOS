@@ -54,6 +54,17 @@ public class SalesDatabaseHelper extends SQLiteOpenHelper {
 						}
 					}
 				}
+			} else if(oldVersion == 2){
+				String[] findKeys = new String[]{"10 साल से कम","10 साल से ज्यादा","20 से 29 के बीच","30 से 39  के बीच","40 से 49 के बीच","50 से 59 के बीच","60 से 70 के बीच","अन्य"};
+				String[] results = new String[]{"10s Low","10s High","20s","30s","40s","50s","60s","Other"};
+				
+				for(int i = 0; i<findKeys.length; i++){
+					ContentValues value = new ContentValues();
+					value.put(WomanShopSalesDef.USER_AGES.name(),results[i]);
+					db.update(WS_SALES_TABLE_NAME, value, WomanShopSalesDef.USER_AGES.name() + " = " + findKeys[i], null);
+				}
+				
+				
 			}
 		}
 	}
