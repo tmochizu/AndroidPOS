@@ -69,7 +69,7 @@ public class DataSyncTask extends AsyncTask<String, Void, AsyncTaskResult<String
 		// 在庫DBを検索して、画面表示用にデータモデルを生成する。
 		// やらないと画面が表示できないので、エラーの有無に関わらず実施。
 
-		List<Product> productsInDb = womanShopIOManager.searchAlldata();
+		List<Product> productsInDb = womanShopIOManager.searchAll();
 		productsManager.updateProducts(productsInDb);
 
 		if (isImportFail && isExportFail) {

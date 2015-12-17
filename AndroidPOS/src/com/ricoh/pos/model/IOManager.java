@@ -1,5 +1,6 @@
 package com.ricoh.pos.model;
 
+import java.nio.charset.Charset;
 import java.util.List;
 
 /**
@@ -9,10 +10,12 @@ import java.util.List;
  */
 public interface IOManager {
 
+	Charset DEFAULT_CHARSET = Charset.forName("UTF-8");
+
 	/**
 	 * Search all record from database.
 	 *
 	 * @return search results
 	 */
-	public List<?> searchAlldata();
+	public List<?> searchAll();
 }

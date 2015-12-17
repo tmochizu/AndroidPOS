@@ -34,7 +34,7 @@ import java.util.Date;
  * 販売実績DBのコントローラークラス。元の名前はWomanShopSalesIOManager
  * 必要な操作は大体ここで出来るはず
  */
-public class WomanShopSalesIOManager {
+public class WomanShopSalesIOManager implements IOManager {
 	/**
 	 * ドリシティ向けに出力する販売実績CSVのファイル名
 	 */
@@ -431,12 +431,12 @@ public class WomanShopSalesIOManager {
 				fos.write(0xef);
 				fos.write(0xbb);
 				fos.write(0xbf);
-				fileWriter = new OutputStreamWriter(fos, "UTF-8");
+				fileWriter = new OutputStreamWriter(fos, DEFAULT_CHARSET);
 			} catch (FileNotFoundException e) {
 				Log.d("debug", "sales.csv is not found", e);
 				throw e;
 			} catch (UnsupportedEncodingException e) {
-				Log.d("debug", "UTF-8 unsupported", e);
+				Log.d("debug", DEFAULT_CHARSET.displayName() + " is unsupported", e);
 				throw e;
 			}
 			/*

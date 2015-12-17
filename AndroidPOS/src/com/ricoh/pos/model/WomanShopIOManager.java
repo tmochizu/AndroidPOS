@@ -17,7 +17,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -41,7 +40,7 @@ public class WomanShopIOManager implements IOManager {
 	}
 
 	@Override
-	public List<Product> searchAlldata() {
+	public List<Product> searchAll() {
 		Cursor cursor = null;
 
 		try {
@@ -68,16 +67,14 @@ public class WomanShopIOManager implements IOManager {
 		File original = getArrivedGoods();
 		File backup = backupArrivedGoods(original);
 
-		// import に失敗した行だけをもとの CSV ファイルに残す。そのために一度ファイルごと削除
-		FileUtils.forceDelete(original);
-		original.createNewFile();
-
 		BufferedReader reader = null;
 		try {
 			reader = new BufferedReader(new FileReader(backup));
 
 			// skipping header
 			String header = reader.readLine();
+			// import に失敗した行だけをもとの CSV ファイルに残す。そのために一度中身をヘッダだけにしてある
+			FileUtils.write(original, header + "\n", DEFAULT_CHARSET, false);
 
 			// adding arrived goods to DB
 			String line;
@@ -98,7 +95,7 @@ public class WomanShopIOManager implements IOManager {
 
 				} catch (IllegalArgumentException e) {
 					Log.e("error", "conflicted with a record in DB.", e);
-					FileUtils.write(original, line + "\n", Charset.forName("UTF-8"), true);
+					FileUtils.write(original, line + "\n", DEFAULT_CHARSET, true);
 				}
 			}
 
