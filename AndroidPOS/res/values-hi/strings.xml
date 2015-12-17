@@ -2,7 +2,6 @@
 <resources>
 
     <string name="app_name">रिकोह पी ओ एस</string>
-    <string name="action_settings">सेटिंग्स</string>
     <string name="title_category_list">उत्पाद</string>
     <string name="title_total_payment">कुल</string>
     <string name="category_title_default">सब</string>

@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest package="com.ricoh.pos"
-          xmlns:android="http://schemas.android.com/apk/res/android"
-          android:versionCode="3"
-          android:versionName="2.1.0">
+<manifest
+    package="com.ricoh.pos"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:versionCode="3"
+    android:versionName="2.1.0">
 
     <uses-sdk
         android:minSdkVersion="12"
@@ -55,6 +56,10 @@
         </activity>
         <activity
             android:name="com.ricoh.pos.RegisterConfirmActivity"
+            android:screenOrientation="landscape">
+        </activity>
+        <activity
+            android:name="com.ricoh.pos.LicenseActivity"
             android:screenOrientation="landscape">
         </activity>
     </application>
