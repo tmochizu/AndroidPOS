@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Toast;
@@ -27,7 +28,7 @@ public class MainMenuActivity extends Activity implements DataSyncTaskCallback {
 		womanShopIOManager = new WomanShopIOManager();
 		databaseHelper = new DatabaseHelper(this);
 		womanShopIOManager.setDatabase(databaseHelper.getWritableDatabase());
-		
+
 		salesDatabaseHelper = new SalesDatabaseHelper(this);
 		WomanShopSalesIOManager.getInstance().setDatabase(salesDatabaseHelper.getWritableDatabase());
 
@@ -75,8 +76,21 @@ public class MainMenuActivity extends Activity implements DataSyncTaskCallback {
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.main_menu, menu);
+		return true;
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+			case R.id.action_library:
+				Intent intent = new Intent().setClass(MainMenuActivity.this, LicenseActivity.class);
+				startActivity(intent);
+				break;
+			default:
+				return super.onOptionsItemSelected(item);
+		}
+
 		return true;
 	}
 
@@ -89,6 +103,7 @@ public class MainMenuActivity extends Activity implements DataSyncTaskCallback {
 	@Override
 	public void onFailedSyncData(int resId) {
 		Toast.makeText(this, resId, Toast.LENGTH_LONG).show();
+		setRegisterButtonEnabled();
 	}
 
 	private void setRegisterButtonEnabled() {

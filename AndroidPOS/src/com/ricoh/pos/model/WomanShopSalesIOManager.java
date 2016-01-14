@@ -34,7 +34,7 @@ import java.util.Date;
  * 販売実績DBのコントローラークラス。元の名前はWomanShopSalesIOManager
  * 必要な操作は大体ここで出来るはず
  */
-public class WomanShopSalesIOManager {
+public class WomanShopSalesIOManager implements IOManager {
 	/**
 	 * ドリシティ向けに出力する販売実績CSVのファイル名
 	 */
@@ -254,10 +254,11 @@ public class WomanShopSalesIOManager {
 					record.setUserAttribute(cursor.getString(JoinedTable.Sale.USER_AGES));
 				}
 
-				Product product = new Product(cursor.getString(JoinedTable.Order.PRODUCT_CODE), cursor.getString(JoinedTable.Order.CATEGORY_NAME), cursor.getString(JoinedTable.Order.PRODUCT_NAME));
-				product.setProductImagePath(cursor.getString(JoinedTable.Order.PRODUCT_CODE));
-				product.setOriginalCost(cursor.getDouble(JoinedTable.Order.PURCHASE_PRICE));
-				product.setPrice(cursor.getDouble(JoinedTable.Order.UNIT_PRICE));
+				Product product = new Product(cursor.getString(JoinedTable.Order.PRODUCT_CODE),
+						cursor.getString(JoinedTable.Order.PRODUCT_NAME),
+						cursor.getString(JoinedTable.Order.CATEGORY_NAME),
+						cursor.getDouble(JoinedTable.Order.PURCHASE_PRICE),
+						cursor.getDouble(JoinedTable.Order.UNIT_PRICE));
 
 				Order order = new Order(product, cursor.getInt(JoinedTable.Order.QTY));
 				order.setDiscount(cursor.getDouble(JoinedTable.Order.DISCOUNT));
@@ -430,12 +431,12 @@ public class WomanShopSalesIOManager {
 				fos.write(0xef);
 				fos.write(0xbb);
 				fos.write(0xbf);
-				fileWriter = new OutputStreamWriter(fos, "UTF-8");
+				fileWriter = new OutputStreamWriter(fos, DEFAULT_CHARSET);
 			} catch (FileNotFoundException e) {
 				Log.d("debug", "sales.csv is not found", e);
 				throw e;
 			} catch (UnsupportedEncodingException e) {
-				Log.d("debug", "UTF-8 unsupported", e);
+				Log.d("debug", DEFAULT_CHARSET.displayName() + " is unsupported", e);
 				throw e;
 			}
 			/*

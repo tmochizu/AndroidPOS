@@ -5,12 +5,13 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.ricoh.pos.data.Product;
 import com.ricoh.pos.model.ProductsManager;
 import com.ricoh.pos.model.WomanShopIOManager;
 import com.ricoh.pos.model.WomanShopSalesIOManager;
 
-import java.io.BufferedReader;
 import java.io.IOException;
+import java.util.List;
 
 /**
  * 同期処理の本体
@@ -49,15 +50,13 @@ public class DataSyncTask extends AsyncTask<String, Void, AsyncTaskResult<String
 		boolean isImportFail = false;
 		boolean isExportFail = false;
 
-		// CSVの内容をDBにinsert
+		// CSV から入荷商品を読み込んで DB に登録。
 		try {
-			//AssetManager assetManager = context.getResources().getAssets();
-			//womanShopIOManager.importCSVfromAssets(assetManager);
-			womanShopIOManager.importCSVfromSD();
-        } catch(IOException e) {
-            Log.d("debug", "import error", e);
+			womanShopIOManager.importCSV();
+		} catch (IOException e) {
+			Log.d("debug", "import error", e);
 			isImportFail = true;
-        }
+		}
 
 		// 販売履歴DBの内容をexportする
 		try {
@@ -69,8 +68,9 @@ public class DataSyncTask extends AsyncTask<String, Void, AsyncTaskResult<String
 
 		// 在庫DBを検索して、画面表示用にデータモデルを生成する。
 		// やらないと画面が表示できないので、エラーの有無に関わらず実施。
-		String[] results = womanShopIOManager.searchAlldata();
-		productsManager.updateProducts(results);
+
+		List<Product> productsInDb = womanShopIOManager.searchAll();
+		productsManager.updateProducts(productsInDb);
 
 		if (isImportFail && isExportFail) {
 			return AsyncTaskResult.createErrorResult(R.string.sd_import_export_error);
@@ -90,7 +90,7 @@ public class DataSyncTask extends AsyncTask<String, Void, AsyncTaskResult<String
 		Log.d(TAG, "onPostExecute");
 		if (progressDialog.isShowing()) {
 			progressDialog.dismiss();
-			
+
 			if (result.isError()) {
 				callback.onFailedSyncData(result.getResourceId());
 			} else {
