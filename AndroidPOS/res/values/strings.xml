@@ -67,5 +67,6 @@
     <string name="copyright_commons_io">Copyright 2001-2007 The Apache Software Foundation</string>
     <string name="failed_loading_the_license_text">failed loading the license text</string>
 
+<string name="edit_stock_in_dialog_warning">the input number is not available</string>
 
 </resources>

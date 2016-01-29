@@ -100,7 +100,7 @@ public class ProductFragment extends ListFragment {
     protected void showDialogFragment(Product product) {
         ChangeStockDialogFragment fragment = new ChangeStockDialogFragment();
         fragment.giveProductData(product);
-        fragment.show(getActivity().getFragmentManager(), "aaaa");
+        fragment.show(getActivity().getFragmentManager(), "ChangeStockDialogFragment");
     }
 
     public static class ChangeStockDialogFragment extends DialogFragment {
@@ -139,7 +139,7 @@ public class ProductFragment extends ListFragment {
                         num = Integer.parseInt(str);
                         num++;
                     } catch (NumberFormatException e) {
-                        Toast toast = Toast.makeText(ChangeStockDialogFragment.this.getActivity(), "set zero because the input number is not available", Toast.LENGTH_SHORT);
+                        Toast toast = Toast.makeText(ChangeStockDialogFragment.this.getActivity(),getString(R.string.edit_stock_in_dialog_warning), Toast.LENGTH_SHORT);
                         toast.show();
                     } finally {
 
@@ -163,7 +163,7 @@ public class ProductFragment extends ListFragment {
                         num = num - 1;
 
                     } catch (NumberFormatException e) {
-                        Toast toast = Toast.makeText(ChangeStockDialogFragment.this.getActivity(), "set zero because the input number is not available", Toast.LENGTH_SHORT);
+                        Toast toast = Toast.makeText(ChangeStockDialogFragment.this.getActivity(), getString(R.string.edit_stock_in_dialog_warning), Toast.LENGTH_SHORT);
                         toast.show();
                     } finally {
                         if (num < 0) {
@@ -192,7 +192,7 @@ public class ProductFragment extends ListFragment {
                         fragment.refresh();
 
                     } catch (NumberFormatException e) {
-                        Toast toast = Toast.makeText(ChangeStockDialogFragment.this.getActivity(), "the input number is not available", Toast.LENGTH_SHORT);
+                        Toast toast = Toast.makeText(ChangeStockDialogFragment.this.getActivity(),getString(R.string.edit_stock_in_dialog_warning), Toast.LENGTH_SHORT);
                         toast.show();
                     }
                 }
