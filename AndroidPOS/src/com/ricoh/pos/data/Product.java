@@ -77,9 +77,9 @@ public class Product {
 		this.stock = stock;
 	}
 
-	public String setProductImagePath(String fileName) {
+	public String setProductImagePath(String imagePath) {
 
-		if (fileName == null || fileName.length() == 0) {
+		if (imagePath == null || imagePath.length() == 0) {
 			throw new IllegalArgumentException("Passing imagePath is not valid");
 		}
 
