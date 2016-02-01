@@ -22,11 +22,14 @@ import android.widget.Toast;
 import com.ricoh.pos.data.Order;
 import com.ricoh.pos.data.Product;
 import com.ricoh.pos.data.SingleSalesRecord;
+import com.ricoh.pos.model.ProductsManager;
 import com.ricoh.pos.model.RegisterManager;
 import com.ricoh.pos.model.SalesRecordManager;
+import com.ricoh.pos.model.WomanShopIOManager;
 
 import java.io.FileNotFoundException;
 import java.text.NumberFormat;
+import java.util.List;
 
 public class RegisterConfirmActivity extends FragmentActivity
 		implements RegisterConfirmFragment.OnButtonClickListener, OrderListFragment.OnOrderClickListener {
@@ -78,6 +81,14 @@ public class RegisterConfirmActivity extends FragmentActivity
 			SingleSalesRecord record = RegisterManager.getInstance().getSingleSalesRecord();
 			record.calcDiscountAllocation(); // 値引き割り当ての実施
 			SalesRecordManager.getInstance().storeSingleSalesRecord(salesDatabase, record);
+			WomanShopIOManager womanShopIOManager = new WomanShopIOManager();
+			DatabaseHelper databaseHelper = new DatabaseHelper(this);
+			womanShopIOManager.setDatabase(databaseHelper.getWritableDatabase());
+			for (Order order : record.getAllOrders()) {
+				womanShopIOManager.updateStock(order.getProduct(), order.getNumberOfOrder());
+			}
+			List<Product> productList = womanShopIOManager.searchAll();
+			ProductsManager.getInstance().updateProducts(productList);
 		}
 
 		// Clear this record

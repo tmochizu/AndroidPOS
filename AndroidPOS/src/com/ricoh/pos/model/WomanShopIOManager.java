@@ -242,6 +242,15 @@ public class WomanShopIOManager implements IOManager {
 		return new Product(productCode, itemName, productCategory, costToEntrepreneur, salePrice, stock);
 	}
 
+	public void updateStock(Product product, int decrement) {
+		Product productInDb = searchById(product.getCode());
+		int stock = productInDb.getStock() - decrement;
+		ContentValues contentValue = new ContentValues();
+		contentValue.put(WomanShopDataDef.STOCK.name(), stock > 0 ? stock : 0);
+		String[] args = {productInDb.getCode()};
+		database.update(DATABASE_NAME, contentValue, WomanShopDataDef.PRODUCT_CODE.name() + "=?", args);
+	}
+
 
 	public String getCSVStoragePath() {
 		File exterlStorage = Environment.getExternalStorageDirectory();
