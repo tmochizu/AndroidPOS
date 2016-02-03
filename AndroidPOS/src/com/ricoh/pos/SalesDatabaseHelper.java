@@ -57,7 +57,7 @@ public class SalesDatabaseHelper extends SQLiteOpenHelper {
 			} 
 			
 			if(oldVersion < 3){
-				String[] findKeys = new String[]{"10 साल से कम","10 साल से ज्यादा","20 से 29 के बीच","30 से 39  के बीच","40 से 49 के बीच","50 से 59 के बीच","60 से 70 के बीच","अन्य"};
+				String[] findKeys = new String[]{"10 साल से कम","10 साल से ज्यादा","20 से 29 के बीच","30 से 39 के बीच","40 से 49 के बीच","50 से 59 के बीच","60 से 70 के बीच","अन्य"};
 				String[] results = new String[]{"10s Low","10s High","20s","30s","40s","50s","60s","Other"};
 				
 				for(int i = 0; i<findKeys.length; i++){
