@@ -3,8 +3,6 @@ package com.ricoh.pos;
 
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.widget.EditText;
 
@@ -35,29 +33,10 @@ public class EditActivity extends FragmentActivity implements
 
         Log.d("CategoryDetailActivity", "createEditText");
         final EditText editText = (EditText) findViewById(R.id.id_search_text_box_2);
-        editText.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                Log.d("beforeTextChanged", "beforeTextChanged");
-            }
 
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                latestSearchWord = s.toString();
-                Bundle arguments = new Bundle();
-                arguments.putString(ProductFragment.ARG_ITEM_ID, latestItemId);
-                arguments.putString(ProductFragment.ARG_SEARCH_WORD, latestSearchWord);
-                ProductFragment fragment = new ProductFragment();
-                fragment.setArguments(arguments);
-                getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.product_list, fragment).commit();
-            }
+        ActivityName activityName=ActivityName.EDIT_ACTIVITY;
 
-            @Override
-            public void afterTextChanged(Editable s) {
-                Log.d("afterTextChanged", "afterTextChanged");
-            }
-        });
+        editText.addTextChangedListener(new SearchBoxWatcher(latestItemId,latestSearchWord,activityName,getSupportFragmentManager()));
     }
 
     @Override

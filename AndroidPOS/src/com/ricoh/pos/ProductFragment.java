@@ -45,51 +45,11 @@ import java.text.NumberFormat;
 import java.util.ArrayList;
 
 
-public class ProductFragment extends ListFragment {
-
-    public static final String ARG_ITEM_ID = "item_id";
-    public static final String ARG_SEARCH_WORD = "serch_word";
-    private static final int MAXIMUM_FRACTION_DIGITS = 2;
-    private final int IMAGE_VIEW_SIZE = 120;
-    private RegisterManager registerManager;
-    private String category;
-    private ArrayList<Product> productList;
-    private ArrayList<Product> searchProductList;
-
-    public ProductFragment() {
-        this.registerManager = RegisterManager.getInstance();
-    }
+public class ProductFragment extends GetProductFragment {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-
-        Log.d("ProductFragment","onCreate is called");
-
-        Bundle bundle = getArguments();
-        this.category = bundle.getString(ProductFragment.ARG_ITEM_ID);
-        String searchWord = bundle.getString(ProductFragment.ARG_SEARCH_WORD);
-
-        if (category.equals(getString(R.string.category_title_default))) {
-            productList = ProductsManager.getInstance().getAllProducts();
-        } else {
-            productList = ProductsManager.getInstance().getProductsInCategory(category);
-        }
-
-        if (null != searchWord && !searchWord.isEmpty()) {
-            searchProductList = new ArrayList<Product>();
-            for (Product product : productList) {
-                //TODO ここがうまくいったら、containsを使う。ほかのクラスでindexOfを使っている箇所がある
-                if (product.getName().toUpperCase().contains(searchWord.toUpperCase())) {
-                    searchProductList.add(product);
-                }
-            }
-        } else {
-            //FIXME 変数名を直す。
-            searchProductList = productList;
-        }
-        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
     }
 
     public void refresh() {
@@ -97,7 +57,7 @@ public class ProductFragment extends ListFragment {
     }
 
 
-    protected void showDialogFragment(Product product) {
+    public void showDialogFragment(Product product) {
         ChangeStockDialogFragment fragment = new ChangeStockDialogFragment();
         fragment.giveProductData(product);
         fragment.show(getActivity().getFragmentManager(), "ChangeStockDialogFragment");
@@ -279,7 +239,7 @@ public class ProductFragment extends ListFragment {
 
         setListAdapter(new ListAdapter(getActivity()));
     }
-
+//
     public class ListAdapter extends BaseAdapter {
         private LayoutInflater inflater;
 
@@ -290,6 +250,8 @@ public class ProductFragment extends ListFragment {
         @Override
         public int getCount() {
             return searchProductList.size();
+            // /return 5;
+//            return ProductFragment.this.
         }
 
         @Override

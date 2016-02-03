@@ -3,8 +3,6 @@ package com.ricoh.pos;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.widget.EditText;
 
@@ -68,29 +66,8 @@ public class CategoryListActivity extends FragmentActivity implements
 
 			Log.d("CategoryDetailActivity", "createEditText");
 			final EditText editText = (EditText)findViewById(R.id.id_search_text_box);
-			editText.addTextChangedListener(new TextWatcher() {
-				@Override
-				public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-					Log.d("beforeTextChanged", "beforeTextChanged");
-				}
 
-				@Override
-				public void onTextChanged(CharSequence s, int start, int before, int count) {
-					latestSearchWord = s.toString();
-					Bundle arguments = new Bundle();
-					arguments.putString(CategoryDetailFragment.ARG_ITEM_ID, latestItemId);
-					arguments.putString(CategoryDetailFragment.ARG_SEARCH_WORD, latestSearchWord);
-					CategoryDetailFragment fragment = new CategoryDetailFragment();
-					fragment.setArguments(arguments);
-					getSupportFragmentManager().beginTransaction()
-							.replace(R.id.category_detail_container, fragment).commit();
-				}
-
-				@Override
-				public void afterTextChanged(Editable s) {
-					Log.d("afterTextChanged", "afterTextChanged");
-				}
-			});
+			editText.addTextChangedListener(new SearchBoxWatcher(latestItemId,latestSearchWord,ActivityName.CATEGORY_LIST_ACTIVITY,getSupportFragmentManager()));
 		}
 
 		// TODO: If exposing deep links into your app, handle intents here.
