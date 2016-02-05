@@ -19,17 +19,17 @@ public class Product {
 	private String code;
 	private String category;
 	private String name;
-	private double originalCost;
-	private double price;
+	private long originalCost;	// 原価。単位はパイサ。ルピー表示する場合は100で割ること
+	private long price;			// 販売価格。単位はパイサ。ルピー表示する場合は100で割ること
 	private int stock;
 	private String imagePath;
 	private static String imageStorageFolder = "/Ricoh";
 
-	public Product(String code, String name, String category, double originalCost, double price) {
+	public Product(String code, String name, String category, long originalCost, long price) {
 		this(code, category, name, originalCost, price, 0);
 	}
 
-	public Product(String code, String name, String category, double originalCost, double price, int stock) {
+	public Product(String code, String name, String category, long originalCost, long price, int stock) {
 
 
 		if (code == null || code.isEmpty() || category == null || category.isEmpty() ||
@@ -50,7 +50,7 @@ public class Product {
 	// /////////////////////////
 	// Setter
 	// /////////////////////////
-	public void setOriginalCost(double cost) {
+	public void setOriginalCost(long cost) {
 
 		if (cost < 0) {
 			throw new IllegalArgumentException("Original cost should be over zero");
@@ -59,7 +59,7 @@ public class Product {
 		this.originalCost = cost;
 	}
 
-	public void setPrice(double price) {
+	public void setPrice(long price) {
 
 		if (price < 0) {
 			throw new IllegalArgumentException("Price should be over zero");
@@ -103,11 +103,11 @@ public class Product {
 		return this.name;
 	}
 
-	public double getOriginalCost() {
+	public long getOriginalCost() {
 		return this.originalCost;
 	}
 
-	public double getPrice() {
+	public long getPrice() {
 		return this.price;
 	}
 
@@ -117,6 +117,20 @@ public class Product {
 
 	public String getProductImagePath() {
 		return imagePath;
+	}
+
+	/**
+	 * 表示用に単位をルピーにした価格を返す
+	 * @return double
+	 */
+	public double getRupeePrice()
+	{
+		return WomanShopFormatter.convertPaisaToRupee(this.price);
+	}
+
+	public double getRupeeOriginalCost()
+	{
+		return WomanShopFormatter.convertPaisaToRupee(this.originalCost);
 	}
 
 	@Override
@@ -172,8 +186,8 @@ public class Product {
 		sb.append("code='").append(code).append("'");
 		sb.append(", category='").append(category).append("'");
 		sb.append(", name='").append(name).append("'");
-		sb.append(", originalCost=").append(originalCost);
-		sb.append(", price=").append(price);
+		sb.append(", originalCost=").append(WomanShopFormatter.convertPaisaToRupee(originalCost));
+		sb.append(", price=").append(WomanShopFormatter.convertPaisaToRupee(price));
 		sb.append(", stock=").append(stock);
 		sb.append(", imagePath='").append(imagePath).append("'");
 		sb.append("}");

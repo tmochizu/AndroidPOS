@@ -117,7 +117,7 @@ public class SalesRecordDetailFragment extends ListFragment {
 			TextView priceView = (TextView) convertView.findViewById(R.id.price);
 			priceView.setPadding(10, 0, 0, 0);
 			NumberFormat.getInstance().setMaximumFractionDigits(MAXIMUM_FRACTION_DIGITS);
-			priceView.setText(NumberFormat.getInstance().format(product.getPrice()));
+			priceView.setText(NumberFormat.getInstance().format(product.getRupeePrice()));
 
 			TextView numberOfSalseView = (TextView) convertView.findViewById(R.id.numberOfSales);
 			numberOfSalseView.setPadding(10, 0, 0, 0);

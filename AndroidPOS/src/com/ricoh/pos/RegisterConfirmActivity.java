@@ -230,7 +230,7 @@ public class RegisterConfirmActivity extends FragmentActivity
 			TextView priceView = (TextView) contentView.findViewById(R.id.price);
 			priceView.setPadding(10, 0, 0, 0);
 			NumberFormat.getInstance().setMaximumFractionDigits(2);
-			priceView.setText(NumberFormat.getInstance().format(product.getPrice()));
+			priceView.setText(NumberFormat.getInstance().format(product.getRupeePrice()));
 		}
 
 		private void setNumberOfOrderView(View contenView) {

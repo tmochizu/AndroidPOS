@@ -33,7 +33,7 @@ public class SalesDatabaseHelper extends SQLiteOpenHelper {
 		if (oldVersion < newVersion) {
 			if (oldVersion == 1) {
 				db.execSQL("alter table " + WS_SALES_ORDER_TABLE_NAME
-						+ " add " + WomanShopSalesOrderDef.DISCOUNT.name() + " Real");
+						+ " add " + WomanShopSalesOrderDef.DISCOUNT.name() + " Integer");
 
 				WomanShopSalesIOManager womanShopSalesIoManager = WomanShopSalesIOManager.getInstance();
 				womanShopSalesIoManager.setDatabase(db);
@@ -63,7 +63,7 @@ public class SalesDatabaseHelper extends SQLiteOpenHelper {
 		db.execSQL("Create Table " + WS_SALES_TABLE_NAME + " ("
 						+ "_id Integer Primary Key, "
 						+ WomanShopSalesDef.DATE.name() + " Text, "
-						+ WomanShopSalesDef.DISCOUNT.name() + " Real, "
+						+ WomanShopSalesDef.DISCOUNT.name() + " Integer, "
 						+ WomanShopSalesDef.USER_AGES.name() + " Text)"
 		);
 		Log.d("debug", "SingleSales Table onCreate");
@@ -73,10 +73,10 @@ public class SalesDatabaseHelper extends SQLiteOpenHelper {
 						+ WomanShopSalesOrderDef.PRODUCT_CODE.name() + " Text, "
 						+ WomanShopSalesOrderDef.PRODUCT_NAME.name() + " Text, "
 						+ WomanShopSalesOrderDef.CATEGORY_NAME.name() + " Text, "
-						+ WomanShopSalesOrderDef.PURCHASE_PRICE.name() + " Real, "
-						+ WomanShopSalesOrderDef.UNIT_PRICE.name() + " Real, "
+						+ WomanShopSalesOrderDef.PURCHASE_PRICE.name() + " Integer, "
+						+ WomanShopSalesOrderDef.UNIT_PRICE.name() + " Integer, "
 						+ WomanShopSalesOrderDef.QTY.name() + " Integer, "
-						+ WomanShopSalesOrderDef.DISCOUNT.name() + " Real, "
+						+ WomanShopSalesOrderDef.DISCOUNT.name() + " Integer, "
 						+ WomanShopSalesOrderDef.SINGLE_SALES_ID.name() + " Integer)"
 		);
 		Log.d("debug", "SingleSalesOrder table onCreate");

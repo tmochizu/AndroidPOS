@@ -23,8 +23,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 				+ WomanShopDataDef.PRODUCT_CATEGORY.name() + " Text, "
 				+ WomanShopDataDef.ITEM_CATEGORY.name() + " Text, "
 				+ WomanShopDataDef.STOCK.name() + " Integer, "
-				+ WomanShopDataDef.SALE_PRICE.name() + " Real, "
-				+ WomanShopDataDef.COST_TO_ENTREPRENEUR.name() + " Real)");
+				+ WomanShopDataDef.SALE_PRICE.name() + " Integer, "
+				+ WomanShopDataDef.COST_TO_ENTREPRENEUR.name() + " Integer)");
 		Log.d("debug", "Database onCreate");
 	}
 

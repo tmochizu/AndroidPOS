@@ -17,6 +17,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.ricoh.pos.data.OrderUpdateInfo;
+import com.ricoh.pos.data.WomanShopFormatter;
 import com.ricoh.pos.model.RegisterManager;
 import com.ricoh.pos.model.UpdateOrderListener;
 
@@ -72,7 +73,7 @@ public class RegisterConfirmFragment extends Fragment implements UpdateOrderList
 			}
 		});
 		
-		double totalAmount = registerManager.getOriginalTotalAmount();
+		long totalAmount = registerManager.getOriginalTotalAmount();
 		updateTotalAmount(v, totalAmount, totalAmount);
 		
 		// Add Spinner for User Attributes 
@@ -93,8 +94,6 @@ public class RegisterConfirmFragment extends Fragment implements UpdateOrderList
 			}
         });
 	    userAttributesSpinner.setAdapter(adapter);
-	    
-		
 		return v;
 	}
 
@@ -111,15 +110,18 @@ public class RegisterConfirmFragment extends Fragment implements UpdateOrderList
 				orderInfo.getTotalAmountAfterDiscount());
 	}
 	
-	private void updateTotalAmount(View view, double totalPayment, double totalPaymentAfterDiscount)
+	private void updateTotalAmount(View view, long totalPayment, long totalPaymentAfterDiscount)
 	{
+		double totalPaymentRupee = WomanShopFormatter.convertPaisaToRupee(totalPayment);
+		double totalPaymentRupeeAfterDiscount = WomanShopFormatter.convertPaisaToRupee(totalPaymentAfterDiscount);
+
 		TextView totalPaymentView = (TextView) view.findViewById(R.id.beforwTotalAmountView);
 		NumberFormat format = NumberFormat.getInstance();
 		format.setMaximumFractionDigits(MAXIMUM_FRACTION_DIGITS);
-		totalPaymentView.setText(format.format(totalPayment) + getString(R.string.currency_india));
+		totalPaymentView.setText(format.format(totalPaymentRupee) + getString(R.string.currency_india));
 		
 		TextView totalPaymentViewAfterDiscount = (TextView) view.findViewById(R.id.totalPaymentView);
-		totalPaymentViewAfterDiscount.setText(format.format(totalPaymentAfterDiscount) + getString(R.string.currency_india));
+		totalPaymentViewAfterDiscount.setText(format.format(totalPaymentRupeeAfterDiscount) + getString(R.string.currency_india));
 	}
 
 	public interface OnButtonClickListener { 

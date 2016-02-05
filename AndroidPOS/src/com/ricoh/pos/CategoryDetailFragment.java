@@ -185,7 +185,7 @@ public class CategoryDetailFragment extends ListFragment {
 			NumberFormat.getInstance().setMaximumFractionDigits(MAXIMUM_FRACTION_DIGITS);
 
 			TextView priceView = (TextView) convertView.findViewById(R.id.price);
-			priceView.setText(NumberFormat.getInstance().format(product.getPrice()) + getString(R.string.currency_india));
+			priceView.setText(NumberFormat.getInstance().format(product.getRupeePrice()) + getString(R.string.currency_india));
 
 			TextView stockView = (TextView) convertView.findViewById(R.id.stock);
 			int stock = product.getStock();

@@ -14,6 +14,7 @@ import com.ricoh.pos.SalesDatabaseHelper;
 import com.ricoh.pos.data.Order;
 import com.ricoh.pos.data.Product;
 import com.ricoh.pos.data.SingleSalesRecord;
+import com.ricoh.pos.data.WomanShopFormatter;
 import com.ricoh.pos.data.WomanShopSalesDef;
 import com.ricoh.pos.data.WomanShopSalesOrderDef;
 
@@ -250,18 +251,18 @@ public class WomanShopSalesIOManager implements IOManager {
 					Date salesDate = DATE_FORMAT.parse(cursor.getString(JoinedTable.Sale.DATE));
 					record = new SingleSalesRecord(salesDate);
 					record.setId(salesId);
-					record.setDiscountValue(cursor.getDouble(JoinedTable.Sale.DISCOUNT));
+					record.setDiscountValue(cursor.getLong(JoinedTable.Sale.DISCOUNT));
 					record.setUserAttribute(cursor.getString(JoinedTable.Sale.USER_AGES));
 				}
 
 				Product product = new Product(cursor.getString(JoinedTable.Order.PRODUCT_CODE),
 						cursor.getString(JoinedTable.Order.PRODUCT_NAME),
 						cursor.getString(JoinedTable.Order.CATEGORY_NAME),
-						cursor.getDouble(JoinedTable.Order.PURCHASE_PRICE),
-						cursor.getDouble(JoinedTable.Order.UNIT_PRICE));
+						cursor.getLong(JoinedTable.Order.PURCHASE_PRICE),
+						cursor.getLong(JoinedTable.Order.UNIT_PRICE));
 
 				Order order = new Order(product, cursor.getInt(JoinedTable.Order.QTY));
-				order.setDiscount(cursor.getDouble(JoinedTable.Order.DISCOUNT));
+				order.setDiscount(cursor.getLong(JoinedTable.Order.DISCOUNT));
 
 				record.addOrder(order);
 
@@ -439,11 +440,6 @@ public class WomanShopSalesIOManager implements IOManager {
 				Log.d("debug", DEFAULT_CHARSET.displayName() + " is unsupported", e);
 				throw e;
 			}
-			/*
-			catch (IOException e) {
-                Log.d("debug", "file write error", e);
-                throw e;
-            }*/
 
 			try {
 				for (SingleSalesRecord record : records) {
@@ -453,13 +449,14 @@ public class WomanShopSalesIOManager implements IOManager {
 						Order order = orders.get(orderNo);
 						Product product = order.getProduct();
 
+						// CSV出力する際に、金額を単位変換する。
 						String result = product.getCode() + ","
 								+ product.getCategory() + ","
 								+ product.getName() + ","
 								+ order.getNumberOfOrder() + ","
-								+ String.format("%.2f", product.getPrice()) + ","
-								+ String.format("%.2f", product.getPrice() * order.getNumberOfOrder()) + ","
-								+ String.format("%.2f", order.getDiscount()) + ","
+								+ String.format("%.2f", WomanShopFormatter.convertPaisaToRupee(product.getPrice())) + ","
+								+ String.format("%.2f", WomanShopFormatter.convertPaisaToRupee(product.getPrice() * order.getNumberOfOrder())) + ","
+								+ String.format("%.2f", WomanShopFormatter.convertPaisaToRupee(order.getDiscount())) + ","
 								+ record.getSalesDate().toString() + ","
 								+ record.getUserAttribute() + "\n";
 

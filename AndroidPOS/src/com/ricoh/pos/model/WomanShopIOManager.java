@@ -17,6 +17,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -84,8 +85,14 @@ public class WomanShopIOManager implements IOManager {
 				String code = split[WomanShopDataDef.PRODUCT_CODE.ordinal()];
 				String name = split[WomanShopDataDef.ITEM_CATEGORY.ordinal()];
 				String category = split[WomanShopDataDef.PRODUCT_CATEGORY.ordinal()];
-				double originalCost = Double.valueOf(split[WomanShopDataDef.COST_TO_ENTREPRENEUR.ordinal()]);
-				double price = Double.valueOf(split[WomanShopDataDef.SALE_PRICE.ordinal()]);
+
+				// CSVはルピー単位の表記なので、文字列で読み込んでBigDecimalにした後、100倍してパイサ単位の整数に変換
+				BigDecimal originalCostDecimal = new BigDecimal(split[WomanShopDataDef.COST_TO_ENTREPRENEUR.ordinal()]);
+				long originalCost = originalCostDecimal.scaleByPowerOfTen(2).longValue();
+
+				BigDecimal priceDecimal = new BigDecimal(split[WomanShopDataDef.SALE_PRICE.ordinal()]);
+				long price = priceDecimal.scaleByPowerOfTen(2).longValue();
+
 				int stock = Integer.valueOf(split[WomanShopDataDef.STOCK.ordinal()]);
 
 				Product product = new Product(code, name, category, originalCost, price, stock);
@@ -228,8 +235,8 @@ public class WomanShopIOManager implements IOManager {
 		String productCode = cursor.getString(indexProductCode);
 		String productCategory = cursor.getString(indexProductCategory);
 		String itemName = cursor.getString(indexItemName);
-		double salePrice = cursor.getDouble(indexSalePrice);
-		double costToEntrepreneur = cursor.getDouble(indexCostToEntrepreneur);
+		long salePrice = cursor.getLong(indexSalePrice);
+		long costToEntrepreneur = cursor.getLong(indexCostToEntrepreneur);
 		int stock = cursor.getInt(indexStock);
 
 		return new Product(productCode, itemName, productCategory, costToEntrepreneur, salePrice, stock);
@@ -243,7 +250,6 @@ public class WomanShopIOManager implements IOManager {
 		String[] args = {productInDb.getCode()};
 		database.update(DATABASE_NAME, contentValue, WomanShopDataDef.PRODUCT_CODE.name() + "=?", args);
 	}
-
 
 	public String getCSVStoragePath() {
 		File exterlStorage = Environment.getExternalStorageDirectory();
