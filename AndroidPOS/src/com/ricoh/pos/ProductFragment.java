@@ -4,63 +4,57 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
-import android.app.FragmentManager;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.ListFragment;
-import android.text.Editable;
+import android.support.v4.app.FragmentTransaction;
 import android.text.InputType;
-import android.text.TextWatcher;
 import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ricoh.pos.data.Product;
-import com.ricoh.pos.data.WomanShopDataDef;
 import com.ricoh.pos.model.ProductsManager;
-import com.ricoh.pos.model.RegisterManager;
 import com.ricoh.pos.model.WomanShopIOManager;
 
 import java.io.FileNotFoundException;
 import java.text.NumberFormat;
-import java.util.ArrayList;
+
+
 
 
 public class ProductFragment extends GetProductFragment {
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
+    private final static String productCodeKeyName="productCode";
+    private final static String productCategoryKeyName="productCategory";
 
     public void refresh() {
         setListAdapter(new ListAdapter(getActivity()));
     }
 
-
     public void showDialogFragment(Product product) {
+        FragmentTransaction ft = getFragmentManager().beginTransaction();
         ChangeStockDialogFragment fragment = new ChangeStockDialogFragment();
-        fragment.giveProductData(product);
-        fragment.show(getActivity().getFragmentManager(), "ChangeStockDialogFragment");
+
+        Bundle bundle = new Bundle();
+        bundle.putString(productCodeKeyName, product.getCode());
+        bundle.putString(productCategoryKeyName, product.getCategory());
+
+        fragment.setArguments(bundle);
+        fragment.show(getActivity().getFragmentManager(),null);
     }
 
     public static class ChangeStockDialogFragment extends DialogFragment {
@@ -68,8 +62,16 @@ public class ProductFragment extends GetProductFragment {
         private final int IMAGE_VIEW_SIZE = 120;
         private Product product;
 
-        public void giveProductData(Product product) {
-            this.product = product;
+        public void getProductData() {
+            String productCode = getArguments().getString(productCodeKeyName);
+            String productCategory = getArguments().getString(productCategoryKeyName);
+            this.product = ProductsManager.getInstance().getProductFromCode(productCategory, productCode);
+        }
+
+        @Override
+        public void onAttach(Activity activity) {
+            super.onAttach(activity);
+            getProductData();
         }
 
         @Override
@@ -93,21 +95,19 @@ public class ProductFragment extends GetProductFragment {
             plusBtn.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    String str = changingEditText.getText().toString();
-                    int num = 0;
+                    String changingEditTextString = changingEditText.getText().toString();
+                    int changingEditTextInteger = 0;
                     try {
-                        num = Integer.parseInt(str);
-                        num++;
+                        changingEditTextInteger = Integer.parseInt(changingEditTextString);
+                        changingEditTextInteger++;
                     } catch (NumberFormatException e) {
-                        Toast toast = Toast.makeText(ChangeStockDialogFragment.this.getActivity(),getString(R.string.edit_stock_in_dialog_warning), Toast.LENGTH_SHORT);
-                        toast.show();
+                        Toast.makeText(ChangeStockDialogFragment.this.getActivity(), getString(R.string.edit_stock_in_dialog_warning), Toast.LENGTH_SHORT).show();
                     } finally {
-
-                        if (num < 0 || num > Integer.MAX_VALUE) {
-                            num = 0;
+                        if (changingEditTextInteger < 0) {
+                            changingEditTextInteger = 0;
                         }
-                        str = String.valueOf(num);
-                        changingEditText.setText(str);
+                        changingEditTextString = String.valueOf(changingEditTextInteger);
+                        changingEditText.setText(changingEditTextString);
                     }
                 }
             });
@@ -116,28 +116,25 @@ public class ProductFragment extends GetProductFragment {
             minusBtn.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    String str = changingEditText.getText().toString();
+                    String changingEditTextString = changingEditText.getText().toString();
                     int num = 0;
                     try {
-                        num = Integer.parseInt(str);
+                        num = Integer.parseInt(changingEditTextString);
                         num = num - 1;
 
                     } catch (NumberFormatException e) {
-                        Toast toast = Toast.makeText(ChangeStockDialogFragment.this.getActivity(), getString(R.string.edit_stock_in_dialog_warning), Toast.LENGTH_SHORT);
-                        toast.show();
+                        Toast.makeText(ChangeStockDialogFragment.this.getActivity(), getString(R.string.edit_stock_in_dialog_warning), Toast.LENGTH_SHORT).show();
                     } finally {
                         if (num < 0) {
                             num = 0;
                         }
-                        str = String.valueOf(num);
-                        changingEditText.setText(str);
+                        changingEditTextString = String.valueOf(num);
+                        changingEditText.setText(changingEditTextString);
                     }
                 }
             });
 
-            //FIXME 画面に表示する文言は xml にまとめる
-
-            builder.setPositiveButton("Edit Stock", new DialogInterface.OnClickListener() {
+            builder.setPositiveButton(getString(R.string.ok_edit), new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     try {
@@ -147,17 +144,15 @@ public class ProductFragment extends GetProductFragment {
                         product.setStock(Integer.parseInt(changingEditText.getText().toString()));
                         confirmEdit(product.getCode(), changingEditText.getText().toString());
 
-                        FragmentActivity activity =(FragmentActivity) getActivity();
-                        ProductFragment fragment =(ProductFragment) activity.getSupportFragmentManager().findFragmentById(R.id.product_list);
+                        FragmentActivity activity = (FragmentActivity) getActivity();
+                        ProductFragment fragment = (ProductFragment) activity.getSupportFragmentManager().findFragmentById(R.id.product_list);
                         fragment.refresh();
-
                     } catch (NumberFormatException e) {
-                        Toast toast = Toast.makeText(ChangeStockDialogFragment.this.getActivity(),getString(R.string.edit_stock_in_dialog_warning), Toast.LENGTH_SHORT);
-                        toast.show();
+                        Toast.makeText(ChangeStockDialogFragment.this.getActivity(), getString(R.string.edit_stock_in_dialog_warning), Toast.LENGTH_SHORT).show();
                     }
                 }
             });
-            builder.setNegativeButton("Cancel", null);
+            builder.setNegativeButton(getString(R.string.cancel_edit), null);
             AlertDialog dialog = builder.create();
 
             return dialog;
@@ -178,7 +173,6 @@ public class ProductFragment extends GetProductFragment {
         }
 
         private void setImageViewForDialog(View convertView, final Product product) {
-            //TODO xmlにかけるかも
             ImageView imageView = (ImageView) convertView.findViewById(R.id.photo);
             imageView.setLayoutParams(new LinearLayout.LayoutParams(IMAGE_VIEW_SIZE, IMAGE_VIEW_SIZE));
 
@@ -212,8 +206,8 @@ public class ProductFragment extends GetProductFragment {
 
             TextView textView = (TextView) convertView.findViewById(R.id.filename);
             String productName = product.getName();
-            if (productName == null || productName.length() == 0) {
-                throw new NullPointerException("Product name is not valid");
+            if (productName == null || productName.isEmpty()) {
+                throw new IllegalArgumentException("Argument is NOT correct");
             }
             textView.setText(productName);
 
@@ -234,12 +228,9 @@ public class ProductFragment extends GetProductFragment {
     @Override
     public void onResume() {
         super.onResume();
-
-        Log.d("ProductFragment:","onResume is called");
-
         setListAdapter(new ListAdapter(getActivity()));
     }
-//
+
     public class ListAdapter extends BaseAdapter {
         private LayoutInflater inflater;
 
@@ -250,8 +241,6 @@ public class ProductFragment extends GetProductFragment {
         @Override
         public int getCount() {
             return searchProductList.size();
-            // /return 5;
-//            return ProductFragment.this.
         }
 
         @Override
@@ -317,8 +306,8 @@ public class ProductFragment extends GetProductFragment {
 
             TextView textView = (TextView) convertView.findViewById(R.id.filename);
             String productName = product.getName();
-            if (productName == null || productName.length() == 0) {
-                throw new NullPointerException("Product name is not valid");
+            if (productName == null || productName.isEmpty()) {
+                throw new IllegalArgumentException("Argument is NOT correct");
             }
             textView.setText(productName);
 
@@ -340,12 +329,6 @@ public class ProductFragment extends GetProductFragment {
             } else {
                 stockView.setTextColor(getResources().getColor(android.R.color.black));
             }
-
-
         }
-
-
     }
-
-
 }

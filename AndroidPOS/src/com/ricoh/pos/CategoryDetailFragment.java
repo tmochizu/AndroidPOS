@@ -3,17 +3,14 @@ package com.ricoh.pos;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.support.v4.app.ListFragment;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
@@ -23,28 +20,11 @@ import android.widget.Toast;
 
 import com.ricoh.pos.data.Order;
 import com.ricoh.pos.data.Product;
-import com.ricoh.pos.model.ProductsManager;
-import com.ricoh.pos.model.RegisterManager;
 
 import java.io.FileNotFoundException;
 import java.text.NumberFormat;
-import java.util.ArrayList;
 
-/**
- * A fragment representing a single Category detail screen. This fragment is
- * either contained in a {@link CategoryListActivity} in two-pane mode (on
- * tablets) or a {@link CategoryDetailActivity} on handsets.
- */
 public class CategoryDetailFragment extends GetProductFragment {
-    /**
-     * Mandatory empty constructor for the fragment manager to instantiate the
-     * fragment (e.g. upon screen orientation changes).
-     */
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
 
     @Override
     public void onResume() {
@@ -53,11 +33,10 @@ public class CategoryDetailFragment extends GetProductFragment {
     }
 
     public class ListAdapter extends BaseAdapter {
-        // private Context contextInAdapter;
+
         private LayoutInflater inflater;
 
         public ListAdapter(Context context) {
-            // contextInAdapter = context;
             inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         }
 
@@ -101,12 +80,7 @@ public class CategoryDetailFragment extends GetProductFragment {
                 imageView.setImageBitmap(image);
                 imageView.setVisibility(View.VISIBLE);
             } catch (FileNotFoundException e) {
-                // プロダクトIDに対応する写真がない。ないことは許容されるので問題はない
-                // ただしViewが再利用されるため、関係ない写真がViewに表示される可能性がある。
-                // そのため写真がない場合はinvisibleにしている。
-                // TODO: 裏ではメモリを余計に消費している可能性があるのでそれをクリアした方が本当は良いはず）
                 imageView.setVisibility(View.INVISIBLE);
-                //imageView.setImageBitmap(null);
             }
 
             imageView.setOnClickListener(new OnClickListener() {
@@ -120,7 +94,6 @@ public class CategoryDetailFragment extends GetProductFragment {
                         dialogFragment.setArguments(arguments);
                         dialogFragment.show(getActivity().getFragmentManager(), ProductDetailDialogFragment.DIALOG_TAG);
                     } catch (FileNotFoundException e) {
-                        Log.e("CategoryDetailFragment", "Product image file is not found.", e);
                         Toast.makeText(getActivity(), R.string.error_image_file_not_found, Toast.LENGTH_SHORT).show();
                     }
                 }
@@ -130,8 +103,8 @@ public class CategoryDetailFragment extends GetProductFragment {
         private void setProductInformationView(View convertView, Product product) {
             TextView textView = (TextView) convertView.findViewById(R.id.filename);
             String productName = product.getName();
-            if (productName == null || productName.length() == 0) {
-                throw new NullPointerException("Product name is not valid");
+            if (productName == null || productName.isEmpty()) {
+                throw new IllegalArgumentException("Argument is NOT correct");
             }
             textView.setText(productName);
 
@@ -216,13 +189,11 @@ public class CategoryDetailFragment extends GetProductFragment {
 
         @Override
         public void afterTextChanged(Editable s) {
-
         }
 
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {
             // TODO Auto-generated method stub
-
         }
 
         @Override
@@ -235,7 +206,5 @@ public class CategoryDetailFragment extends GetProductFragment {
                 registerManager.updateOrder(product, Integer.parseInt(s.toString()));
             }
         }
-
     }
-
 }

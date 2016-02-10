@@ -79,7 +79,7 @@ public class Product {
 
 	public String setProductImagePath(String imagePath) {
 
-		if (imagePath == null || imagePath.length() == 0) {
+		if (imagePath == null || imagePath.isEmpty()) {
 			throw new IllegalArgumentException("Passing imagePath is not valid");
 		}
 

@@ -17,7 +17,6 @@ public class GetProductFragment extends ListFragment {
     private String category;
     private ArrayList<Product> productList;
     protected ArrayList<Product> searchProductList;
-    // This is the maximum fraction digits for total payment to display.
     protected static final int MAXIMUM_FRACTION_DIGITS = 2;
     protected final int IMAGE_VIEW_SIZE = 120;
     protected RegisterManager registerManager;
@@ -43,13 +42,11 @@ public class GetProductFragment extends ListFragment {
         if (null != searchWord && !searchWord.isEmpty()) {
             searchProductList = new ArrayList<Product>();
             for (Product product : productList) {
-                //TODO ここがうまくいったら、containsを使う。ほかのクラスでindexOfを使っている箇所がある
                 if (product.getName().toUpperCase().contains(searchWord.toUpperCase())) {
                     searchProductList.add(product);
                 }
             }
         } else {
-            //FIXME 変数名を直す。
             this.searchProductList = productList;
         }
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
