@@ -27,6 +27,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ricoh.pos.data.Product;
+import com.ricoh.pos.data.WomanShopFormatter;
 import com.ricoh.pos.model.ProductsManager;
 import com.ricoh.pos.model.WomanShopIOManager;
 
@@ -314,11 +315,10 @@ public class ProductFragment extends GetProductFragment {
             NumberFormat.getInstance().setMaximumFractionDigits(MAXIMUM_FRACTION_DIGITS);
 
             TextView priceView = (TextView) convertView.findViewById(R.id.price);
-            priceView.setText(NumberFormat.getInstance().format(product.getPrice()));
+            priceView.setText(NumberFormat.getInstance().format(WomanShopFormatter.convertPaisaToRupee(product.getPrice())));
 
             TextView costView = (TextView) convertView.findViewById(R.id.cost);
-            double cost = product.getOriginalCost();
-            costView.setText(NumberFormat.getInstance().format(cost));
+            costView.setText(NumberFormat.getInstance().format(WomanShopFormatter.convertPaisaToRupee(product.getOriginalCost())));
 
             TextView stockView = (TextView) convertView.findViewById(R.id.stock);
             int stock = product.getStock();

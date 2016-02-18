@@ -30,10 +30,8 @@ public class Product {
 	}
 
 	public Product(String code, String name, String category, long originalCost, long price, int stock) {
-
-
 		if (code == null || code.isEmpty() || category == null || category.isEmpty() ||
-				name == null || name.isEmpty() || originalCost <= 0 || price <= 0 || stock < 0) {
+			name == null || name.isEmpty() || originalCost <= 0 || price <= 0 || stock < 0) {
 			throw new IllegalArgumentException("invalid params:code=" + code + "name=" + name + "category=" +
 					category + "originalCost=" + originalCost + "price=" + price + "stock=" + stock);
 		}
@@ -139,8 +137,8 @@ public class Product {
 		boolean sameCode = this.code.equals(targetProduct.getCode());
 		boolean sameCategory = this.category.equals(targetProduct.getCategory());
 		boolean sameName = this.name.equals(targetProduct.getName());
-		boolean sameOriginalCost = Double.compare(this.originalCost, targetProduct.getOriginalCost()) == 0;
-		boolean samePrice = Double.compare(this.price, targetProduct.getPrice()) == 0;
+		boolean sameOriginalCost = Long.compare(this.originalCost, targetProduct.getOriginalCost()) == 0;
+		boolean samePrice = Long.compare(this.price, targetProduct.getPrice()) == 0;
 
 		return sameCode && sameCategory && sameName && sameOriginalCost && samePrice;
 	}

@@ -2,17 +2,24 @@ package com.ricoh.pos;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 import com.ricoh.pos.data.Order;
+import com.ricoh.pos.data.Product;
 import com.ricoh.pos.data.SingleSalesRecord;
 import com.ricoh.pos.data.WomanShopSalesDef;
 import com.ricoh.pos.data.WomanShopSalesOrderDef;
 import com.ricoh.pos.model.WomanShopSalesIOManager;
 
+import java.math.BigDecimal;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Locale;
 
 
 /**
@@ -25,37 +32,7 @@ public class SalesDatabaseHelper extends SQLiteOpenHelper {
 	public static final String WS_SALES_ORDER_TABLE_NAME = "tbl_ws_sales_order";
 
 	public SalesDatabaseHelper(Context context) {
-		super(context, SALES_DB_NAME, null, 2);
-	}
-
-	@Override
-	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-		if (oldVersion < newVersion) {
-			if (oldVersion == 1) {
-				db.execSQL("alter table " + WS_SALES_ORDER_TABLE_NAME
-						+ " add " + WomanShopSalesOrderDef.DISCOUNT.name() + " Integer");
-
-				WomanShopSalesIOManager womanShopSalesIoManager = WomanShopSalesIOManager.getInstance();
-				womanShopSalesIoManager.setDatabase(db);
-				ArrayList<SingleSalesRecord> sales = womanShopSalesIoManager.searchAll();
-
-				for (SingleSalesRecord sale : sales) {
-					if (sale.getDiscountValue() != 0) {
-						sale.calcDiscountAllocation();
-
-						ArrayList<Order> orders = sale.getAllOrders();
-						for (Order order : orders) {
-							ContentValues value = new ContentValues();
-							value.put(WomanShopSalesOrderDef.DISCOUNT.name(), order.getDiscount());
-							db.update(WS_SALES_ORDER_TABLE_NAME, value,
-									WomanShopSalesOrderDef.SINGLE_SALES_ID.name() + " = ? and "
-											+ WomanShopSalesOrderDef.PRODUCT_CODE.name() + " = ?",
-									new String[]{String.valueOf(sale.getId()), order.getProductCode()});
-						}
-					}
-				}
-			}
-		}
+		super(context, SALES_DB_NAME, null, 3);
 	}
 
 	@Override
@@ -63,7 +40,7 @@ public class SalesDatabaseHelper extends SQLiteOpenHelper {
 		db.execSQL("Create Table " + WS_SALES_TABLE_NAME + " ("
 						+ "_id Integer Primary Key, "
 						+ WomanShopSalesDef.DATE.name() + " Text, "
-						+ WomanShopSalesDef.DISCOUNT.name() + " Integer, "
+						+ WomanShopSalesDef.DISCOUNT.name() + " Integer INTEGER NOT NULL DEFAULT 0, "
 						+ WomanShopSalesDef.USER_AGES.name() + " Text)"
 		);
 		Log.d("debug", "SingleSales Table onCreate");
@@ -76,9 +53,221 @@ public class SalesDatabaseHelper extends SQLiteOpenHelper {
 						+ WomanShopSalesOrderDef.PURCHASE_PRICE.name() + " Integer, "
 						+ WomanShopSalesOrderDef.UNIT_PRICE.name() + " Integer, "
 						+ WomanShopSalesOrderDef.QTY.name() + " Integer, "
-						+ WomanShopSalesOrderDef.DISCOUNT.name() + " Integer, "
+						+ WomanShopSalesOrderDef.DISCOUNT.name() + " Integer INTEGER NOT NULL DEFAULT 0, "
 						+ WomanShopSalesOrderDef.SINGLE_SALES_ID.name() + " Integer)"
 		);
 		Log.d("debug", "SingleSalesOrder table onCreate");
+	}
+
+	@Override
+	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+		if (oldVersion < newVersion) {
+			// Version2->3の時にテーブルを大きく書き換えたため、Version1->2の時のDB変更処理も、
+			// Version2->3の処理の一部として処理できる。
+			if (oldVersion == 1 || oldVersion == 2) {
+				this.convertDoubleToLong(db, oldVersion);
+			}
+		}
+	}
+
+	// スキーマ変更用の旧データ構造
+	class OldProduct {
+		public String code;
+		public String category;
+		public String name;
+		public double originalCost;    // 原価。
+		public double price;            // 販売価格。
+		public int stock;
+	}
+	class OldOrder {
+		public OldProduct product;
+		public int num;
+		public double discountValue;
+	}
+	class OldSalesRecord {
+		public long id;
+		public Date salesDate;
+		public double discount;
+		public String userAttribute;
+		public ArrayList<OldOrder> orders;
+	}
+
+	private void convertDoubleToLong(SQLiteDatabase db, int oldVersion)
+	{
+		ArrayList<OldSalesRecord> oldSales = this.dumpOldData(db, oldVersion);
+		this.alterTable(db);
+		this.importOldData(db, oldSales, oldVersion);
+	}
+
+	private ArrayList<OldSalesRecord> dumpOldData(SQLiteDatabase db, int oldVerison)
+	{
+		String[] oldJoinedTable = new String[]{
+				SalesDatabaseHelper.WS_SALES_TABLE_NAME + "." + WomanShopSalesDef.DATE.name(),
+				SalesDatabaseHelper.WS_SALES_TABLE_NAME + "." + WomanShopSalesDef.DISCOUNT.name(),
+				SalesDatabaseHelper.WS_SALES_TABLE_NAME + "." + WomanShopSalesDef.USER_AGES.name(),
+				SalesDatabaseHelper.WS_SALES_ORDER_TABLE_NAME + "." + WomanShopSalesOrderDef.PRODUCT_CODE.name(),
+				SalesDatabaseHelper.WS_SALES_ORDER_TABLE_NAME + "." + WomanShopSalesOrderDef.CATEGORY_NAME.name(),
+				SalesDatabaseHelper.WS_SALES_ORDER_TABLE_NAME + "." + WomanShopSalesOrderDef.PRODUCT_NAME.name(),
+				SalesDatabaseHelper.WS_SALES_ORDER_TABLE_NAME + "." + WomanShopSalesOrderDef.PURCHASE_PRICE.name(),
+				SalesDatabaseHelper.WS_SALES_ORDER_TABLE_NAME + "." + WomanShopSalesOrderDef.UNIT_PRICE.name(),
+				SalesDatabaseHelper.WS_SALES_ORDER_TABLE_NAME + "." + WomanShopSalesOrderDef.QTY.name(),
+				SalesDatabaseHelper.WS_SALES_ORDER_TABLE_NAME + "." + WomanShopSalesOrderDef.DISCOUNT.name(),
+				SalesDatabaseHelper.WS_SALES_ORDER_TABLE_NAME + "." + WomanShopSalesOrderDef.SINGLE_SALES_ID.name()
+		};
+
+		int dateColumnNo = 0;
+		int discountColumnNo = 1;
+		int userAgesColumnNo = 2;
+		int productCodeColumnNo = 3;
+		int categoryColumnNo = 4;
+		int prodctNameColumnNo = 5;
+		int purchasePriceColumnNo = 6;
+		int unitPriceColumnNo = 7;
+		int qtyColumnNo = 8;
+		int orderDiscountColumnNo = 9;
+		int singleSalesIdColumnNo = 10;
+
+		Cursor cursor = null;
+		ArrayList<OldSalesRecord> oldSales = new ArrayList<OldSalesRecord>();
+
+		try {
+			// 最初期のDBの場合は、まずカラムを足して構造をバージョン２にあわせる
+			if (oldVerison == 1) {
+				db.execSQL("alter table " + WS_SALES_ORDER_TABLE_NAME
+						+ " add " + WomanShopSalesOrderDef.DISCOUNT.name() + " Integer INTEGER NOT NULL DEFAULT 0");
+			}
+
+			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+			String query = this.makeOldQuery(oldJoinedTable);
+			cursor = db.rawQuery(query, new String[]{});
+			OldSalesRecord record = null;
+			int salesId = -1;
+			boolean recordAvailable = cursor.moveToFirst();
+			while (recordAvailable) {
+				if (salesId != cursor.getInt(10)) {
+					if (record != null) {
+						oldSales.add(record);
+					}
+
+					salesId = cursor.getInt(singleSalesIdColumnNo);
+
+					record = new OldSalesRecord();
+					record.orders = new ArrayList<OldOrder>();
+					record.id = salesId;
+					record.salesDate = dateFormat.parse(cursor.getString(dateColumnNo));
+					record.discount = cursor.getDouble(discountColumnNo);
+					record.userAttribute = cursor.getString(userAgesColumnNo);
+				}
+
+				OldProduct product = new OldProduct();
+				product.code = cursor.getString(productCodeColumnNo);
+				product.name = cursor.getString(prodctNameColumnNo);
+				product.category = cursor.getString(categoryColumnNo);
+				product.originalCost = cursor.getDouble(purchasePriceColumnNo);
+				product.price = cursor.getDouble(unitPriceColumnNo);
+
+				OldOrder order = new OldOrder();
+				order.product = product;
+				order.num = cursor.getInt(qtyColumnNo);
+				order.discountValue = cursor.getDouble(orderDiscountColumnNo);
+
+				record.orders.add(order);
+				recordAvailable = cursor.moveToNext();
+			}
+
+			// 最後の1件を追加
+			if (record != null) {
+				oldSales.add(record);
+			}
+		} catch (ParseException pe) {
+			Log.d("debug", "salseDate parse fail.", pe);
+		} finally {
+			if (cursor != null) {
+				cursor.close();
+			}
+		}
+
+		return oldSales;
+	}
+
+	private String makeOldQuery(String[] oldJoinedTable) {
+		StringBuilder query = new StringBuilder("select ");
+
+		for (String column : oldJoinedTable) {
+			query.append(column).append(", ");
+		}
+		query.delete(query.length() - 2, query.length());
+		query.append(" from ");
+		query.append(SalesDatabaseHelper.WS_SALES_TABLE_NAME);
+		query.append(" left join ");
+		query.append(SalesDatabaseHelper.WS_SALES_ORDER_TABLE_NAME);
+		query.append(" on ");
+		query.append(SalesDatabaseHelper.WS_SALES_TABLE_NAME).append(".ROWID = ");
+		query.append(oldJoinedTable[10]);
+
+		return new String(query);
+	}
+
+	private void alterTable(SQLiteDatabase db)
+	{
+		// drop
+		db.execSQL("DROP TABLE " + WS_SALES_TABLE_NAME);
+		db.execSQL("DROP TABLE " + WS_SALES_ORDER_TABLE_NAME);
+
+		// create
+		this.onCreate(db);
+	}
+
+	private void importOldData(SQLiteDatabase db, ArrayList<OldSalesRecord> oldSales, int oldVersion)
+	{
+		WomanShopSalesIOManager manager = WomanShopSalesIOManager.getInstance();
+		manager.setDatabase(db);
+
+		for (OldSalesRecord oldRecord : oldSales) {
+			// create SingleRecord
+			SingleSalesRecord newRecord = new SingleSalesRecord(oldRecord.salesDate);
+			newRecord.setUserAttribute(oldRecord.userAttribute);
+			BigDecimal discountDecimal = new BigDecimal(oldRecord.discount);
+			long discount = discountDecimal.scaleByPowerOfTen(2).longValue();
+			newRecord.setDiscountValue(discount);
+
+			ArrayList<Order> newOrders = this.createNewOrder(oldRecord);
+			newRecord.setOrders(newOrders);
+
+			// oldVersionが1の時は、order単位のdiscountは初期値の0のままのはずなので、再配分する。
+			// 2以上の時は、oldOrder.discountValueに配分済みの値がdoubleで格納されているはずなので、
+			// createNewOrder()で初期化されている。
+			if (oldVersion == 1) {
+				newRecord.calcDiscountAllocation();
+			}
+
+			manager.insertSalesRecord(newRecord);
+		}
+	}
+
+	private ArrayList<Order> createNewOrder(OldSalesRecord oldRecord)
+	{
+		ArrayList<Order> newOrders = new ArrayList<Order>();
+
+		for (OldOrder oldOrder : oldRecord.orders) {
+			OldProduct oldProduct = oldOrder.product;
+			BigDecimal originalCostDecimal = new BigDecimal(oldProduct.originalCost);
+			long originalCost = originalCostDecimal.scaleByPowerOfTen(2).longValue();
+
+			BigDecimal priceDecimal = new BigDecimal(oldProduct.price);
+			long price = priceDecimal.scaleByPowerOfTen(2).longValue();
+
+			BigDecimal orderDiscountDecimal = new BigDecimal(oldOrder.discountValue);
+			long orderDiscount = orderDiscountDecimal.scaleByPowerOfTen(2).longValue();
+
+			Order order = new Order(
+				new Product(oldProduct.code, oldProduct.name, oldProduct.category, originalCost, price, oldProduct.stock),
+				oldOrder.num
+			);
+			order.setDiscount(orderDiscount);
+
+			newOrders.add(order);
+		}
+		return newOrders;
 	}
 }

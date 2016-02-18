@@ -60,7 +60,7 @@ public class SingleSalesRecord {
 		this.discountPaisa = discountValue;
 	}
 
-	public double getDiscountValue() {
+	public long getDiscountValue() {
 		return discountPaisa;
 	}
 
@@ -91,7 +91,8 @@ public class SingleSalesRecord {
 
 		for (Order order : orders) {
 			BigDecimal orderRevenue = new BigDecimal(order.getRevenue(false));
-			long orderDiscount = orderRevenue.multiply(downPercentDecimal).longValue();
+			//
+			long orderDiscount = orderRevenue.multiply(downPercentDecimal).setScale(0, BigDecimal.ROUND_HALF_UP).longValue();
 			Log.d("debug", "discount set " + order.getProductName() + " :" + orderDiscount);
 			order.setDiscount(orderDiscount);
 			totalDiscount += orderDiscount;
