@@ -64,6 +64,13 @@ public class WomanShopIOManager implements IOManager {
 		}
 	}
 
+	public void updateStock(String productCode,String productStock){
+		ContentValues values = new ContentValues();
+		values.put(WomanShopDataDef.STOCK.name(), productStock);
+		String[] arg = {productCode};
+		database.update(DATABASE_NAME, values, WomanShopDataDef.PRODUCT_CODE.name() + "=?", arg);
+	}
+
 	public void importCSV() throws IOException {
 		File original = getArrivedGoods();
 		File backup = backupArrivedGoods(original);
