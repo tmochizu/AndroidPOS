@@ -63,7 +63,7 @@ public class WomanShopIOManager implements IOManager {
 		}
 	}
 
-	public void updateStock(String productCode,String productStock){
+	public void updateStock(String productCode, String productStock) {
 		ContentValues values = new ContentValues();
 		values.put(WomanShopDataDef.STOCK.name(), productStock);
 		String[] arg = {productCode};
@@ -75,6 +75,8 @@ public class WomanShopIOManager implements IOManager {
 		File backup = backupArrivedGoods(original);
 
 		BufferedReader reader = null;
+		boolean isDataFail = false;
+
 		try {
 			reader = new BufferedReader(new FileReader(backup));
 
@@ -82,34 +84,50 @@ public class WomanShopIOManager implements IOManager {
 			String header = reader.readLine();
 			// import に失敗した行だけをもとの CSV ファイルに残す。そのために一度中身をヘッダだけにしてある
 			FileUtils.write(original, header + "\n", DEFAULT_CHARSET, false);
-
 			// adding arrived goods to DB
 			String line;
+
 			while ((line = reader.readLine()) != null) {
 
 				String[] split = line.split(",");
-				String code = split[WomanShopDataDef.PRODUCT_CODE.ordinal()];
-				String name = split[WomanShopDataDef.ITEM_CATEGORY.ordinal()];
-				String category = split[WomanShopDataDef.PRODUCT_CATEGORY.ordinal()];
-				double originalCost = Double.valueOf(split[WomanShopDataDef.COST_TO_ENTREPRENEUR.ordinal()]);
-				double price = Double.valueOf(split[WomanShopDataDef.SALE_PRICE.ordinal()]);
-				int stock = Integer.valueOf(split[WomanShopDataDef.STOCK.ordinal()]);
 
-				Product product = new Product(code, name, category, originalCost, price, stock);
+				if (split.length == 5 || split.length == 6) {
+					String code = split[0];
+					String name = split[1];
+					String category = split[2];
+					double originalCost = 0.0;
+					double price = 0.0;
+					int stock = 0;
 
-				try {
-					stock(product);
+					try {
+						originalCost = Double.valueOf(split[3]);
+						price = Double.valueOf(split[4]);
+						stock = Integer.parseInt(split.length == 6 ? split[5] : "0");
+					} catch (NumberFormatException e) {
+						FileUtils.write(original, line + "\n", DEFAULT_CHARSET, true);
+						isDataFail=true;
+						continue;
+					}
 
-				} catch (IllegalArgumentException e) {
-					Log.e("error", "conflicted with a record in DB.", e);
+					Product product = new Product(code, name, category, originalCost, price, stock);
+
+					try {
+						stock(product);
+					} catch (IllegalArgumentException e) {
+						Log.e("error", "conflicted with a record in DB.", e);
+						FileUtils.write(original, line + "\n", DEFAULT_CHARSET, true);
+					}
+				} else {
 					FileUtils.write(original, line + "\n", DEFAULT_CHARSET, true);
+					isDataFail = true;
 				}
 			}
-
+			if (isDataFail) {
+				throw new IllegalArgumentException();
+			}
 		} finally {
 			IOUtils.closeQuietly(reader);
 		}
-
 	}
 
 	public Product searchById(String productId) {
