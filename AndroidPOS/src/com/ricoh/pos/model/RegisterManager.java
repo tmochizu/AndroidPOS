@@ -193,11 +193,11 @@ public class RegisterManager {
 	}
 
 	/**
-	 * 値引きを設定する。内部的にはパイサで扱うが、UI上ルピーで扱っている関係で、最初に単位系を変換してることに注意
-	 * @param discountRupee 値引き額
+	 * 値引きを設定する。
+	 * @param discountPisa 値引き額.単位パイサ
 	 */
-	public void updateDiscountValue(double discountRupee) {
-		this.discountValuePaisa = WomanShopFormatter.convertRupeeToPaisa(discountRupee);
+	public void updateDiscountValue(long discountPisa) {
+		this.discountValuePaisa = discountPisa;
 		try {
 			if (discountValuePaisa >= (getOriginalTotalAmount() - getOriginalTotalCost())) {
 				throw new IllegalArgumentException("discountValues is larger than totalCost");

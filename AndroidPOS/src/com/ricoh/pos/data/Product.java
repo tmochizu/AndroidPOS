@@ -137,8 +137,8 @@ public class Product {
 		boolean sameCode = this.code.equals(targetProduct.getCode());
 		boolean sameCategory = this.category.equals(targetProduct.getCategory());
 		boolean sameName = this.name.equals(targetProduct.getName());
-		boolean sameOriginalCost = Long.compare(this.originalCost, targetProduct.getOriginalCost()) == 0;
-		boolean samePrice = Long.compare(this.price, targetProduct.getPrice()) == 0;
+		boolean sameOriginalCost = (this.originalCost == targetProduct.getOriginalCost());
+		boolean samePrice = (this.price == targetProduct.getPrice());
 
 		return sameCode && sameCategory && sameName && sameOriginalCost && samePrice;
 	}

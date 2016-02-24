@@ -21,6 +21,7 @@ import com.ricoh.pos.data.WomanShopFormatter;
 import com.ricoh.pos.model.RegisterManager;
 import com.ricoh.pos.model.UpdateOrderListener;
 
+import java.math.BigDecimal;
 import java.text.NumberFormat;
 
 public class RegisterConfirmFragment extends Fragment implements UpdateOrderListener{
@@ -142,11 +143,11 @@ public class RegisterConfirmFragment extends Fragment implements UpdateOrderList
 		@Override
 		public void onTextChanged(CharSequence s, int start, int before, int count) {
 			try {
-				if (s.length() == 0) {
-					registerManager.updateDiscountValue(0);
-				} else {
-					registerManager.updateDiscountValue(Double.parseDouble(s.toString()));
-				}
+				String text = s.toString();
+				// valueが空なら０で値引きを初期化
+				BigDecimal discountDecimal = new BigDecimal((text.isEmpty() ? "0" : text));
+				// 100倍してpaisa単位にする。
+				registerManager.updateDiscountValue(discountDecimal.scaleByPowerOfTen(2).longValue());
 			} catch (IllegalArgumentException e) {
 			}
 		}

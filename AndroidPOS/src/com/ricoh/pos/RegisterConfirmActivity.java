@@ -28,6 +28,7 @@ import com.ricoh.pos.model.SalesRecordManager;
 import com.ricoh.pos.model.WomanShopIOManager;
 
 import java.io.FileNotFoundException;
+import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.util.List;
 
@@ -70,7 +71,11 @@ public class RegisterConfirmActivity extends FragmentActivity
 		EditText discount = (EditText) RegisterConfirmActivity.this.findViewById(R.id.discountValue);
 		try {
 			String text = discount.getText().toString();
-			RegisterManager.getInstance().updateDiscountValue(text.isEmpty() ? 0 : Double.parseDouble(text));
+
+			// valueが空なら０で値引きを初期化
+			BigDecimal discountDecimal = new BigDecimal((text.isEmpty() ? "0" : text));
+			// 100倍してpaisa単位にする。
+			RegisterManager.getInstance().updateDiscountValue(discountDecimal.scaleByPowerOfTen(2).longValue());
 		} catch (IllegalArgumentException e) {
 			Log.e("RegisterConfirmActivity","failed in discount value check.", e);
 			Toast.makeText(RegisterConfirmActivity.this.getBaseContext(), R.string.discount_error, Toast.LENGTH_LONG).show();
