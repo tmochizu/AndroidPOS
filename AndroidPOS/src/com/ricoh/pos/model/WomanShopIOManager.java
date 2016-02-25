@@ -26,6 +26,8 @@ public class WomanShopIOManager implements IOManager {
 	private SQLiteDatabase database;
 	private static String DATABASE_NAME = "products_dummy";
 	private static String csvStorageFolder = "/Ricoh";
+	private static final int initialEntryNumber =0;
+	private static final String defaultStock="0";
 
 	private final String[] WomanShopDataStructure = new String[]{
 			WomanShopDataDef.PRODUCT_CODE.name(),
@@ -95,15 +97,16 @@ public class WomanShopIOManager implements IOManager {
 					String code = split[0];
 					String name = split[1];
 					String category = split[2];
-					double originalCost = 0.0;
-					double price = 0.0;
-					int stock = 0;
+					double originalCost = initialEntryNumber;
+					double price = initialEntryNumber;
+					int stock = initialEntryNumber;
 
 					try {
 						originalCost = Double.valueOf(split[3]);
 						price = Double.valueOf(split[4]);
-						stock = Integer.parseInt(split.length == 6 ? split[5] : "0");
+						stock = Integer.parseInt(split.length == 6 ? split[5] : defaultStock);
 					} catch (NumberFormatException e) {
+						Log.e("error", "Failed to convert into double or int", e);
 						FileUtils.write(original, line + "\n", DEFAULT_CHARSET, true);
 						isDataFail=true;
 						continue;
@@ -116,17 +119,19 @@ public class WomanShopIOManager implements IOManager {
 					} catch (IllegalArgumentException e) {
 						Log.e("error", "conflicted with a record in DB.", e);
 						FileUtils.write(original, line + "\n", DEFAULT_CHARSET, true);
+						isDataFail = true;
 					}
 				} else {
+					Log.e("error", "This line is NOT adequate format");
 					FileUtils.write(original, line + "\n", DEFAULT_CHARSET, true);
 					isDataFail = true;
 				}
 			}
-			if (isDataFail) {
-				throw new IllegalArgumentException();
-			}
 		} finally {
 			IOUtils.closeQuietly(reader);
+		}
+		if (isDataFail) {
+			throw new IllegalArgumentException();
 		}
 	}
 
