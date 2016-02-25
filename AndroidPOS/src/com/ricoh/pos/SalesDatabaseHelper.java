@@ -63,7 +63,7 @@ public class SalesDatabaseHelper extends SQLiteOpenHelper {
 				for(int i = 0; i<findKeys.length; i++){
 					ContentValues value = new ContentValues();
 					value.put(WomanShopSalesDef.USER_AGES.name(),results[i]);
-					db.update(WS_SALES_TABLE_NAME, value, WomanShopSalesDef.USER_AGES.name() + " = '" + findKeys[i] + "'", null);
+					db.update(WS_SALES_TABLE_NAME, value, WomanShopSalesDef.USER_AGES.name() + " = ?", new String[]{findKeys[i]});
 				}
 			}
 		}
