@@ -28,6 +28,16 @@
     <string name="success_deleted_message">Succeeded to delete sales record</string>
     <string name="error_deleted_message">Failed to delete sales record</string>
     <string name="sales_record_delete_confirm_message">Do you want to delete sales record?</string>
+    <string-array name="user_attribute_keys">
+        <item>10s Low</item>
+        <item>10s High</item>
+        <item>20s</item>
+        <item>30s</item>
+        <item>40s</item>
+        <item>50s</item>
+        <item>60s</item>
+        <item>Other</item>
+    </string-array>
     <string-array name="user_attributes">
         <item>10s Low</item>
         <item>10s High</item>
