@@ -8,6 +8,7 @@
     <string name="sd_import_error">Failed to import from SD! But export to SD success.</string>
     <string name="sd_export_error">Import from SD success. But failed to export to SD!</string>
     <string name="sd_import_export_error">Failed import and export with SD!</string>
+    <string name="data_error">Not all the data is imported.</string>
     <string name="dialog_data_syncro_message">Under synchronizing. Please wait</string>
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
