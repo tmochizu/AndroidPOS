@@ -138,11 +138,7 @@ public class PriceDownDialog {
 			public void onClick(DialogInterface dlg, int sumthin) {
 				dlg.dismiss();
 				try {
-					// valueが空なら０で値引きを初期化
-					BigDecimal discount = new BigDecimal((value.isEmpty() ? "0" : value));
-
-					// 100倍してpaisa単位にする。
-					RegisterManager.getInstance().updateDiscountValue(discount.scaleByPowerOfTen(2).longValue());
+					RegisterManager.getInstance().updateDiscountValue(WomanShopFormatter.convertRupeeToPaisa(value));
 				} catch (IllegalArgumentException e) {
 					Toast.makeText(activity.getBaseContext(), R.string.discount_error, Toast.LENGTH_LONG).show();
 				}
@@ -160,5 +156,4 @@ public class PriceDownDialog {
 		value = value + inNumb;
 		promptValue.setText(promptValue.getText() + inNumb);
 	}
-
 }

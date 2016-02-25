@@ -27,7 +27,6 @@ public class WomanShopIOManager implements IOManager {
 
 	private SQLiteDatabase database;
 	private static String csvStorageFolder = "/Ricoh";
-	private static final int initialEntryNumber =0;
 	private static final String defaultStock="0";
 
 	private final String[] WomanShopDataStructure = new String[]{
@@ -81,72 +80,61 @@ public class WomanShopIOManager implements IOManager {
 		boolean isDataFail = false;
 
 		try {
-			reader = new BufferedReader(new FileReader(backup));
+            reader = new BufferedReader(new FileReader(backup));
 
-			// skipping header
-			String header = reader.readLine();
-			// import に失敗した行だけをもとの CSV ファイルに残す。そのために一度中身をヘッダだけにしてある
-			FileUtils.write(original, header + "\n", DEFAULT_CHARSET, false);
-			// adding arrived goods to DB
-			String line;
+            // skipping header
+            String header = reader.readLine();
+            // import に失敗した行だけをもとの CSV ファイルに残す。そのために一度中身をヘッダだけにしてある
+            FileUtils.write(original, header + "\n", DEFAULT_CHARSET, false);
+            // adding arrived goods to DB
+            String line;
 
-			while ((line = reader.readLine()) != null) {
+            while ((line = reader.readLine()) != null) {
 
-				String[] split = line.split(",");
-				String code = split[WomanShopDataDef.PRODUCT_CODE.ordinal()];
-				String name = split[WomanShopDataDef.ITEM_CATEGORY.ordinal()];
-				String category = split[WomanShopDataDef.PRODUCT_CATEGORY.ordinal()];
+                String[] split = line.split(",");
+                if (split.length != 5 && split.length != 6) {
+                    Log.e("error", "This line is NOT adequate format");
+                    FileUtils.write(original, line + "\n", DEFAULT_CHARSET, true);
+                    isDataFail = true;
+                    continue;
+                }
 
-				// CSVはルピー単位の表記なので、文字列で読み込んでBigDecimalにした後、100倍してパイサ単位の整数に変換
-				BigDecimal originalCostDecimal = new BigDecimal(split[WomanShopDataDef.COST_TO_ENTREPRENEUR.ordinal()]);
-				long originalCost = originalCostDecimal.scaleByPowerOfTen(2).longValue();
+                String code = split[WomanShopDataDef.PRODUCT_CODE.ordinal()];
+                String name = split[WomanShopDataDef.ITEM_CATEGORY.ordinal()];
+                String category = split[WomanShopDataDef.PRODUCT_CATEGORY.ordinal()];
 
-				BigDecimal priceDecimal = new BigDecimal(split[WomanShopDataDef.SALE_PRICE.ordinal()]);
-				long price = priceDecimal.scaleByPowerOfTen(2).longValue();
+                try {
+                    // CSVはルピー単位の表記なので、文字列で読み込んでBigDecimalにした後、100倍してパイサ単位の整数に変換
+                    BigDecimal originalCostDecimal = new BigDecimal(split[WomanShopDataDef.COST_TO_ENTREPRENEUR.ordinal()]);
+                    long originalCost = originalCostDecimal.scaleByPowerOfTen(2).longValue();
 
-				int stock = Integer.valueOf(split[WomanShopDataDef.STOCK.ordinal()]);
+                    BigDecimal priceDecimal = new BigDecimal(split[WomanShopDataDef.SALE_PRICE.ordinal()]);
+                    long price = priceDecimal.scaleByPowerOfTen(2).longValue();
 
-				if (split.length == 5 || split.length == 6) {
-					String code = split[0];
-					String name = split[1];
-					String category = split[2];
-					double originalCost = initialEntryNumber;
-					double price = initialEntryNumber;
-					int stock = initialEntryNumber;
+                    // stockのカラムがない場合は0で設定
+                    String stockStr = split.length == 6 ? split[WomanShopDataDef.STOCK.ordinal()] : defaultStock;
+                    int stock = Integer.valueOf(stockStr);
+                    Product product = new Product(code, name, category, originalCost, price, stock);
 
-					try {
-						originalCost = Double.valueOf(split[3]);
-						price = Double.valueOf(split[4]);
-						stock = Integer.parseInt(split.length == 6 ? split[5] : defaultStock);
-					} catch (NumberFormatException e) {
-						Log.e("error", "Failed to convert into double or int", e);
-						FileUtils.write(original, line + "\n", DEFAULT_CHARSET, true);
-						isDataFail=true;
-						continue;
-					}
+                    stock(product);
+                } catch (NumberFormatException e) {
+                    Log.e("error", "failed to convert into double or int.", e);
+                    FileUtils.write(original, line + "\n", DEFAULT_CHARSET, true);
+                    isDataFail = true;
+                } catch (IllegalArgumentException e) {
+                    Log.e("error", "conflicted with a record in DB.", e);
+                    FileUtils.write(original, line + "\n", DEFAULT_CHARSET, true);
+                    isDataFail = true;
+                }
+            }
 
-					Product product = new Product(code, name, category, originalCost, price, stock);
-
-					try {
-						stock(product);
-					} catch (IllegalArgumentException e) {
-						Log.e("error", "conflicted with a record in DB.", e);
-						FileUtils.write(original, line + "\n", DEFAULT_CHARSET, true);
-						isDataFail = true;
-					}
-				} else {
-					Log.e("error", "This line is NOT adequate format");
-					FileUtils.write(original, line + "\n", DEFAULT_CHARSET, true);
-					isDataFail = true;
-				}
-			}
+            if (isDataFail) {
+                throw new IllegalArgumentException();
+            }
 		} finally {
 			IOUtils.closeQuietly(reader);
 		}
-		if (isDataFail) {
-			throw new IllegalArgumentException();
-		}
-	}
+    }
 
 	public Product searchById(String productId) {
 		Cursor cursor = null;

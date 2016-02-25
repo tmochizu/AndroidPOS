@@ -117,20 +117,6 @@ public class Product {
 		return imagePath;
 	}
 
-	/**
-	 * 表示用に単位をルピーにした価格を返す
-	 * @return double
-	 */
-	public double getRupeePrice()
-	{
-		return WomanShopFormatter.convertPaisaToRupee(this.price);
-	}
-
-	public double getRupeeOriginalCost()
-	{
-		return WomanShopFormatter.convertPaisaToRupee(this.originalCost);
-	}
-
 	@Override
 	public boolean equals(Object object) {
 		Product targetProduct = (Product) object;

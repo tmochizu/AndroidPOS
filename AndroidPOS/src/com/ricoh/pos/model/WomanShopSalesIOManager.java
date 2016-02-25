@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteQueryBuilder;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Environment;
@@ -154,26 +155,6 @@ public class WomanShopSalesIOManager implements IOManager {
 		return DatabaseUtils.queryNumEntries(salesDatabase, SalesDatabaseHelper.WS_SALES_TABLE_NAME);
 	}
 
-	private String makeBasicQuery() {
-
-		StringBuilder query = new StringBuilder("select ");
-
-		for (String column : JoinedTable.COLUMNS) {
-			query.append(column).append(", ");
-		}
-		query.delete(query.length() - 2, query.length());
-		query.append(" from ");
-		query.append(SalesDatabaseHelper.WS_SALES_TABLE_NAME);
-		query.append(" left join ");
-		query.append(SalesDatabaseHelper.WS_SALES_ORDER_TABLE_NAME);
-		query.append(" on ");
-		query.append(SalesDatabaseHelper.WS_SALES_TABLE_NAME).append(".ROWID = ");
-		query.append(JoinedTable.COLUMNS[JoinedTable.Order.SINGLE_SALES_ID]);
-
-		return new String(query);
-	}
-
-
 	/**
 	 * DBから全件検索
 	 *
@@ -182,10 +163,20 @@ public class WomanShopSalesIOManager implements IOManager {
 	public ArrayList<SingleSalesRecord> searchAll() {
 		Cursor cursor = null;
 
-		String query = makeBasicQuery();
-		cursor = salesDatabase.rawQuery(query, new String[]{});
+		SQLiteQueryBuilder query = new SQLiteQueryBuilder();
+		query.setTables(
+			SalesDatabaseHelper.WS_SALES_TABLE_NAME +
+			" left join " +
+			SalesDatabaseHelper.WS_SALES_ORDER_TABLE_NAME +
+			" on " +
+			SalesDatabaseHelper.WS_SALES_TABLE_NAME +
+			".ROWID = "	+ JoinedTable.COLUMNS[JoinedTable.Order.SINGLE_SALES_ID]
+		);
+		cursor = query.query(salesDatabase, JoinedTable.COLUMNS, null, null, null, null, null, null);
 
-		return makeSalesList(cursor);
+		ArrayList<SingleSalesRecord> sales = makeSalesList(cursor);
+		cursor.close();
+		return sales;
 	}
 
 	/**
@@ -197,9 +188,19 @@ public class WomanShopSalesIOManager implements IOManager {
 	 */
 	public ArrayList<SingleSalesRecord> searchByDate(Date date, boolean effectiveDay) {
 		Cursor cursor = null;
-		String query = makeBasicQuery();
+
+		SQLiteQueryBuilder query = new SQLiteQueryBuilder();
+		query.setTables(
+			SalesDatabaseHelper.WS_SALES_TABLE_NAME +
+			" left join " +
+			SalesDatabaseHelper.WS_SALES_ORDER_TABLE_NAME +
+			" on " +
+			SalesDatabaseHelper.WS_SALES_TABLE_NAME +
+			".ROWID = "	+ JoinedTable.COLUMNS[JoinedTable.Order.SINGLE_SALES_ID]
+		);
 
 		if (effectiveDay) {
+			//今日の範囲で検索
 			Calendar start = Calendar.getInstance();
 			start.setTime(date);
 			start.set(Calendar.HOUR, 0);
@@ -214,21 +215,22 @@ public class WomanShopSalesIOManager implements IOManager {
 			end.set(Calendar.SECOND, 59);
 			end.set(Calendar.MILLISECOND, 0);
 
-			query = query + " where "
-					+ JoinedTable.COLUMNS[JoinedTable.Sale.DATE] + " >= ? and "
-					+ JoinedTable.COLUMNS[JoinedTable.Sale.DATE] + "<= ?";
 			String[] params = {DATE_FORMAT.format(start.getTime()), DATE_FORMAT.format(end.getTime())};
 
-			cursor = salesDatabase.rawQuery(query, params);
+			cursor = query.query(salesDatabase, JoinedTable.COLUMNS,
+					JoinedTable.COLUMNS[JoinedTable.Sale.DATE] + " >= ? and " + JoinedTable.COLUMNS[JoinedTable.Sale.DATE] + "<= ?",
+					params, null, null, null, null);
 		} else {
-			query = query + " where " + JoinedTable.COLUMNS[JoinedTable.Sale.DATE] + " = ?";
+			// 指定日の範囲を検索
 			String[] params = {DATE_FORMAT.format(date)};
-
-			cursor = salesDatabase.rawQuery(query, params);
+			cursor = query.query(salesDatabase, JoinedTable.COLUMNS,
+					JoinedTable.COLUMNS[JoinedTable.Sale.DATE] + " = ?",
+					params, null, null, null, null);
 		}
 
-		return makeSalesList(cursor);
-
+		ArrayList<SingleSalesRecord> sales = makeSalesList(cursor);
+		cursor.close();
+		return sales;
 	}
 
 	private ArrayList<SingleSalesRecord> makeSalesList(Cursor cursor) {
@@ -277,12 +279,7 @@ public class WomanShopSalesIOManager implements IOManager {
 
 		} catch (ParseException pe) {
 			Log.d("debug", "salseDate parse fail.", pe);
-		} finally {
-			if (cursor != null) {
-				cursor.close();
-			}
 		}
-
 		return sales;
 	}
 

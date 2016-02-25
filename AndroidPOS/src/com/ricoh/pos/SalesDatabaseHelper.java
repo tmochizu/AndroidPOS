@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.database.sqlite.SQLiteQueryBuilder;
 import android.util.Log;
 
 import com.ricoh.pos.data.Order;
@@ -138,8 +139,18 @@ public class SalesDatabaseHelper extends SQLiteOpenHelper {
 			}
 
 			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
-			String query = this.makeOldQuery(oldJoinedTable);
-			cursor = db.rawQuery(query, new String[]{});
+
+			SQLiteQueryBuilder query = new SQLiteQueryBuilder();
+			query.setTables(SalesDatabaseHelper.WS_SALES_TABLE_NAME +
+							" left join " +
+							SalesDatabaseHelper.WS_SALES_ORDER_TABLE_NAME +
+							" on " +
+							SalesDatabaseHelper.WS_SALES_TABLE_NAME +
+							".ROWID = "	+ oldJoinedTable[10]
+			);
+
+			cursor = query.query(db, oldJoinedTable, null, null, null, null, null, null);
+
 			OldSalesRecord record = null;
 			int salesId = -1;
 			boolean recordAvailable = cursor.moveToFirst();
@@ -188,24 +199,6 @@ public class SalesDatabaseHelper extends SQLiteOpenHelper {
 		}
 
 		return oldSales;
-	}
-
-	private String makeOldQuery(String[] oldJoinedTable) {
-		StringBuilder query = new StringBuilder("select ");
-
-		for (String column : oldJoinedTable) {
-			query.append(column).append(", ");
-		}
-		query.delete(query.length() - 2, query.length());
-		query.append(" from ");
-		query.append(SalesDatabaseHelper.WS_SALES_TABLE_NAME);
-		query.append(" left join ");
-		query.append(SalesDatabaseHelper.WS_SALES_ORDER_TABLE_NAME);
-		query.append(" on ");
-		query.append(SalesDatabaseHelper.WS_SALES_TABLE_NAME).append(".ROWID = ");
-		query.append(oldJoinedTable[10]);
-
-		return new String(query);
 	}
 
 	private void alterTable(SQLiteDatabase db)

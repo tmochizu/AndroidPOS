@@ -33,12 +33,15 @@ public class WomanShopFormatter {
 
 	/**
 	 * UIでルピー単位で入力された数字をパイサ単位に変換する。
-	 * @param rupee 金額。単位ルピー。
-	 * @return long 引数rupeeのパイサ表記。
+	 * @param rupeeString 金額の文字列。単位ルピー。
+	 * @return long 引数rupeeStringのパイサ表記。
 	 */
-	public static long convertRupeeToPaisa(double rupee)
+	public static long convertRupeeToPaisa(String rupeeString)
 	{
-		BigDecimal result = new BigDecimal(rupee);
-		return result.scaleByPowerOfTen(2).longValue();
+		// valueが空なら０で値引きを初期化
+		BigDecimal discount = new BigDecimal((rupeeString.isEmpty() ? "0" : rupeeString));
+
+		// 100倍してpaisa単位にする。
+		return discount.scaleByPowerOfTen(2).longValue();
 	}
 }
