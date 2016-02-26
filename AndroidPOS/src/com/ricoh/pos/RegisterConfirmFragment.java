@@ -86,7 +86,7 @@ public class RegisterConfirmFragment extends Fragment implements UpdateOrderList
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 Spinner spinner = (Spinner) parent;
                 String selectedAttribute = userAttributes[spinner.getSelectedItemPosition()];
-                registerManager.setUserAttribute(selectedAttribute);
+                registerManager.setUserAttribute(getName(selectedAttribute));
 ;            }
 
 			@Override
@@ -96,6 +96,18 @@ public class RegisterConfirmFragment extends Fragment implements UpdateOrderList
         });
 	    userAttributesSpinner.setAdapter(adapter);
 		return v;
+	}
+	
+	private String getName(String selectedAttribute){
+
+		String[] userAttributeKeys = getResources().getStringArray(R.array.user_attribute_keys);
+		for(int i = 0; i<userAttributes.length;i++){
+			if(userAttributes[i].equals(selectedAttribute)){
+				return userAttributeKeys[i];
+			}
+		}
+		
+		return null;
 	}
 
 	@Override
