@@ -155,12 +155,9 @@ public class RegisterConfirmFragment extends Fragment implements UpdateOrderList
 		@Override
 		public void onTextChanged(CharSequence s, int start, int before, int count) {
 			try {
-				String text = s.toString();
-				// valueが空なら０で値引きを初期化
-				BigDecimal discountDecimal = new BigDecimal((text.isEmpty() ? "0" : text));
-				// 100倍してpaisa単位にする。
-				registerManager.updateDiscountValue(discountDecimal.scaleByPowerOfTen(2).longValue());
+				registerManager.updateDiscountValue(WomanShopFormatter.convertRupeeToPaisa(s.toString()));
 			} catch (IllegalArgumentException e) {
+
 			}
 		}
 	}

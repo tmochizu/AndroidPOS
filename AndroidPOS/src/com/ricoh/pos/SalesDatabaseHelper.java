@@ -11,6 +11,7 @@ import android.util.Log;
 import com.ricoh.pos.data.Order;
 import com.ricoh.pos.data.Product;
 import com.ricoh.pos.data.SingleSalesRecord;
+import com.ricoh.pos.data.WomanShopFormatter;
 import com.ricoh.pos.data.WomanShopSalesDef;
 import com.ricoh.pos.data.WomanShopSalesOrderDef;
 import com.ricoh.pos.model.WomanShopSalesIOManager;
@@ -230,8 +231,8 @@ public class SalesDatabaseHelper extends SQLiteOpenHelper {
 			// create SingleRecord
 			SingleSalesRecord newRecord = new SingleSalesRecord(oldRecord.salesDate);
 			newRecord.setUserAttribute(oldRecord.userAttribute);
-			BigDecimal discountDecimal = new BigDecimal(oldRecord.discount);
-			long discount = discountDecimal.scaleByPowerOfTen(2).longValue();
+
+			long discount = WomanShopFormatter.convertRupeeToPaisa(oldRecord.discount);
 			newRecord.setDiscountValue(discount);
 
 			ArrayList<Order> newOrders = this.createNewOrder(oldRecord);
@@ -254,14 +255,9 @@ public class SalesDatabaseHelper extends SQLiteOpenHelper {
 
 		for (OldOrder oldOrder : oldRecord.orders) {
 			OldProduct oldProduct = oldOrder.product;
-			BigDecimal originalCostDecimal = new BigDecimal(oldProduct.originalCost);
-			long originalCost = originalCostDecimal.scaleByPowerOfTen(2).longValue();
-
-			BigDecimal priceDecimal = new BigDecimal(oldProduct.price);
-			long price = priceDecimal.scaleByPowerOfTen(2).longValue();
-
-			BigDecimal orderDiscountDecimal = new BigDecimal(oldOrder.discountValue);
-			long orderDiscount = orderDiscountDecimal.scaleByPowerOfTen(2).longValue();
+			long originalCost = WomanShopFormatter.convertRupeeToPaisa(oldProduct.originalCost);
+			long price = WomanShopFormatter.convertRupeeToPaisa(oldProduct.price);
+			long orderDiscount = WomanShopFormatter.convertRupeeToPaisa(oldOrder.discountValue);
 
 			Order order = new Order(
 				new Product(oldProduct.code, oldProduct.name, oldProduct.category, originalCost, price, oldProduct.stock),

@@ -9,6 +9,7 @@ import android.util.Log;
 import com.ricoh.pos.data.Product;
 import com.ricoh.pos.data.WomanShopDataDef;
 import com.ricoh.pos.DatabaseHelper;
+import com.ricoh.pos.data.WomanShopFormatter;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
@@ -104,12 +105,9 @@ public class WomanShopIOManager implements IOManager {
                 String category = split[WomanShopDataDef.PRODUCT_CATEGORY.ordinal()];
 
                 try {
-                    // CSVはルピー単位の表記なので、文字列で読み込んでBigDecimalにした後、100倍してパイサ単位の整数に変換
-                    BigDecimal originalCostDecimal = new BigDecimal(split[WomanShopDataDef.COST_TO_ENTREPRENEUR.ordinal()]);
-                    long originalCost = originalCostDecimal.scaleByPowerOfTen(2).longValue();
-
-                    BigDecimal priceDecimal = new BigDecimal(split[WomanShopDataDef.SALE_PRICE.ordinal()]);
-                    long price = priceDecimal.scaleByPowerOfTen(2).longValue();
+                    // CSVはルピー単位の表記なので、パイサ単位の整数に変換
+					long originalCost = WomanShopFormatter.convertRupeeToPaisa(split[WomanShopDataDef.COST_TO_ENTREPRENEUR.ordinal()]);
+					long price = WomanShopFormatter.convertRupeeToPaisa(split[WomanShopDataDef.SALE_PRICE.ordinal()]);
 
                     // stockのカラムがない場合は0で設定
                     String stockStr = split.length == 6 ? split[WomanShopDataDef.STOCK.ordinal()] : defaultStock;

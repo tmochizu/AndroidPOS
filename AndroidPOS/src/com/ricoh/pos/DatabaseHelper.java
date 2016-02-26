@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.database.Cursor;
 import android.util.Log;
 import com.ricoh.pos.data.WomanShopDataDef;
+import com.ricoh.pos.data.WomanShopFormatter;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -92,11 +93,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 			this.onCreate(db);
 
 			for (OldProduct old : products) {
-				// 旧DBはルピー単位の表記なので、文字列で読み込んでBigDecimalにした後、100倍してパイサ単位の整数に変換
-				BigDecimal originalCostDecimal = new BigDecimal(old.originalCost);
-				long originalCost = originalCostDecimal.scaleByPowerOfTen(2).longValue();
-				BigDecimal priceDecimal = new BigDecimal(old.price);
-				long price = priceDecimal.scaleByPowerOfTen(2).longValue();
+				// 旧DBはルピー単位の表記なので、パイサ単位の整数に変換
+				long originalCost = WomanShopFormatter.convertRupeeToPaisa(old.originalCost);
+				long price = WomanShopFormatter.convertRupeeToPaisa(old.price);
 
 				ContentValues contentValue = new ContentValues();
 				contentValue.put(WomanShopDataDef.PRODUCT_CODE.name(), old.code);

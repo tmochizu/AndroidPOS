@@ -72,11 +72,7 @@ public class RegisterConfirmActivity extends FragmentActivity
 		EditText discount = (EditText) RegisterConfirmActivity.this.findViewById(R.id.discountValue);
 		try {
 			String text = discount.getText().toString();
-
-			// valueが空なら０で値引きを初期化
-			BigDecimal discountDecimal = new BigDecimal((text.isEmpty() ? "0" : text));
-			// 100倍してpaisa単位にする。
-			RegisterManager.getInstance().updateDiscountValue(discountDecimal.scaleByPowerOfTen(2).longValue());
+			RegisterManager.getInstance().updateDiscountValue(WomanShopFormatter.convertRupeeToPaisa(text));
 		} catch (IllegalArgumentException e) {
 			Log.e("RegisterConfirmActivity","failed in discount value check.", e);
 			Toast.makeText(RegisterConfirmActivity.this.getBaseContext(), R.string.discount_error, Toast.LENGTH_LONG).show();

@@ -44,4 +44,15 @@ public class WomanShopFormatter {
 		// 100倍してpaisa単位にする。
 		return discount.scaleByPowerOfTen(2).longValue();
 	}
+
+	/**
+	 * doubleでルピー単位で入力された数字をパイサ単位に変換する。
+	 * @param rupee 金額。単位ルピー。
+	 * @return long 引数rupeeStringのパイサ表記。
+	 */
+	public static long convertRupeeToPaisa(double rupee)
+	{
+		BigDecimal discount = new BigDecimal(rupee);
+		return discount.scaleByPowerOfTen(2).longValue();
+	}
 }
