@@ -20,6 +20,7 @@ import android.widget.Toast;
 
 import com.ricoh.pos.data.Order;
 import com.ricoh.pos.data.Product;
+import com.ricoh.pos.data.WomanShopFormatter;
 
 import java.io.FileNotFoundException;
 import java.text.NumberFormat;
@@ -111,7 +112,8 @@ public class CategoryDetailFragment extends GetProductFragment {
             NumberFormat.getInstance().setMaximumFractionDigits(MAXIMUM_FRACTION_DIGITS);
 
             TextView priceView = (TextView) convertView.findViewById(R.id.price);
-            priceView.setText(NumberFormat.getInstance().format(product.getPrice()) + getString(R.string.currency_india));
+            priceView.setText(NumberFormat.getInstance().format(
+                    WomanShopFormatter.convertPaisaToRupee(product.getPrice())) + getString(R.string.currency_india));
 
             TextView stockView = (TextView) convertView.findViewById(R.id.stock);
             int stock = product.getStock();

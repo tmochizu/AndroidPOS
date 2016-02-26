@@ -22,12 +22,14 @@ import android.widget.Toast;
 import com.ricoh.pos.data.Order;
 import com.ricoh.pos.data.Product;
 import com.ricoh.pos.data.SingleSalesRecord;
+import com.ricoh.pos.data.WomanShopFormatter;
 import com.ricoh.pos.model.ProductsManager;
 import com.ricoh.pos.model.RegisterManager;
 import com.ricoh.pos.model.SalesRecordManager;
 import com.ricoh.pos.model.WomanShopIOManager;
 
 import java.io.FileNotFoundException;
+import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.util.List;
 
@@ -70,7 +72,7 @@ public class RegisterConfirmActivity extends FragmentActivity
 		EditText discount = (EditText) RegisterConfirmActivity.this.findViewById(R.id.discountValue);
 		try {
 			String text = discount.getText().toString();
-			RegisterManager.getInstance().updateDiscountValue(text.isEmpty() ? 0 : Double.parseDouble(text));
+			RegisterManager.getInstance().updateDiscountValue(WomanShopFormatter.convertRupeeToPaisa(text));
 		} catch (IllegalArgumentException e) {
 			Log.e("RegisterConfirmActivity","failed in discount value check.", e);
 			Toast.makeText(RegisterConfirmActivity.this.getBaseContext(), R.string.discount_error, Toast.LENGTH_LONG).show();
@@ -230,7 +232,8 @@ public class RegisterConfirmActivity extends FragmentActivity
 			TextView priceView = (TextView) contentView.findViewById(R.id.price);
 			priceView.setPadding(10, 0, 0, 0);
 			NumberFormat.getInstance().setMaximumFractionDigits(2);
-			priceView.setText(NumberFormat.getInstance().format(product.getPrice()));
+			priceView.setText(NumberFormat.getInstance().format(
+					WomanShopFormatter.convertPaisaToRupee(product.getPrice())));
 		}
 
 		private void setNumberOfOrderView(View contenView) {
