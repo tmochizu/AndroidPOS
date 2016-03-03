@@ -26,7 +26,7 @@ public class Product {
 	private static String imageStorageFolder = "/Ricoh";
 
 	public Product(String code, String name, String category, long originalCost, long price) {
-		this(code, category, name, originalCost, price, 0);
+		this(code, name, category, originalCost, price, 0);
 	}
 
 	public Product(String code, String name, String category, long originalCost, long price, int stock) {
