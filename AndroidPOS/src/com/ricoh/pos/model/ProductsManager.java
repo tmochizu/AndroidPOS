@@ -1,20 +1,12 @@
 package com.ricoh.pos.model;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.util.Log;
-import android.view.View;
-import android.widget.ImageView;
 
 import com.ricoh.pos.data.Product;
-import com.ricoh.pos.data.WomanShopDataDef;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 public class ProductsManager {
 
@@ -32,23 +24,11 @@ public class ProductsManager {
 		return instance;
 	}
 
-	public void updateProducts(String[] results) {
-		for (String result : results) {
-			String delims = "[:]+";
-			String[] fieldData = result.split(delims);
-			Product product = new Product(fieldData[WomanShopDataDef.PRODUCT_CODE.ordinal()],
-					fieldData[WomanShopDataDef.PRODUCT_CATEGORY.ordinal()],
-					fieldData[WomanShopDataDef.ITEM_CATEGORY.ordinal()]);
-
-			Log.d("debug", fieldData[WomanShopDataDef.PRODUCT_CATEGORY.ordinal()] + ":"
-					+ fieldData[WomanShopDataDef.ITEM_CATEGORY.ordinal()]);
-
-			product.setOriginalCost(Double
-					.parseDouble(fieldData[WomanShopDataDef.COST_TO_ENTREPRENEUR.ordinal()]));
-			product.setPrice(Double.parseDouble(fieldData[WomanShopDataDef.SALE_PRICE.ordinal()]));
-			//product.setStock(Integer.parseInt(fieldData[WomanShopDataDef.QTY.ordinal()]));
-			product.setProductImagePath(fieldData[WomanShopDataDef.PRODUCT_CODE.ordinal()]);
-			addNewProductInCategory(fieldData[WomanShopDataDef.PRODUCT_CATEGORY.ordinal()], product);
+	public void updateProducts(List<Product> products) {
+		productsMap.clear();
+		for (Product product : products) {
+			Log.d("debug", product.toString());
+			addNewProductInCategory(product.getCategory(), product);
 		}
 	}
 
@@ -66,8 +46,7 @@ public class ProductsManager {
 			ArrayList<Product> produtcsInCategory = productsMap.get(category);
 			for (Product registeredProduct : produtcsInCategory) {
 				if (registeredProduct.equals(product)) {
-					// TODO: Should update data
-					return;
+					throw new IllegalArgumentException("Conflicted Product:" + registeredProduct + "," + product);
 				}
 			}
 			produtcsInCategory.add(product);
@@ -112,7 +91,7 @@ public class ProductsManager {
 		if (!productsMap.containsKey(category)) {
 			throw new IllegalArgumentException("Passing category does not exist: " + category);
 		}
-		
+
 		ArrayList<Product> productList = productsMap.get(category);
 		for (Product product : productList) {
 			if (product.getCode().equals(productCode)) {
@@ -175,28 +154,5 @@ public class ProductsManager {
 
 	public int getCategoryCount() {
 		return productsMap.entrySet().size();
-	}
-
-	// Productの画像を返す
-	// 引数のサイズに合わせて画像を縮小してデコードする
-	// 縮小しないとメモリが溢れる可能性があるため
-	public Bitmap decodeProductImage(Product product, int imageWidth, int imageHeight) throws FileNotFoundException{
-		String imagePath = product.getProductImagePath();
-		File imageFile = new File(imagePath);
-
-		InputStream inputStream = new FileInputStream(imageFile);
-		//　画像サイズ取得
-		BitmapFactory.Options options = new BitmapFactory.Options();
-		options.inJustDecodeBounds = true;
-		BitmapFactory.decodeStream(inputStream, null, options);
-		int width = options.outWidth;
-		int height = options.outHeight;
-			
-		// 縮小してデコード
-		int scaleW = width / imageWidth; //imageViewの幅。getWidthだとなぜか0になるので決めうち
-		int scaleH = height / imageHeight;
-		options.inSampleSize = (int) Math.max(scaleW, scaleH);
-		options.inJustDecodeBounds = false;
-		return BitmapFactory.decodeFile(imagePath,options);
 	}
 }

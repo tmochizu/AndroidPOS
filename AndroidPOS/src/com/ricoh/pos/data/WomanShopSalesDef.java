@@ -1,13 +1,11 @@
 package com.ricoh.pos.data;
 
 public enum WomanShopSalesDef {
-	PRODUCT_CODE,
-	PRODUCT_CATEGORY,
-	ITEM_CATEGORY,
-	QTY,
-	SALE_PRICE,
-	TOTAL_SALE_PRICE,
-	DISCOUNT,
-	DATE,
-	USER_ATTRIBUTE,
+    DATE("sales_date"),          // 販売日
+    DISCOUNT("discount"),        // この商談全体での割り引き額
+    USER_AGES("user_ages");     // お客さんの年代
+
+    private String name;
+    WomanShopSalesDef(String name){ this.name = name;}
+    public String getName() {return name;}
 }

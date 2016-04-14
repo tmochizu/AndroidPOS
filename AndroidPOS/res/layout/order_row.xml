@@ -3,6 +3,7 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:orientation="horizontal" >
+    style="@style/Theme.List.Element">
 
     <ImageView
         android:id="@+id/photo"
@@ -16,25 +17,25 @@
         android:layout_height="wrap_content"
         android:orientation="vertical" >
 
-        <TextView
+        <TextView style="@style/FontMiddle"
             android:id="@+id/filename"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
-        <TextView
+        <TextView style="@style/FontMiddle"
             android:id="@+id/price"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
     </LinearLayout>
 
-    <TextView
+    <TextView style="@style/FontMiddle"
         android:id="@+id/number_tag"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="30dp"
-        android:text="@+string/number_tag" />
+        android:text="@string/number_tag" />
 
-    <TextView
+    <TextView style="@style/FontMiddle"
         android:id="@+id/numberOfSales"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
